@@ -1,14 +1,23 @@
 SCVim 
 
 This is based of the original scvim by Alex Norman (see: http://www.x37v.info/scvim/)
-Reworked by Stephen Lumenta 2010
 
 The plugin uses pathogen (https://github.com/tpope/vim-pathogen) to keep your .vim paths clean.
-It should work with the least amount of setup as possible.
 
 Installation:
 
 Drop the whole scvim folder into your "bundle" folder, e.g. "~/.vim/bundle/scvim" 
+Symlink SCVim.sc somewhere, where SuperCollider can find it. On a mac that would
+be 
+
+ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc ~/Library/Application\
+		 Support/SuperCollider/Extensions/SCVim.sc
+
+The rest should hopefully work automatically. Edit plugin/supercollider.vim to
+taste.
+
+To start open a file with the right extension
+:e foo.scd
 
 ======================================================================
 

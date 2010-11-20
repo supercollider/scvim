@@ -15,6 +15,7 @@
 // along with This program.  If not, see <http://www.gnu.org/licenses/>.
 
 SCVim {
-   
-  
+	hello {
+		"say hello".postln;
+	}
 } 

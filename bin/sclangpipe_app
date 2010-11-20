@@ -24,9 +24,11 @@ require 'open3'
 require 'optparse'
 
 pipe_loc = "/tmp/sclang-pipe" unless (pipe_loc = ENV["SCVIM_PIPE_LOC"])
-rundir = "/tmp/" unless (rundir = ENV["SCLANG_RUNDIR"])
+# rundir = "/tmp/" unless (rundir = ENV["SCLANG_RUNDIR"])
+rundir = "/Applications/SuperCollider/build/SuperCollider"
 pid_loc = "/tmp/sclangpipe_app-pid" unless (pid_loc = ENV["SCVIM_PIPE_PID_LOC"])
-app = `which sclang`.chomp
+# app = `which sclang`.chomp
+# app = "/Applications/SuperCollider/build/SuperCollider/sclang"
 
 sclangargs = "-i scvim"  # this arg must always be passed, so that sclang knows to load classes from folders named "scide_scvim"
 
@@ -82,7 +84,8 @@ pipeproc = Proc.new {
   trap("INT") do
     Process.exit
   end
-  IO.popen("#{app} -d #{rundir.chomp} #{sclangargs}", "w") do |sclang|
+  # TODO make this customizable
+  IO.popen("cd /Applications/SuperCollider/build/SuperCollider && ./sclang -d #{rundir.chomp} #{sclangargs}", "w") do |sclang|
     loop {
       x = `cat #{pipe_loc}`
       sclang.print x if x

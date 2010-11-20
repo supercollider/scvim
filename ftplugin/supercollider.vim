@@ -1,7 +1,6 @@
 " SuperCollider/Vim interaction scripts
 " Copyright 2007 Alex Norman
 " 
-" Modifications by Stephen Lumenta 2010
 " This file is part of SCVIM.
 "  
 " SCVIM is free software: you can redistribute it and/or modify
