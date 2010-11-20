@@ -1,1 +1,26 @@
-Just getting started. ok?
+SCVim 
+
+This is based of the original scvim by Alex Norman (see: http://www.x37v.info/scvim/)
+Reworked by Stephen Lumenta 2010
+
+The plugin uses pathogen (https://github.com/tpope/vim-pathogen) to keep your .vim paths clean.
+It should work with the least amount of setup as possible.
+
+Installation:
+
+Drop the whole scvim folder into your "bundle" folder, e.g. "~/.vim/bundle/scvim" 
+
+======================================================================
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
