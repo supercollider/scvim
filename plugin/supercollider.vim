@@ -2,13 +2,14 @@
 " These are mostly the original files from the former .scvimrc
 
 
-"set this to 0 if you don't want to kill the terminal with sclangpipe running
-"in it when you exit vim
-let g:sclangKillOnExit = 1
+" ====================================
+" Settings
+
+" let g:sclangKillOnExit = 1
 
 "the following has worked with osx
-let g:sclangTerm = "open -a /Applications/Utilities/Terminal.app"
-let g:sclangPipeApp = "bin/sclangpipe_app"
+" let g:sclangTerm = "open -a Terminal.app"
+" let g:sclangPipeApp = "../bin/start_pipe"
 
 "if setting is blank, this code checks for popular terminals:
 if g:sclangTerm == ""
@@ -25,31 +26,21 @@ if g:sclangTerm == ""
 	endif
 endif
 
-"this indicates the location to create a pipe for vim to communicate with
-"sclang 
-"defaults /tmp/sclang-pipe
-"let g:sclangPipeLoc = "/tmp/sclang-pipe"
 
-"this indicates a file where the process id for sclangpipe_app is stored
-"default /tmp/sclangpipe_app-pid
-"let g:sclangPipeAppPidLoc = "/tmp/sclangpipe_app-pid"
+" ====================================
+" Start the plugin
 
+" set up the plugin
+au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd runtime ftplugin/supercollider.vim
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set filetype=supercollider
-au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255" | runtime ftplugin/supercollider.vim
-" this is the indentation line, we use c indentation as a starter
-" au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set noic cin noexpandtab
+au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255" 
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd runtime indent/sc_indent.vim
 
 "required for matching
 au Filetype supercollider,supercollider_help let b:match_skip = 's:scComment\|scString\|scSymbol'
 au Filetype supercollider,supercollider_help let b:match_words = '(:),[:],{:}'
 
-"supercollider vim keybindings
-"^R" gives contents of register "
-
-" <C-c><C-c> 
-"<C-c><C-c> <C-c><C-c> 
-
+" key bindings
 au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-h> yiw :call SChelp(""")<CR>
 au Filetype supercollider,supercollider_help nmap <buffer> <C-c>: yiw :call SCdef(""")<CR>
 au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-d> :call SClang_block()<CR>

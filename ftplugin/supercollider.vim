@@ -1,6 +1,11 @@
 " SuperCollider/Vim interaction scripts
 " Copyright 2007 Alex Norman
 " 
+" modified 2010 stephen lumenta
+" Don't worry about the pipes in here. This is all taken care of inside of the
+" ruby script
+"
+"
 " This file is part of SCVIM.
 "  
 " SCVIM is free software: you can redistribute it and/or modify
@@ -62,13 +67,13 @@ let $SCVIM_PIPE_PID_LOC = s:sclangPipeAppPidLoc
 if exists("g:sclangTerm")
 	let s:sclangTerm = g:sclangTerm
 else
-	let s:sclangTerm = "xterm -e"
+	let s:sclangTerm = "open -a Terminal.app"
 endif
 
 if exists("g:sclangPipeApp")
 	let s:sclangPipeApp	= g:sclangPipeApp
 else
-	let s:sclangPipeApp	= "sclangpipe_app"
+	let s:sclangPipeApp	= findfile("bin/start_pipe", &rtp)
 endif
 
 "function SClangRunning()
@@ -175,8 +180,6 @@ endfunction
 function SendLineToSC(linenum)
 	let cmd = a:linenum . "w! >> " . s:sclangPipeLoc
 	silent exe cmd
-	"let cmd = a:linenum . "w! >> /tmp/test" 
-	"silent exe cmd
 endfunction
 
 function! SClang_send()
@@ -189,15 +192,8 @@ function! SClang_send()
 endfunction
 
 function SClangStart()
-	if !filewritable(s:sclangPipeAppPidLoc)
-                if $TERM[0:5] == "screen"
-                        call system("screen -D -R -X split; screen -D -R -X focus; screen -D -R -X screen " . s:sclangPipeApp . "; screen -D -R -X focus")
-                else
-                        call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
-                endif
-	else
-		throw s:sclangPipeAppPidLoc . " exists, is " . s:sclangPipeApp . " running?  If not try deleting " . s:sclangPipeAppPidLoc
-	endif
+  call system(s:sclangTerm . " " . s:sclangPipeApp)
+  " call system("open -a Terminal.app ~/.vim/bundle/supercollider/bin/start_pipe")
 endfunction
 
 function SClangKill()
