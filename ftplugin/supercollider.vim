@@ -47,7 +47,7 @@ set runtimepath+=$SCVIM_CACHE_DIR
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 1
+	let s:sclangKillOnExit = 0
 endif
 
 if exists("g:sclangPipeLoc")
@@ -179,13 +179,9 @@ endif
 function SendToSC(text)
 	let l:text = substitute(a:text, '\', '\\\\', 'g')
 	let l:text = substitute(l:text, '"', '\\"', 'g')
-	let l:cmd = system('echo "' . l:text . '" >> ' . s:sclangPipeLoc)
-	"let l:cmd = system('echo "' . l:text . '" >> /tmp/test')
-endfunction
+	let l:text = '"' . l:text .'"' 
 
-function SendLineToSC(linenum)
-	let cmd = a:linenum . "w! >> " . s:sclangPipeLoc
-	silent exe cmd
+  call system(s:sclangDispatcher . " -i " . l:text)
 endfunction
 
 function! SClang_send()
