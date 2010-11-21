@@ -50,15 +50,18 @@ au Filetype supercollider,supercollider_help let b:match_words = '(:),[:],{:}'
 " <C-c><C-c> 
 "<C-c><C-c> <C-c><C-c> 
 
-au Filetype supercollider,supercollider_help nmap <buffer>  yiw :call SChelp(""")<CR>
-au Filetype supercollider,supercollider_help nmap <buffer>  yiw :call SCdef(""")<CR>
-au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-o> :call SClang_block()<CR>
-au Filetype supercollider,supercollider_help imap <buffer> <C-c><C-o> :call SClang_block()<CR>a
-au Filetype supercollider,supercollider_help vmap <buffer> <C-c><C-o> :call SClang_send()<CR>
+au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-h> yiw :call SChelp(""")<CR>
+au Filetype supercollider,supercollider_help nmap <buffer> <C-c>: yiw :call SCdef(""")<CR>
+au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-d> :call SClang_block()<CR>
+au Filetype supercollider,supercollider_help imap <buffer> <C-c><C-d> :call SClang_block()<CR>a
+au Filetype supercollider,supercollider_help vmap <buffer> <C-c><C-d> :call SClang_send()<CR>
 au Filetype supercollider,supercollider_help vmap <buffer> <C-c><C-c> :call SClang_send()<CR>
 au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-c> :call SClang_send()<CR>
 au Filetype supercollider,supercollider_help imap <buffer> <C-c><C-c> :call SClang_send()<CR>a
-au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-.> :call SClang_thisProcess_stop()<CR>
-au Filetype supercollider,supercollider_help imap <buffer> <C-c><C-.> :call SClang_thisProcess_stop()<CR>a
+au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-k> :call SClang_thisProcess_stop()<CR>
+au Filetype supercollider,supercollider_help imap <buffer> <C-c><C-k> :call SClang_thisProcess_stop()<CR>a
+au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-l> :call SClangRestart()<CR>a
 
+au Filetype supercollider,supercollider_help set nowrap
+au Filetype supercollider,supercollider_help set textwidth=0
 "end of scvim (supercollider vim)
