@@ -185,12 +185,16 @@ function SendToSC(text)
 endfunction
 
 function! SClang_send()
-	let cmd = ".w! >> " . s:sclangPipeLoc
-	exe cmd
-	if line(".") == a:lastline
-		call SendToSC('')
-		"redraw!
-	endif
+	" let cmd = ".w! >> " . s:sclangPipeLoc
+	" exe cmd
+	" if line(".") == a:lastline
+	" 	call SendToSC('')
+	" 	"redraw!
+	" endif
+  let content = getline(".")
+  call SendToSC(content)
+
+  redraw!
 endfunction
 
 function SClangStart()
