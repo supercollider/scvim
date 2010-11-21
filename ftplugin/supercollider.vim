@@ -16,13 +16,6 @@
 " You should have received a copy of the GNU General Public License
 " along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
  
-" au VimLeave
- 
-" if exists("$SCVIM_DIR") == 0
-" 	echo "$SCVIM_DIR must be defined for SCVIM to work"
-" 	finish
-" endif
-
 
 " source the syntax file as it can change
 " so $SCVIM_DIR/syntax/supercollider.vim
@@ -42,10 +35,6 @@ else
 	let $SCVIM_CACHE_DIR = s:scvim_cache_dir
 endif
 
-"source the scvimrc file if it exists
-"if filereadable($HOME . "/.scvimrc")
-"	source $HOME/.scvimrc
-"end
 
 "add the cache dir to 
 set runtimepath+=$SCVIM_CACHE_DIR

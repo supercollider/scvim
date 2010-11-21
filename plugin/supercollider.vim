@@ -1,19 +1,10 @@
 " Load up supercollider plugin on opening a supercollider file (*.sc, *.scd)
 " These are mostly the original files from the former .scvimrc
 
-"this indicates the -d varaible [rundir] for running sclang in
-"default /tmp
-let $SCLANG_RUNDIR = "/Applications/SuperCollider/build/SuperCollider"
 
 "set this to 0 if you don't want to kill the terminal with sclangpipe running
 "in it when you exit vim
 let g:sclangKillOnExit = 1
-
-"this indicates the terminal emulator command you will use to launch
-"sclangpipe_app
-" let g:sclangTerm = "open -a Terminal.app"     
-"let g:sclangTerm = "xterm -e"
-
 
 "the following has worked with osx
 let g:sclangTerm = "open -a /Applications/Utilities/Terminal.app"
