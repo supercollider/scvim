@@ -37,8 +37,8 @@ endif
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set filetype=supercollider
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255" | runtime ftplugin/supercollider.vim
 " this is the indentation line, we use c indentation as a starter
-au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set noic cin noexpandtab
-" au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc runtime indent/sc_indent.vim
+" au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set noic cin noexpandtab
+au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc runtime indent/sc_indent.vim
 
 "required for matching
 au Filetype supercollider,supercollider_help let b:match_skip = 's:scComment\|scString\|scSymbol'
