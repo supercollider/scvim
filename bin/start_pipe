@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby -wKU
 require File.dirname(__FILE__) + '/scpipe/lib/sc'
 
-puts "yes you called med"
 SC::Pipe.serve

@@ -76,6 +76,12 @@ else
 	let s:sclangPipeApp	= findfile("bin/start_pipe", &rtp)
 endif
 
+if exists("g:sclangDispatcher")
+	let s:sclangDispatcher = g:sclangDispatcher
+else
+	let s:sclangDispatcher = findfile("bin/sc_dispatcher", &rtp)
+endif
+
 "function SClangRunning()
 "	if s:sclang_pid != 0 && `pidof "#{$sclangsclangPipeApp_no_quotes}"`.chomp != ""
 "		return true
@@ -193,7 +199,6 @@ endfunction
 
 function SClangStart()
   call system(s:sclangTerm . " " . s:sclangPipeApp)
-  " call system("open -a Terminal.app ~/.vim/bundle/supercollider/bin/start_pipe")
 endfunction
 
 function SClangKill()
@@ -205,11 +210,8 @@ function SClangKill()
 endfunction
 
 function SClangRestart()
-	if filewritable(s:sclangPipeAppPidLoc)
-		call system("kill -HUP `cat " . s:sclangPipeAppPidLoc . "`")
-	else
-		call SClangStart()
-	end
+  echo s:sclangDispatcher
+  call system(s:sclangDispatcher . " -k")
 endfunction
 
 function SClang_free(server)
