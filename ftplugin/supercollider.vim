@@ -76,7 +76,6 @@ if !exists("loaded_kill_sclang")
 	let loaded_kill_sclang = 1
 endif
 
-
 " ========================================================================================
 
 function! FindOuterMostBlock()
@@ -162,11 +161,22 @@ function SendToSC(text)
   call system(s:sclangDispatcher . " -i " . l:text)
 endfunction
 
-function! SClang_send()
-  let content = getline(".")
-  call SendToSC(content)
+" a variable to hold the buffer content
+let s:cmdBuf = ""
 
-  redraw!
+function! SClang_send()
+  let currentline = line(".")
+  let s:cmdBuf = s:cmdBuf . getline(currentline)
+  
+  if(a:lastline == currentline)
+    echo s:cmdBuf
+    call SendToSC(s:cmdBuf)
+
+    " clear the buffer again
+    let s:cmdBuf = ""
+  endif
+
+  " redraw!
 endfunction
 
 function! SClang_block()
@@ -196,18 +206,18 @@ function SClangRestart()
   redraw!
 endfunction
 
-function SClang_free(server)
-	call SendToSC('s.freeAll;')
+function SClang_thisProcess_stop()
+	call SendToSC('thisProcess.stop;')
 	redraw!
 endfunction
 
-function SClang_thisProcess_stop()
-	call SendToSC('thisProcess.stop;')
+function SClang_free(server)
+	call SendToSC('s.freeAll;')
 	redraw!
 endfunction
 
 function SClang_TempoClock_clear()
-	call SendToSC('TempoClock.default.clear;')
+	call SendToSC('TempoClock.default.clear;')
 	redraw!
 endfunction
 
