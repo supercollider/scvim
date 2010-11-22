@@ -154,17 +154,15 @@ endfunction
 " ========================================================================================
 
 function SendToSC(text)
-	let l:text = substitute(a:text, '\', '\\\\', 'g')
-	let l:text = substitute(l:text, '"', '\\"', 'g')
-	let l:text = '"' . l:text .'"' 
-
+  let l:text = shellescape(a:text)
+  
   call system(s:sclangDispatcher . " -i " . l:text)
 endfunction
 
 " a variable to hold the buffer content
 let s:cmdBuf = ""
 
-function! SClang_send()
+function SClang_send()
   let currentline = line(".")
   let s:cmdBuf = s:cmdBuf . getline(currentline)
   
@@ -176,10 +174,10 @@ function! SClang_send()
     let s:cmdBuf = ""
   endif
 
-  " redraw!
+  redraw!
 endfunction
 
-function! SClang_block()
+function SClang_block()
 	let [blkstart,blkend] = FindOuterMostBlock()
 	"blkstart[0],blkend[0] call SClang_send()
 	"these next lines are just a hack, how can i do the above??
