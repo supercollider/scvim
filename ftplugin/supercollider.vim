@@ -26,6 +26,8 @@
 " so $SCVIM_DIR/syntax/supercollider.vim
 runtime! syntax/supercollider.vim
 
+" ========================================================================================
+
 if exists("loaded_scvim") || &cp
   finish
 endif
@@ -82,15 +84,15 @@ else
 	let s:sclangDispatcher = findfile("bin/sc_dispatcher", &rtp)
 endif
 
-"function SClangRunning()
-"	if s:sclang_pid != 0 && `pidof "#{$sclangsclangPipeApp_no_quotes}"`.chomp != ""
-"		return true
-"	else
-"		$sclang_pid = 0
-"		return false
-"	end
-"end
+if !exists("loaded_kill_sclang")
+	if s:sclangKillOnExit
+		au VimLeave * call SClangKill()
+	endif
+	let loaded_kill_sclang = 1
+endif
 
+
+" ========================================================================================
 
 function! FindOuterMostBlock()
 	"search backwards for parens dont wrap
@@ -165,17 +167,8 @@ function! FindOuterMostBlock()
 	 return [l:range_s, l:range_e]
 endfunction
 
+" ========================================================================================
 
-"this causes the sclang pipe / terminal app to be killed when you exit vim, if you don't
-"want that to happen then just comment this out
-if !exists("loaded_kill_sclang")
-	if s:sclangKillOnExit
-		au VimLeave * call SClangKill()
-	endif
-	let loaded_kill_sclang = 1
-endif
-
-"the vim version of SendToSC
 function SendToSC(text)
 	let l:text = substitute(a:text, '\', '\\\\', 'g')
 	let l:text = substitute(l:text, '"', '\\"', 'g')
@@ -185,17 +178,24 @@ function SendToSC(text)
 endfunction
 
 function! SClang_send()
-	" let cmd = ".w! >> " . s:sclangPipeLoc
-	" exe cmd
-	" if line(".") == a:lastline
-	" 	call SendToSC('')
-	" 	"redraw!
-	" endif
   let content = getline(".")
   call SendToSC(content)
 
   redraw!
 endfunction
+
+function! SClang_block()
+	let [blkstart,blkend] = FindOuterMostBlock()
+	"blkstart[0],blkend[0] call SClang_send()
+	"these next lines are just a hack, how can i do the above??
+	let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
+	let l:origline = line(".")
+	let l:origcol = col(".")
+	exe cmd
+	call cursor(l:origline,l:origcol)
+endfunction
+
+" ========================================================================================
 
 function SClangStart()
   call system(s:sclangTerm . " " . s:sclangPipeApp)
@@ -229,40 +229,7 @@ function SClang_TempoClock_clear()
 	redraw!
 endfunction
 
-function! SClang_block()
-	let [blkstart,blkend] = FindOuterMostBlock()
-	"blkstart[0],blkend[0] call SClang_send()
-	"these next lines are just a hack, how can i do the above??
-	let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
-	let l:origline = line(".")
-	let l:origcol = col(".")
-	exe cmd
-	call cursor(l:origline,l:origcol)
-	
-	""if the range is just one line
-	"if blkstart[0] == blkend[0]
-	"	"XXX call SendToSC(strpart(getline(blkstart[0]),blkstart[1] - 1, (blkend[1] - blkstart[1] + 1)))
-	"	call SendLineToSC(blkstart[0])
-	"else
-	"	let linen = blkstart[0] - 1
-	"	"send the first line as it might not be a full line
-	"	"XXX let line = getline(linen)
-	"	"XXX call SendToSC(strpart(line, blkstart[1] - 1))
-	"	call SendLineToSC(linen)
-	"	let linen += 1
-	"	let endlinen = blkend[0]
-	"	while linen < endlinen
-	"		"XXX call SendToSC(getline(linen))
-	"		call SendLineToSC(linen)
-	"		let linen += 1
-	"	endwhile
-	"	"send the last line as it might not be a full line
-	"	"XXX let line = getline(endlinen)
-	"	"XXX call SendToSC(strpart(line,0,blkend[1]))
-	"	call SendLineToSC(endlinen)
-	"endif
-	"call SendToSC('')
-endfunction
+" ========================================================================================
 
 function SCdef(subject)
 	let l:tagfile = s:scvim_cache_dir . "/TAGS_SCDEF"
