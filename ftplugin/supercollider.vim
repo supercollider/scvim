@@ -42,7 +42,6 @@ else
 	let $SCVIM_CACHE_DIR = s:scvim_cache_dir
 endif
 
-
 "add the cache dir to 
 set runtimepath+=$SCVIM_CACHE_DIR
 
@@ -51,20 +50,6 @@ if exists("g:sclangKillOnExit")
 else
 	let s:sclangKillOnExit = 0
 endif
-
-if exists("g:sclangPipeLoc")
-	let s:sclangPipeLoc = g:sclangPipeLoc
-else
-	let s:sclangPipeLoc = "/tmp/sclang-pipe"
-endif
-let $SCVIM_PIPE_LOC = s:sclangPipeLoc
-
-if exists("g:sclangPipeAppPidLoc")
-	let s:sclangPipeAppPidLoc = g:sclangPipeAppPidLoc
-else
-	let s:sclangPipeAppPidLoc = "/tmp/sclangpipe_app-pid"
-endif
-let $SCVIM_PIPE_PID_LOC = s:sclangPipeAppPidLoc
 
 if exists("g:sclangTerm")
 	let s:sclangTerm = g:sclangTerm
@@ -202,16 +187,13 @@ function SClangStart()
 endfunction
 
 function SClangKill()
-	if filewritable(s:sclangPipeAppPidLoc)
-		call SendToSC("Server.quitAll;")
-		:sleep 10m
-		call system("kill `cat " . s:sclangPipeAppPidLoc . "` && rm " . s:sclangPipeAppPidLoc . " && rm " . s:sclangPipeLoc)
-	end
+  call system(s:sclangDispatcher . " -q")
 endfunction
 
 function SClangRestart()
   echo s:sclangDispatcher
   call system(s:sclangDispatcher . " -k")
+  redraw!
 endfunction
 
 function SClang_free(server)

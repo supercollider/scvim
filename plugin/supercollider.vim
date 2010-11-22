@@ -27,15 +27,9 @@ au Filetype supercollider,supercollider_help vmap <buffer> <F5> :call SClang_sen
 au Filetype supercollider,supercollider_help vmap <buffer> <F6> :call SClang_send()<CR>
 au Filetype supercollider,supercollider_help nmap <buffer> <F6> :call SClang_send()<CR>
 au Filetype supercollider,supercollider_help imap <buffer> <F6> :call SClang_send()<CR>a
-au Filetype supercollider,supercollider_help nmap <buffer> <F7> :call SClang_TempoClock_clear()<CR>
-au Filetype supercollider,supercollider_help imap <buffer> <F7> :call SClang_TempoClock_clear()<CR>a
-au Filetype supercollider,supercollider_help nmap <buffer> <F8> :call SClang_free("s")<CR>
-au Filetype supercollider,supercollider_help imap <buffer> <F8> :call SClang_free("s")<CR>a
+" au Filetype supercollider,supercollider_help nmap <buffer> <F7> :call SClang_TempoClock_clear()<CR>
+" au Filetype supercollider,supercollider_help imap <buffer> <F7> :call SClang_TempoClock_clear()<CR>a
+" au Filetype supercollider,supercollider_help nmap <buffer> <F8> :call SClang_free("s")<CR>
+" au Filetype supercollider,supercollider_help imap <buffer> <F8> :call SClang_free("s")<CR>a
 au Filetype supercollider,supercollider_help nmap <buffer> <F12> :call SClang_thisProcess_stop()<CR>
 au Filetype supercollider,supercollider_help imap <buffer> <F12> :call SClang_thisProcess_stop()<CR>a
-
-" au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-k> :call SClang_thisProcess_stop()<CR>
-" au Filetype supercollider,supercollider_help nmap <buffer> <C-c><C-l> :call SClangRestart()<CR>a
-
-au Filetype supercollider,supercollider_help set nowrap
-au Filetype supercollider,supercollider_help set textwidth=0

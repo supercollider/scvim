@@ -75,6 +75,7 @@ module SC
 
         #clean up after us
         trap("INT") do
+          Process.kill("INT", $p)
           remove_files
           exit
         end

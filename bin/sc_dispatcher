@@ -25,7 +25,15 @@ OptionParser.new do |opts|
         exec "kill -HUP #{pid}"
      end
    end
-   
+  
+   opts.on("-q", "Quit SuperCollider and all the belonging prcesses") do
+     File.open(SC::Pipe.pid_loc, "r") do |file|
+        d.interpret_silent("Server.quitAll;")
+        pid = file.read.chomp
+        exec "kill -INT #{pid}"
+     end
+   end
+     
    opts.on_tail("-h", "--help", "Show this message") do
      puts opts
      exit
