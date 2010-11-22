@@ -18,7 +18,7 @@ module SC
     @@rundir = "/Applications/SuperCollider/build/SuperCollider"
     @@pid_loc = "/tmp/sclangpipe_app-pid" 
     @@app = File.join(@@rundir, 'sclang')            
-        
+         
     class << self
       def serve
         prepare_pipe
@@ -42,7 +42,6 @@ module SC
         }
 
         if File.exists?(@@pipe_loc)
-          # FileUtils.rm(@@pipe_loc)
           warn "there is already a sclang session running, remove it first, than retry"
           exit
         end
@@ -55,7 +54,7 @@ module SC
           trap("INT") do
             Process.exit
           end
-          IO.popen("cd #{@@rundir} && #{@@app} -d #{@@rundir.chomp}", "w") do |sclang|
+          IO.popen("cd #{@@rundir} && #{@@app} -d #{@@rundir.chomp} -i scvim", "w") do |sclang|
             loop {
               x = `cat #{@@pipe_loc}`
               sclang.print x if x

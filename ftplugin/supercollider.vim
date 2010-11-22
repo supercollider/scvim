@@ -48,7 +48,7 @@ set runtimepath+=$SCVIM_CACHE_DIR
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 0
+	let s:sclangKillOnExit = 1
 endif
 
 if exists("g:sclangTerm")

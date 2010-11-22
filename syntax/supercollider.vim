@@ -78,8 +78,8 @@ runtime! syntax/supercollider_lang.vim
 runtime! syntax/supercollider_operators.vim
 
 " comments
-syn match	scComment	"//.*$"
-syn region	scComment	start="/\*" end="\*/" contains=scComment keepend extend
+syn match	  scLineComment	"\/\/.*" 
+syn region	scComment	start="/\*" end="\*/" 
 
 
 " COLOR DEFINITIONS
@@ -161,7 +161,8 @@ hi link scSpecialval Constant
 
 hi link scGlobVariable Define
 
-hi link scComment Comment
+hi link scComment     Comment
+hi link scLineComment Comment
 
 hi link scVar Type
 hi link scArg Type
