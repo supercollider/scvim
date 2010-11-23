@@ -29,7 +29,7 @@ runtime! syntax/supercollider.vim
 " ========================================================================================
 
 if exists("loaded_scvim") || &cp
-  finish
+   finish
 endif
 let loaded_scvim = 1
 
@@ -154,9 +154,14 @@ endfunction
 " ========================================================================================
 
 function SendToSC(text)
-  let l:text = shellescape(a:text)
-  
+  "let l:text = shellescape(a:text)
+	let l:text = substitute(a:text, '\', '\\\\', 'g')
+	let l:text = substitute(l:text, '"', '\\"', 'g')
+  let l:text = '"' . l:text .'"'
+
   call system(s:sclangDispatcher . " -i " . l:text)
+
+  redraw!
 endfunction
 
 " a variable to hold the buffer content
@@ -164,17 +169,14 @@ let s:cmdBuf = ""
 
 function SClang_send()
   let currentline = line(".")
-  let s:cmdBuf = s:cmdBuf . getline(currentline)
+  let s:cmdBuf = s:cmdBuf . getline(currentline) . "\n"
   
   if(a:lastline == currentline)
-    echo s:cmdBuf
     call SendToSC(s:cmdBuf)
 
     " clear the buffer again
     let s:cmdBuf = ""
   endif
-
-  redraw!
 endfunction
 
 function SClang_block()
@@ -201,11 +203,12 @@ endfunction
 function SClangRestart()
   echo s:sclangDispatcher
   call system(s:sclangDispatcher . " -k")
+  call system(s:sclangDispatcher . " -s ''")
   redraw!
 endfunction
 
 function SClang_thisProcess_stop()
-	call SendToSC('thisProcess.stop;')
+	call system(s:sclangDispatcher . ' -s thisProcess.stop;')
 	redraw!
 endfunction
 

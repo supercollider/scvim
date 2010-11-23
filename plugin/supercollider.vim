@@ -11,6 +11,8 @@ au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set filetype=supercollider
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255" 
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd runtime indent/sc_indent.vim
 
+au FileType supercollider,supercollider_help setlocal shiftwidth=4 tabstop=4 noexpandtab
+
 "required for matching
 " au Filetype supercollider,supercollider_help let b:match_skip = 's:scComment\|scString\|scSymbol'
 " au Filetype supercollider,supercollider_help let b:match_words = '(:),[:],{:}'
