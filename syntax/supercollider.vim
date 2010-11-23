@@ -1,4 +1,5 @@
 "Copyright 2007 Alex Norman
+" changes 2010 stephen lumenta
 "
 "This file is part of SCVIM.
 "
@@ -68,13 +69,15 @@ syn match scArate "\v\.@<=ar(\w)@!"
 syn match scKrate "\v\.@<=kr(\w)@!"
 
 " load list of all objects
-if filereadable($SCVIM_CACHE_DIR . "/supercollider_objects.vim")
-	source	$SCVIM_CACHE_DIR/supercollider_objects.vim
-elseif filereadable($HOME . ".scvim/supercollider_objects.vim")
-	source	$HOME/.scvim/supercollider_objects.vim
-end
+" if filereadable($SCVIM_CACHE_DIR . "/supercollider_objects.vim")
+" 	source	$SCVIM_CACHE_DIR/supercollider_objects.vim
+" elseif filereadable($HOME . ".scvim/supercollider_objects.vim")
+" 	source	$HOME/.scvim/supercollider_objects.vim
+" end
 " load all the language stuff
-runtime! syntax/supercollider_lang.vim
+
+" TODO we hard code the paths for now
+runtime! syntax/supercollider_objects.vim
 runtime! syntax/supercollider_operators.vim
 
 " comments
