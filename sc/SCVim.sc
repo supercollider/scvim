@@ -21,11 +21,10 @@
 
 /*
 
-SCVim.openClass("SinOsc");
-"Symbol".interpret.filenameSymbol
+SCVim.methodReferences("replace");
+Kernel
 
-"hello"
-
+Function
 */
 
 SCVim {
@@ -48,27 +47,17 @@ SCVim {
 	}
 
 	// use this if you want to display the text without the html formatting
-	*findRawHelp {|klass|
-		var h, helpPath;
-		var f, content;
+	*findHelp {|klass|
+		var helpString;
+		var helpPath;
 
-		klass = klass.asString;
+		if((helpPath=Help.findHelpFile(klass)).notNil){
+			helpString = File.new(helpPath, "r").readAllString.stripHTML.escapeChar('"').quote;
 
-		h = Help.new;
-		helpPath = h.findHelpFile(klass);
-
-		if(helpPath.isNil){
-			("No helpfile found for: "++klass).postln;
+			("echo "++ helpString ++ "|" ++ vimPath ++ " -R -c ':set ft=supercollider' -").unixCmd(postOutput: false);
 		} {
-			f = File.open(helpPath, "r");
-
-			// no line iteration in sc?
-			content = f.readAllString;		
-			f.close;
-
-			content = content.stripHTML;
-			("echo \""++content++"\" | uniq | "++vimPath++" -a").unixCmd(postOutput: false); 
-		}
+			("no help found for " ++ klass).error;
+		};
 	}
 
 
@@ -98,7 +87,7 @@ SCVim {
 		}{"sorry class "++klass++" not found".postln}
 	}
 
-	*methodTemplates { |name, openInTextMate=true|
+	*methodTemplates { |name, openInVIM=true|
 		var out, found = 0, namestring, fname;
 		out = CollStream.new;
 		out << "Implementations of '" << name << "' :\n";
@@ -136,7 +125,7 @@ SCVim {
 				Post << "\nNo implementations of '" << name << "'.\n";
 			}
 			{
-				if(openInTextMate) {
+				if(openInVIM) {
 					fname = "/tmp/" ++ Date.seed ++ ".sc";
 					File.use(fname, "w") { |f|
 						f << out.collection.asString;
@@ -148,7 +137,7 @@ SCVim {
 			};
 		}
 
-		*methodReferences { |name, openInTextMate=true|
+		*methodReferences { |name, openInVIM=true|
 			var out, references, fname;
 			name = name.asSymbol;
 			out = CollStream.new;
@@ -158,11 +147,11 @@ SCVim {
 				out << "References to '" << name << "' :\n";
 				references.do({ arg ref; out << "   " << ref.asString << "\n"; });
 
-				if(openInTextMate) {
+				if(openInVIM) {
 					fname = "/tmp/" ++ Date.seed ++ ".sc";
 					File.use(fname, "w") { |f|
 						f << out.collection.asString;
-						(vimPath + fname).unixCmd(postOutput: false);
+						(vimPath + "-R" + fname).unixCmd(postOutput: false);
 					};
 				} {
 					out.collection.newTextWindow(name.asString);

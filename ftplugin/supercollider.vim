@@ -241,7 +241,7 @@ function SCdef(subject)
 endfun
 
 function SChelp(subject)
-
+  call SendToSCSilent('SCVim.findHelp("' . a:subject . '");')
 endfun
 
 "custom commands (SChelp,SCdef,SClangfree)
