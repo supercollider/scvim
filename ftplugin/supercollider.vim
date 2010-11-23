@@ -48,7 +48,7 @@ set runtimepath+=$SCVIM_CACHE_DIR
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 1
+	let s:sclangKillOnExit = 0
 endif
 
 if exists("g:sclangTerm")
@@ -153,14 +153,26 @@ endfunction
 
 " ========================================================================================
 
-function SendToSC(text)
-  "let l:text = shellescape(a:text)
+
+function SCFormatText(text)
 	let l:text = substitute(a:text, '\', '\\\\', 'g')
 	let l:text = substitute(l:text, '"', '\\"', 'g')
   let l:text = '"' . l:text .'"'
 
-  call system(s:sclangDispatcher . " -i " . l:text)
+  return l:text
+endfunction
 
+function SendToSC(text)
+  let l:text = SCFormatText(a:text)
+
+  call system(s:sclangDispatcher . " -i " . l:text)
+  redraw!
+endfunction
+
+function SendToSCSilent(text)
+  let l:text = SCFormatText(a:text)
+
+  call system(s:sclangDispatcher . " -s " . l:text)
   redraw!
 endfunction
 
@@ -222,60 +234,17 @@ function SClang_TempoClock_clear()
 	redraw!
 endfunction
 
-" ========================================================================================
+" Introspection and Help Files
 
 function SCdef(subject)
-	let l:tagfile = s:scvim_cache_dir . "/TAGS_SCDEF"
-	let l:tagdest = s:scvim_cache_dir . "/doc/tags"
-
-	if !filereadable(l:tagfile)
-		echo "definition tag cache does not exist, you must run SCVim.updateCaches in supercollider"
-		let l:dontcare = system("echo 'SC:SCVim	SCVim.scd	/^' > " . l:tagdest)
-		exe "help SC:SCVim"
-	else
-		let l:dontcare = system("grep SCdef:" . a:subject . " " . l:tagfile . " > " . l:tagdest)
-		exe "help SCdef:" . a:subject
-	end
+  call SendToSCSilent('SCVim.openClass("' . a:subject . '");')
 endfun
 
 function SChelp(subject)
-	let l:tagfile = s:scvim_cache_dir . "/doc/TAGS_HELP"
-	let l:tagdest = s:scvim_cache_dir . "/doc/tags"
-	if !filereadable(l:tagfile)
-		echo "help tag cache does not exist, you must run SCVim.updateHelpCache in supercollider in order have help docs"
-		let l:dontcare = system("echo 'SC:SCVim	SCVim.scd	/^' > $SCVIM_CACHE_DIR/doc/tags")
-		exe "help SC:SCVim"
-		return
-	end
 
-	"the keybindings won't find * but will find ** for some reason
-	if a:subject == ""
-		let l:dontcare = system("grep \"SC:Help\" " . l:tagfile . " > " . l:tagdest)
-		exe "help SC:Help"
-	elseif a:subject == "*"
-		let l:dontcare = system("grep \"SC:\\*\" " . l:tagfile . " > " . l:tagdest)
-		exe "help SC:\*" . a:subject
-	elseif a:subject == "**"
-		let l:dontcare = system("grep \"SC:\\*\\*\" " . l:tagfile . " > " . l:tagdest)
-		exe "help SC:\*\*" . a:subject
-	else
-		let l:dontcare = system("grep SC:\"" . a:subject . "\" " . l:tagfile . " > " . l:tagdest)
-		exe "help SC:" . a:subject
-	endif
 endfun
-
-function ListSCObjects(A,L,P)
-	return system("cat $SCVIM_CACHE_DIR/sc_object_completion")
-endfun
-
-function ListSCHelpItems(A,L,P)
-	return system("cat $SCVIM_CACHE_DIR/doc/sc_help_completion")
-endfun
-
 
 "custom commands (SChelp,SCdef,SClangfree)
-com -complete=custom,ListSCHelpItems -nargs=? SChelp call SChelp("<args>")
-com -complete=custom,ListSCObjects -nargs=1 SCdef call SCdef("<args>")
 com -nargs=1 SClangfree call SClang_free("<args>")
 com -nargs=0 SClangStart call SClangStart()
 com -nargs=0 SClangKill call SClangKill()
