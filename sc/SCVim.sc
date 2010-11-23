@@ -22,9 +22,7 @@
 /*
 
 SCVim.methodReferences("replace");
-Kernel
-
-Function
+SCVim.methodTemplates("replace");
 */
 
 SCVim {
@@ -48,13 +46,25 @@ SCVim {
 
 	// use this if you want to display the text without the html formatting
 	*findHelp {|klass|
-		var helpString;
 		var helpPath;
 
+		// we create a tmp file -> you need to do that so you can execute sc code from it
 		if((helpPath=Help.findHelpFile(klass)).notNil){
-			helpString = File.new(helpPath, "r").readAllString.stripHTML.escapeChar('"').quote;
+			var fname;
+			var helpString;
 
-			("echo "++ helpString ++ "|" ++ vimPath ++ " -R -c ':set ft=supercollider' -").unixCmd(postOutput: false);
+			fname = "/tmp/" ++ klass ++ "_help.sc"; // create and cache the file
+			
+			if(File.exists(fname).not){
+				helpString = File.new(helpPath, "r").readAllString.stripHTML.escapeChar('"');
+
+				File.use(fname, "w") { |f|
+					f << helpString;
+				};
+			};
+
+			// read it
+			(vimPath + "-R" + fname).unixCmd(postOutput: false);
 		} {
 			("no help found for " ++ klass).error;
 		};
