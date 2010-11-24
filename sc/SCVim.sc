@@ -47,11 +47,11 @@ SCVim {
 	// use this if you want to display the text without the html formatting
 	*findHelp {|klass|
 		var helpPath;
+		var fname;
+		var helpString;
 
 		// we create a tmp file -> you need to do that so you can execute sc code from it
 		if((helpPath=Help.findHelpFile(klass)).notNil){
-			var fname;
-			var helpString;
 
 			fname = "/tmp/" ++ klass ++ "_help.sc"; // create and cache the file
 			
@@ -99,11 +99,15 @@ SCVim {
 
 	*methodTemplates { |name, openInVIM=true|
 		var out, found = 0, namestring, fname;
+
+		name = name.asSymbol;
+
 		out = CollStream.new;
 		out << "Implementations of '" << name << "' :\n";
 		Class.allClasses.do({ arg class;
 			class.methods.do({ arg method;
 				if (method.name == name, {
+
 					found = found + 1;
 					namestring = class.name ++ ":" ++ name;
 					out << "   " << namestring << " :     ";
@@ -141,9 +145,7 @@ SCVim {
 						f << out.collection.asString;
 						(vimPath + fname).unixCmd(postOutput: false);
 					};
-				} {
-					out.collection.newTextWindow(name.asString);
-				};
+				}; 
 			};
 		}
 

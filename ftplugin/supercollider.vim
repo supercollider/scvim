@@ -244,6 +244,14 @@ function SChelp(subject)
   call SendToSCSilent('SCVim.findHelp("' . a:subject . '");')
 endfun
 
+function SCreference(subject)
+  call SendToSCSilent('SCVim.methodReferences("' . a:subject . '");')
+endfun
+
+function SCimplementation(subject)
+  call SendToSCSilent('SCVim.methodTemplates("' . a:subject . '");')
+endfun
+
 "custom commands (SChelp,SCdef,SClangfree)
 com -nargs=1 SClangfree call SClang_free("<args>")
 com -nargs=0 SClangStart call SClangStart()
