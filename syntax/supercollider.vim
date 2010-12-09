@@ -47,6 +47,11 @@ syn match	scChar	"\$\w"
 syn match	scChar	"\$\\\\"
 syn match	scChar	"\$\\\w"
 
+syn match scNumber "\<\(0[0-7]*\|0[xX]\x\+\|\d\+\)[lL]\=\>"
+syn match scNumber "\(\<\d\+\.\d*\|\.\d\+\)\([eE][-+]\=\d\+\)\=[fFdD]\="
+syn match scNumber "\<\d\+[eE][-+]\=\d\+[fFdD]\=\>"
+syn match scNumber "\<\d\+\([eE][-+]\=\d\+\)\=[fFdD]\>"
+
 "syn match	scString "\".\{-}\""
 "syn region	scString start=+\v\\@<!"+ end=+\v\\@<!"+ 
 syn region  scString start=+"+ skip=+\\\\\|\\"+ end=+"+
@@ -155,13 +160,11 @@ hi link scArate Statement
 hi link scKrate Statement
 
 hi link scSymbol String
-
 hi link scString String
-
 hi link scChar String
+hi link scNumber Number
 
 hi link scSpecialval Constant
-
 hi link scGlobVariable Define
 
 hi link scComment     Comment
