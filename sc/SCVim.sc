@@ -96,7 +96,9 @@ SCVim {
 			});
 		}{"sorry class "++klass++" not found".postln}
 	}
-
+	
+	// TODO improve this to jump to the right implementations even if they are
+	// buried in a class extension
 	*methodTemplates { |name, openInVIM=true|
 		var out, found = 0, namestring, fname;
 
@@ -147,29 +149,33 @@ SCVim {
 					};
 				}; 
 			};
-		}
+	}
 
-		*methodReferences { |name, openInVIM=true|
-			var out, references, fname;
-			name = name.asSymbol;
-			out = CollStream.new;
-			references = Class.findAllReferences(name);
+	*methodReferences { |name, openInVIM=true|
+		var out, references, fname;
+		name = name.asSymbol;
+		out = CollStream.new;
+		references = Class.findAllReferences(name);
 
-			if (references.notNil, {
-				out << "References to '" << name << "' :\n";
-				references.do({ arg ref; out << "   " << ref.asString << "\n"; });
+		if (references.notNil, {
+			out << "References to '" << name << "' :\n";
+			references.do({ arg ref; out << "   " << ref.asString << "\n"; });
 
-				if(openInVIM) {
-					fname = "/tmp/" ++ Date.seed ++ ".sc";
-					File.use(fname, "w") { |f|
-						f << out.collection.asString;
-						(vimPath + "-R" + fname).unixCmd(postOutput: false);
-					};
-				} {
-					out.collection.newTextWindow(name.asString);
+			if(openInVIM) {
+				fname = "/tmp/" ++ Date.seed ++ ".sc";
+				File.use(fname, "w") { |f|
+					f << out.collection.asString;
+					(vimPath + "-R" + fname).unixCmd(postOutput: false);
 				};
-			},{
-				Post << "\nNo references to '" << name << "'.\n";
-			});
-		}
-	} // end class
+			} {
+				out.collection.newTextWindow(name.asString);
+			};
+		},{
+			Post << "\nNo references to '" << name << "'.\n";
+		});
+	}
+
+	*displayMethods { |variable|
+		variable.class.methods.collect(_.name).do(_.postln);	
+	}
+} // end class
