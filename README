@@ -4,6 +4,12 @@ This is based of the original scvim by Alex Norman (see: http://www.x37v.info/sc
 
 The plugin uses pathogen (https://github.com/tpope/vim-pathogen) to keep your .vim paths clean.
 
+There are plenty of known issues - better wait until this gets stabler / easier to use:
+
+* rather macvim centric ( help tries to open macvim - this should be done automatically)
+* it is still to fiddly to enter the supercollider paths
+* probably a lot more
+
 Installation:
 
 Drop the whole scvim folder into your "bundle" folder, e.g. "~/.vim/bundle/scvim" 
