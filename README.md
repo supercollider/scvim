@@ -41,21 +41,17 @@ Key commands:
 
 in normal/insert mode:
 
-`
 * F5 to execute a block of code scvim will attempt to find the outermost bracket
 * F6 to execute the current line of code
 * F12 is a hard stop
-`
+
 in normal mode:
 
-`
 * <leader>sd on a word opens the corresponding helpfile
 * <leader>sk recompiles the sc library
 * <leader>sj on a word opens the class file
 * <leader>si on a word opens the implementations of ...
 * <leader>sr on a word opens the references to ...
-`
-
 
 Known issues / shouldas:
 ------------------------
