@@ -18,12 +18,6 @@ au FileType supercollider,supercollider_help setlocal shiftwidth=4 tabstop=4 noe
 au Filetype supercollider,supercollider_help let b:match_skip = 's:scComment\|scString\|scSymbol'
 au Filetype supercollider,supercollider_help let b:match_words = '(:),[:],{:}'
 
-" default paths for the pipe and dispatcher / this should work automatically
-" but for some reasons it sometimes does not.
-
-let g:sclangPipeApp     = "~/.vim/bundle/supercollider/bin/start_pipe"
-let g:sclangDispatcher  = "~/.vim/bundle/supercollider/bin/sc_dispatcher"
-
 " key bindings
 
 au Filetype supercollider,supercollider_help nmap <buffer> <F5> :call SClang_block()<CR>

@@ -53,6 +53,18 @@ in normal mode:
 * `<leader>si` on a word opens the implementations of ...
 * `<leader>sr` on a word opens the references to ...
 
+
+Global variables:
+-----------------
+
+If for some reason vim can't find the path to the two launch scripts
+`start_pipe` and `sc_dispatcher` you can set them manually in your .vimrc
+
+e.g.:
+
+`let g:sclangPipeApp     = "~/.vim/bundle/supercollider/bin/start_pipe"`
+`let g:sclangDispatcher  = "~/.vim/bundle/supercollider/bin/sc_dispatcher"`
+
 Known issues / shouldas:
 ------------------------
 
