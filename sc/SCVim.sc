@@ -41,7 +41,24 @@ SCVim {
 				vimPath = whichVim;
 			};
 			vimPath = vimPath.replace("\n", "");
-		}
+		};
+
+		// thanks to Dionysis Athinaios
+		StartUp.add { //do after startup has finished
+			var classList, file, hugeString = "syn keyword scObject";
+			//collect all class names as strings in a Array
+			classList =
+			Object.allSubclasses.collect{ arg i; var name;
+				name = i.asString;
+				hugeString = hugeString + name;
+			};
+			// TODO as all things this should be not that hardcoded
+			//create a file that contains all the names
+			file = File("~/.vim/bundle/supercollider/syntax/supercollider_objects.vim".standardizePath,"w");
+			file.write(hugeString);
+			file.close;
+		};
+		
 	}
 
 	// use this if you want to display the text without the html formatting
