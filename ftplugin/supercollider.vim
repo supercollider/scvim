@@ -60,13 +60,13 @@ endif
 if exists("g:sclangPipeApp")
 	let s:sclangPipeApp	= g:sclangPipeApp
 else
-	let s:sclangPipeApp	= findfile("bin/start_pipe", &rtp)
+	let s:sclangPipeApp	= "~/.vim/bundle/supercollider/bin/start_pipe"
 endif
 
 if exists("g:sclangDispatcher")
 	let s:sclangDispatcher = g:sclangDispatcher
 else
-	let s:sclangDispatcher = findfile("bin/sc_dispatcher", &rtp)
+	let s:sclangDispatcher = "~/.vim/bundle/supercollider/bin/sc_dispatcher"
 endif
 
 if !exists("loaded_kill_sclang")
