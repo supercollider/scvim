@@ -17,8 +17,15 @@ So far this only really works with the combination of macvim.
 Installation:
 ------------
 
-Drop the whole scvim folder into your "bundle" folder, e.g.
-"~/.vim/bundle/scvim" Symlink SCVim.sc somewhere, where SuperCollider can find
+Rename the whole scvim folder to "supercollider" and drop it into your "bundle" folder, e.g.
+"~/.vim/bundle/supercollider". 
+
+Or just do:
+`
+git clone git://github.com/sbl/scvim.git ~/.vim/bundle/supercollider
+`
+
+Symlink SCVim.sc somewhere, where SuperCollider can find
 it. On a mac that would be 
 
 `
