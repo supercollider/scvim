@@ -59,7 +59,7 @@ in normal mode:
 * `<leader>sj` on a word opens the class file
 * `<leader>si` on a word opens the implementations of ...
 * `<leader>sr` on a word opens the references to ...
-
+* `<leader>sm` on a global or environment variable lists the known methods
 
 Global variables:
 -----------------

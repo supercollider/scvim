@@ -35,3 +35,4 @@ au Filetype supercollider,supercollider_help nmap <leader>sd yiw :call SChelp("
 au Filetype supercollider,supercollider_help nmap <leader>sj yiw :call SCdef(""")<CR>
 au Filetype supercollider,supercollider_help nmap <leader>si yiw :call SCimplementation(""")<CR>
 au Filetype supercollider,supercollider_help nmap <leader>sr yiw :call SCreference(""")<CR>
+au Filetype supercollider,supercollider_help nmap <leader>sm yiw :call SCfindMethods(""")<CR>

@@ -193,6 +193,7 @@ SCVim {
 	}
 
 	*displayMethods { |variable|
-		variable.class.methods.collect(_.name).do(_.postln);	
+		variable.class.methods.collect(_.name).sort.do(_.postln);	
+		^'';
 	}
 } // end class
