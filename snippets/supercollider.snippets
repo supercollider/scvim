@@ -1,0 +1,70 @@
+# synthesis
+snippet buf
+	Buffer.read(${1:s}, "${2:sounds/a11wlk01.wav}");
+	${3}
+snippet syn
+	Synth(\${1:name}${2: ,[]});
+	${3}
+snippet sdef
+	(
+	SynthDef(\${1:foobar}, { 
+		|out=0, gate=1|
+		var env = Linen.kr(gate, 0.01, 1, 0.01, 2);
+		var snd;
+		
+		snd = ${2:noise};
+		snd = snd * env;
+		Out.ar(out, snd);
+	}).add;
+	)
+# language
+snippet if
+	if(${1:condition}) {
+		${2://true};
+	}
+snippet sw 
+	${1:condition}.switch(
+		${2:case}, {${3://reaction}}
+	)
+# live-coding
+snippet px
+	p = ProxySpace.push(s.boot);
+	$1
+snippet pb
+	Pbind(*[
+		${1:dur}: ${2:0.2}
+	])
+snippet pd
+	(
+	Pdef(\${1:proxy},
+		Pbind(*[
+			${2:dur}: ${3:0.2}
+		])
+	).play;
+	)
+snippet td
+	(
+	Tdef(\${1:taskProxy}, {
+		${2:inf}.do {
+			${3://your music};
+			1.wait;
+		}
+	}).play;
+	)
+# GUI snippets
+snippet slid 
+	EZSlider(${1:w}, ${2:380}@${3:20}, "${4:slider}", \${5:unipolar}, { |sl|
+		${6:sl.value};
+	});
+snippet gui
+	(
+	var w;
+
+	w = Window("${1:window}", Rect(200,200,400,300));
+	w.addFlowLayout;
+	
+	${2://do something}
+	
+	w.front;
+	w.onClose = { };
+	)
