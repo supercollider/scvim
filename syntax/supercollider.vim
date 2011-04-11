@@ -38,10 +38,11 @@ syn	match scArg "\s*arg\s"
 "syn match	scSymbol "\(\w\|\\\)\@<!\'.\{-}\(\\\)\@<!\'" "\{-} is a non greedy version of *
 
 syn match	scSymbol "\v(\w|\\)@<!\'.{-}(\\)@<!\'" "\{-} is a non greedy version of *
-
 "syn match	scSymbol "\$\@<!\\\w\w*"
 syn match	scSymbol "\v\$@<!\\\w\w*"
 syn match	scSymbol "\\\\"
+" event keywords
+syn match	scSymbol "\w\+:"
 
 syn match	scChar	"\$\w"
 syn match	scChar	"\$\\\\"
@@ -159,7 +160,7 @@ hi link scAoperator Statement
 hi link scArate Statement
 hi link scKrate Statement
 
-hi link scSymbol String
+hi link scSymbol Constant
 hi link scString String
 hi link scChar String
 hi link scNumber Number
