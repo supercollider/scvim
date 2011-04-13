@@ -3,7 +3,7 @@ snippet buf
 	Buffer.read(${1:s}, "${2:sounds/a11wlk01.wav}");
 	${3}
 snippet syn
-	Synth(\${1:name}${2: ,[]});
+	Synth(\${1:name}, [${2:\out, 0}]);
 	${3}
 snippet sdef
 	(
@@ -12,7 +12,7 @@ snippet sdef
 		var env = Linen.kr(gate, 0.01, 1, 0.01, 2);
 		var snd;
 		
-		snd = ${2:noise};
+		snd = ${2:/*noise*/};
 		snd = snd * env;
 		Out.ar(out, snd);
 	}).add;
@@ -42,6 +42,8 @@ snippet pd
 		])
 	).play;
 	)
+snippet pdn
+	Pdefn(\${1:proxy});
 snippet td
 	(
 	Tdef(\${1:taskProxy}, {
