@@ -14,8 +14,7 @@ module SC
     include Singleton
     
     @@pipe_loc = "/tmp/sclang-pipe"
-    @@rundir = "/Applications/SuperCollider"
-    # @@rundir = "/Applications/SuperCollider/build/SuperCollider"
+    @@rundir = "/Applications/SuperCollider.app/Contents/Resources"
     @@pid_loc = "/tmp/sclangpipe_app-pid" 
     @@app = File.join(@@rundir, 'sclang')            
          

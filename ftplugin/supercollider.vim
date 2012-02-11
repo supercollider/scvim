@@ -241,7 +241,7 @@ function SCdef(subject)
 endfun
 
 function SChelp(subject)
-  call SendToSCSilent('SCVim.findHelp("' . a:subject . '");')
+  call SendToSCSilent('HelpBrowser.openHelpFor("' . a:subject . '");')
 endfun
 
 function SCreference(subject)
