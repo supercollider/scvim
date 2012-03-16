@@ -170,8 +170,8 @@ SCVim {
 		var tagfile;
 
 		tagPath = "SCVIM_TAGFILE".getenv ? "~/.sctags";
-		tagPath.standardizePath;
-		
+		tagPath = tagPath.standardizePath;
+
 		tagfile = File.open(tagPath, "w");
 
 		tagfile.write("!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;\" to lines/" ++ Char.nl);
@@ -194,7 +194,7 @@ SCVim {
 				var methName, methSearchString;
 				methName         = meth.name;
 				// this was throwing compile errors before, hence the asString()
-				methSearchString = format('/%/;"'.asString, methName);
+				methSearchString = format('/% {/;"'.asString, methName);
 
 				tagfile.write(methName ++ Char.tab ++ filename ++ Char.tab ++ methSearchString ++ Char.nl);
 			}
