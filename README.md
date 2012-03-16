@@ -15,10 +15,13 @@ Features
 * Launch the SuperCollider QT Help System
 * SnipMate integration
 
-A word of warning: 
+**A word of warning**: 
 
-This is tested with SC 3.5 + MacVim 7.3
-So far this only really works with the combination of macvim.
+This only works with SC 3.5 + QT GUI
+
+It has been tested on a mac with MacVIM and vim via Terminal.app. If you
+refrain from using the deprecated (see below) commands this should work on a
+linux machine with minor modifications as well.
 
 Installation:
 ------------
@@ -68,9 +71,9 @@ This gives you a couple of things:
 Commands:
 --------
 
-`:SClangStart` launch sclang
-`:SClangRestart` same as recompiling
-`:SClangKill` what it says
+* `:SClangStart` launch sclang
+* `:SClangRestart` same as recompiling
+* `:SClangKill` what it says
 
 Key commands:
 ------------
@@ -90,8 +93,8 @@ in normal mode:
 * `^]` jumps to a tagfile (this works for classes only so far but will be
   extended)
 
-The following are *DEPRECATED* and will be removed with the next revision. Use
-the tags file for a general workflow.
+The following are _DEPRECATED_ (they only work with macvim anyways) and will
+be removed with the next revision. Use the tags file for a general workflow.
 
 * `<leader>sj` on a word opens the class file
 * `<leader>si` on a word opens the implementations of ...
