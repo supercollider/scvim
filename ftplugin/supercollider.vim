@@ -252,8 +252,8 @@ function SCimplementation(subject)
   call SendToSCSilent('SCVim.methodTemplates("' . a:subject . '");')
 endfun
 
-function SCfindMethods(subject)
-  call SendToSCSilent('SCVim.displayMethods("' . a:subject . '");')
+function SCfindArgs(subject)
+  call SendToSC('Help.methodArgs("' . a:subject . '");')
 endfun
 
 "custom commands (SChelp,SCdef,SClangfree)

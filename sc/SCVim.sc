@@ -58,7 +58,6 @@ SCVim {
 			file.write(hugeString);
 			file.close;
 		};
-		
 	}
 
 	*openClass{ |klass|
@@ -163,10 +162,5 @@ SCVim {
 		},{
 			Post << "\nNo references to '" << name << "'.\n";
 		});
-	}
-
-	*displayMethods { |variable|
-		variable.class.methods.collect(_.name).sort.do(_.postln);	
-		^'';
 	}
 } // end class

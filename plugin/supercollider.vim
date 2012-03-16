@@ -12,7 +12,7 @@ au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd runtime indent/sc_indent.vim
 
 " default tab settings
-au FileType supercollider,supercollider_help setlocal shiftwidth=4 tabstop=4 noexpandtab
+au FileType supercollider,supercollider_help setlocal shiftwidth=2 tabstop=2 noexpandtab
 
 " required for matching
 au Filetype supercollider,supercollider_help let b:match_skip = 's:scComment\|scString\|scSymbol'
@@ -35,4 +35,4 @@ au Filetype supercollider,supercollider_help nmap <leader>sd yiw :call SChelp("
 au Filetype supercollider,supercollider_help nmap <leader>sj yiw :call SCdef(""")<CR>
 au Filetype supercollider,supercollider_help nmap <leader>si yiw :call SCimplementation(""")<CR>
 au Filetype supercollider,supercollider_help nmap <leader>sr yiw :call SCreference(""")<CR>
-au Filetype supercollider,supercollider_help nmap <leader>sm yiw :call SCfindMethods(""")<CR>
+au Filetype supercollider,supercollider_help nmap <leader>sa mzevF.by :call SCfindArgs(""")<CR>`z

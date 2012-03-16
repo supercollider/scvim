@@ -54,12 +54,13 @@ in normal/insert mode:
 
 in normal mode:
 
-* `<leader>sd` on a word opens the corresponding helpfile
+* `<leader>sd` on a word opens the corresponding helpfile inside the
+  supercollider help
 * `<leader>sk` recompiles the sc library
 * `<leader>sj` on a word opens the class file
 * `<leader>si` on a word opens the implementations of ...
 * `<leader>sr` on a word opens the references to ...
-* `<leader>sm` on a global or environment variable lists the known methods
+* `<leader>sa` shows the metohd args for the current method (if found)
 
 Global variables:
 -----------------
