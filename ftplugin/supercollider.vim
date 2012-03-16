@@ -26,24 +26,18 @@
 " so $SCVIM_DIR/syntax/supercollider.vim
 runtime! syntax/supercollider.vim
 
-" ========================================================================================
 
 if exists("loaded_scvim") || &cp
    finish
 endif
 let loaded_scvim = 1
 
-"first if SCVIM_CACHE_DIR is defined, use that,
-"otherwise use ~/.scvim
-if exists("$SCVIM_CACHE_DIR") 
-	let s:scvim_cache_dir = $SCVIM_CACHE_DIR
-else
-	let s:scvim_cache_dir = $HOME . "/.scvim"
-	let $SCVIM_CACHE_DIR = s:scvim_cache_dir
-endif
+" ========================================================================================
+" VARIABLES
 
-"add the cache dir to 
-set runtimepath+=$SCVIM_CACHE_DIR
+if !exists("g:sclangTagsFile")
+  let g:sclangTagsFile = "~/.sctags"
+endif
 
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
