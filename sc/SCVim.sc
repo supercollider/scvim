@@ -60,6 +60,7 @@ SCVim {
 		};
 	}
 
+	// DEPRECTATED in favor of tags system
 	*openClass{ |klass|
 		// TM version only
 		var fname, cmd;
@@ -86,6 +87,7 @@ SCVim {
 		}{"sorry class "++klass++" not found".postln}
 	}
 	
+	// DEPRECTATED in favor of tags system
 	// TODO improve this to jump to the right implementations even if they are
 	// buried in a class extension
 	*methodTemplates { |name, openInVIM=true|
@@ -140,6 +142,7 @@ SCVim {
 			};
 	}
 
+	// DEPRECTATED in favor of tags system
 	*methodReferences { |name, openInVIM=true|
 		var out, references, fname;
 		name = name.asSymbol;
@@ -162,5 +165,29 @@ SCVim {
 		},{
 			Post << "\nNo references to '" << name << "'.\n";
 		});
+	}
+
+	*generateTagsFile {
+		/*
+		!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+		!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+		!_TAG_PROGRAM_AUTHOR	Stephen Lumenta	/stephen.lumenta@gmail.com/
+		!_TAG_PROGRAM_NAME	SCVim.sc	//
+		!_TAG_PROGRAM_URL	https://github.com/sbl/scvim	
+		!_TAG_PROGRAM_VERSION	1.0	//
+		*/
+
+		// solve this with env variable
+		var tagPath = "~/.sctags";
+
+		Class.allClasses.do {|klass|
+			var klassName, tagline, searchString;
+
+			klassName = klass.asString;
+			searchString = format("/^%/;\"", klassName);
+
+			tagline = klassName ++ Char.tab ++ klass.filenameSymbol ++ Char.tab ++ searchString;
+			tagline.postln;
+		}
 	}
 } // end class
