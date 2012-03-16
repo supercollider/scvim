@@ -41,7 +41,9 @@ au Filetype supercollider nmap <buffer> <F12> :call SClang_thisProcess_stop()<CR
 
 au Filetype supercollider nmap <leader>sk :SClangRestart<CR>
 au Filetype supercollider nmap <leader>sd yiw :call SChelp(""")<CR>
+au Filetype supercollider nmap <leader>sa yy :call SCfindArgs(""")<CR>
+
+" DEPRECATED
 au Filetype supercollider nmap <leader>sj yiw :call SCdef(""")<CR>
 au Filetype supercollider nmap <leader>si yiw :call SCimplementation(""")<CR>
 au Filetype supercollider nmap <leader>sr yiw :call SCreference(""")<CR>
-au Filetype supercollider nmap <leader>sa mzevF.by :call SCfindArgs(""")<CR>`z
