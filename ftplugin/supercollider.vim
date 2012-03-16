@@ -35,10 +35,6 @@ let loaded_scvim = 1
 " ========================================================================================
 " VARIABLES
 
-if !exists("g:sclangTagsFile")
-  let g:sclangTagsFile = "~/.sctags"
-endif
-
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
 else
@@ -250,10 +246,15 @@ function SCfindArgs(subject)
   call SendToSC('Help.methodArgs("' . a:subject . '");')
 endfun
 
+function SCTags()
+  call SendToSC("SCVim.generateTagsFile();")
+endfun
+
 "custom commands (SChelp,SCdef,SClangfree)
 com -nargs=1 SClangfree call SClang_free("<args>")
 com -nargs=0 SClangStart call SClangStart()
 com -nargs=0 SClangKill call SClangKill()
 com -nargs=0 SClangRestart call SClangRestart()
+com -nargs=0 SCTags call SCTags()
 
 " end supercollider.vim

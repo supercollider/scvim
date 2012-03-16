@@ -1,8 +1,7 @@
 // Copyright 2007 Alex Norman
 // with modifications 2008 Dan Stowell
-// rewritten 2010 Stephen Lumenta
-// most of the code here comes from the supercollider.tmbundle by rfwatson
-// https://github.com/rfwatson/supercollider-tmbundle
+//
+// rewritten 2010 - 2012 Stephen Lumenta
 //
 // This file is part of SCVIM.
 //
@@ -21,8 +20,7 @@
 
 /*
 
-SCVim.methodReferences("replace");
-SCVim.methodTemplates("replace");
+SCVim.generateTagsFile();
 */
 
 SCVim {
@@ -168,26 +166,41 @@ SCVim {
 	}
 
 	*generateTagsFile {
-		/*
-		!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
-		!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
-		!_TAG_PROGRAM_AUTHOR	Stephen Lumenta	/stephen.lumenta@gmail.com/
-		!_TAG_PROGRAM_NAME	SCVim.sc	//
-		!_TAG_PROGRAM_URL	https://github.com/sbl/scvim	
-		!_TAG_PROGRAM_VERSION	1.0	//
-		*/
+		var tagPath;
+		var tagfile;
 
-		// solve this with env variable
-		var tagPath = "~/.sctags";
+		tagPath = "SCVIM_TAGFILE".getenv ? "~/.sctags";
+		tagPath.standardizePath;
+		
+		tagfile = File.open(tagPath, "w");
+
+		tagfile.write("!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;\" to lines/" ++ Char.nl);
+		tagfile.write("!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_AUTHOR	Stephen Lumenta /stephen.lumenta@gmail.com/" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_NAME	SCVim.sc//" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_URL	https://github.com/sbl/scvim" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_VERSION	1.0//" ++ Char.nl);
 
 		Class.allClasses.do {|klass|
-			var klassName, tagline, searchString;
+			var klassName, filename, classSearchString;
 
-			klassName = klass.asString;
-			searchString = format("/^%/;\"", klassName);
+			klassName         = klass.asString;
+			filename          = klass.filenameSymbol;
+			classSearchString = format("/^%/;\"", klassName);
 
-			tagline = klassName ++ Char.tab ++ klass.filenameSymbol ++ Char.tab ++ searchString;
-			tagline.postln;
-		}
+			tagfile.write(klassName ++ Char.tab ++ filename ++ Char.tab ++ classSearchString ++ Char.nl);
+
+			klass.methods.do{|meth| 
+				var methName, methSearchString;
+				methName         = meth.name;
+				// this was throwing compile errors before, hence the asString()
+				methSearchString = format('/%/;"'.asString, methName);
+
+				tagfile.write(methName ++ Char.tab ++ filename ++ Char.tab ++ methSearchString ++ Char.nl);
+			}
+		};
+
+		tagfile.close();
+		"finished generating tagsfile".postln;
 	}
 } // end class

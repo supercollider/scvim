@@ -11,9 +11,16 @@ au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd runtime ftplugin/supercoll
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd runtime indent/sc_indent.vim
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255"
 
+" set this via EXPORT ... if you want to change it
+if exists($SCVIM_TAGFILE)
+  let s:sclangTagsFile = $SCVIM_TAGFILE
+else
+  let s:sclangTagsFile = "~/.sctags"
+endif
+
 " default tab settings
 au FileType supercollider setlocal shiftwidth=2 tabstop=2 noexpandtab
-au FileType supercollider execute "set tags=".g:sclangTagsFile
+au FileType supercollider execute "set tags+=".s:sclangTagsFile
 
 " required for matching
 " TODO does that really need to live here?

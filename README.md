@@ -11,11 +11,9 @@ Features
 * Syntax Highlighting
 * A faked REPL via the terminal
 * Code Navigation (jump to definitions) via a global tags file "~/.sctags"
-* Auto-Completion of Class Names via ctrl-x ctrl-] (or simply use supertab to
-  do this with tab)
+* Auto-Completion of known words via tag completion
 * Launch the SuperCollider QT Help System
 * SnipMate integration
-
 
 A word of warning: 
 
@@ -55,6 +53,18 @@ Using it:
 To start open a file with the right extension :e foo.sc(d)
 Enter `:SClangStart` and a terminal should open with a running sclang session. 
 
+See the commands reference for general usage. 
+
+_ctags support_:
+
+run `:SCTags` from vim or  `SCVim.generateTagsFile()` from sclang
+
+This gives you a couple of things: 
+
+* You can jump to any known class or method
+* You get tags completion with ctrl-x ctrl-] (use the vim supertab plugin if this is too
+  bothersome to type)
+
 Commands:
 --------
 
@@ -87,8 +97,13 @@ the tags file for a general workflow.
 * `<leader>si` on a word opens the implementations of ...
 * `<leader>sr` on a word opens the references to ...
 
-Global variables:
------------------
+Variables:
+----------
+
+ENV variables:
+
+Path to the tags file
+`export SCVIM_TAGFILE=/your/path` this defaults to "~/.sctags"
 
 If for some reason vim can't find the path to the two launch scripts
 `start_pipe` and `sc_dispatcher` you can set them manually in your .vimrc
