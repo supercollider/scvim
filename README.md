@@ -84,19 +84,22 @@ Commands:
 Key commands:
 ------------
 
+in insert mode
+
+* `<C-Tab>` shows the method args for the current method (if found)
+
+in normal mode:
+
+* `<leader>sk` recompiles the sc library
+* `K` on a word opens the corresponding helpfile inside the supercollider help
+* `^]` jumps to a tagfile (this works for classes only so far but will be
+  extended)
+
 in normal/insert mode:
 
 * `F5` to execute a block of code scvim will attempt to find the outermost bracket
 * `F6` to execute the current line of code
 * `F12` is a hard stop
-
-in normal mode:
-
-* `K` on a word opens the corresponding helpfile inside the supercollider help
-* `<leader>sk` recompiles the sc library
-* `<leader>sa` shows the metohd args for the current method (if found)
-* `^]` jumps to a tagfile (this works for classes only so far but will be
-  extended)
 
 The following are _DEPRECATED_ (they only work with macvim anyways) and will
 be removed with the next revision. Use the tags file for a general workflow.

@@ -242,8 +242,9 @@ function SCimplementation(subject)
   call SendToSCSilent('SCVim.methodTemplates("' . a:subject . '");')
 endfun
 
-function SCfindArgs(subject)
-  call SendToSC('Help.methodArgs("' . a:subject . '");')
+function SCfindArgs()
+  let l:subject = getline(line("."))
+  call SendToSC('Help.methodArgs("' . l:subject . '");')
 endfun
 
 function SCTags()
