@@ -182,21 +182,22 @@ SCVim {
 		tagfile.write("!_TAG_PROGRAM_VERSION	1.0//" ++ Char.nl);
 
 		Class.allClasses.do {|klass|
-			var klassName, filename, classSearchString;
+			var klassName, klassFilename, klassSearchString;
 
 			klassName         = klass.asString;
-			filename          = klass.filenameSymbol;
-			classSearchString = format("/^%/;\"", klassName);
+			klassFilename          = klass.filenameSymbol;
+			klassSearchString = format("/^%/;\"", klassName);
 
-			tagfile.write(klassName ++ Char.tab ++ filename ++ Char.tab ++ classSearchString ++ Char.nl);
+			tagfile.write(klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl);
 
 			klass.methods.do{|meth| 
-				var methName, methSearchString;
+				var methName, methFilename, methSearchString;
 				methName         = meth.name;
+				methFilename		 = meth.filenameSymbol;
 				// this was throwing compile errors before, hence the asString()
 				methSearchString = format('/% {/;"'.asString, methName);
 
-				tagfile.write(methName ++ Char.tab ++ filename ++ Char.tab ++ methSearchString ++ Char.nl);
+				tagfile.write(methName ++ Char.tab ++ methFilename ++ Char.tab ++ methSearchString ++ Char.nl);
 			}
 		};
 

@@ -15,6 +15,12 @@ Features
 * Launch the SuperCollider QT Help System
 * SnipMate integration
 
+**UPGRADE NOTICE**
+
+If you have been using this plugin before check the keycommand deprecation
+notice and get used to the new commands which are more in line with vim
+standards.
+
 **A word of warning**: 
 
 This only works with SC 3.5 + QT GUI
@@ -86,8 +92,7 @@ in normal/insert mode:
 
 in normal mode:
 
-* `<leader>sd` on a word opens the corresponding helpfile inside the
-  supercollider help
+* `K` on a word opens the corresponding helpfile inside the supercollider help
 * `<leader>sk` recompiles the sc library
 * `<leader>sa` shows the metohd args for the current method (if found)
 * `^]` jumps to a tagfile (this works for classes only so far but will be
@@ -99,6 +104,8 @@ be removed with the next revision. Use the tags file for a general workflow.
 * `<leader>sj` on a word opens the class file
 * `<leader>si` on a word opens the implementations of ...
 * `<leader>sr` on a word opens the references to ...
+* `<leader>sd` on a word opens the corresponding helpfile inside the
+  supercollider help
 
 Variables:
 ----------
