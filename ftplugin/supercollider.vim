@@ -157,6 +157,7 @@ endfunction
 function SCFormatText(text)
 	let l:text = substitute(a:text, '\', '\\\\', 'g')
 	let l:text = substitute(l:text, '"', '\\"', 'g')
+	let l:text = substitute(l:text, '`', '\\`', 'g')
   let l:text = '"' . l:text .'"'
 
   return l:text
