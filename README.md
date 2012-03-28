@@ -10,6 +10,8 @@ It is highly recommended to use pathogen
 (<https://github.com/tpope/vim-pathogen>) to keep your .vim paths clean. See the
 supplied helpfile how to setup pathogen if you haven't used it before. 
 
+See also the [feature_35 branch](https://github.com/sbl/scvim/tree/feature_35) for an experimental version for sc 35+qt (see README for any changes).
+
 A word of warning: 
 
 So far this only really works with the combination of macvim.
