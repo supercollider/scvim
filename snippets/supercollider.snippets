@@ -37,15 +37,15 @@ snippet px
 	p = ProxySpace.push(s.boot);
 	$1
 snippet pb
-	Pbind(*[
-		${1:dur}: ${2:0.2}
-	])
+	Pbind(
+		${1:\dur}, ${2:0.2},
+	)
 snippet pd
 	(
 	Pdef(\${1:proxy},
-		Pbind(*[
-			${2:dur}: ${3:0.2}
-		])
+		Pbind(
+			${2:\dur}, ${3:0.2},
+		)
 	).play;
 	)
 snippet pdn
