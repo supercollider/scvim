@@ -31,15 +31,13 @@ syn	match scVar "\s*var\s"
 syn	match scVar "\s*classvar\s"
 syn	match scArg "\s*arg\s"
 
-" symbols, strings, etc
-"syn match	scSymbol "\(\w\\\)\@<!\'.\{-}\'" "\{-} is a non greedy version of *
-"syn match	scSymbol "\(\w\|\\\)\@<!\'.\{-}\(\\\)\@<!\'" "\{-} is a non greedy version of *
-
+" symbols, strings, numbers
 syn match	scSymbol "\v(\w|\\)@<!\'.{-}(\\)@<!\'" "\{-} is a non greedy version of *
-"syn match	scSymbol "\$\@<!\\\w\w*"
 syn match	scSymbol "\v\$@<!\\\w\w*"
 syn match	scSymbol "\\\\"
 syn match	scSymbol "\w\+:"
+
+syn region  scString start=+"+ skip=+\\\\\|\\"+ end=+"+
 
 syn match	scChar	"\$\w"
 syn match	scChar	"\$\\\\"
@@ -51,39 +49,65 @@ syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[oO]\=\o\+\%(_\o\+\)*\>"
 syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[bB][01]\+\%(_[01]\+\)*\>"								display
 syn match scFloat	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0\|[1-9]\d*\%(_\d\+\)*\)\.\d\+\%(_\d\+\)*\>"					display
 syn match scFloat	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0\|[1-9]\d*\%(_\d\+\)*\)\%(\.\d\+\%(_\d\+\)*\)\=\%([eE][-+]\=\d\+\%(_\d\+\)*\)\>"	display
+syn match scInfinity "inf"	
 
-"syn match	scString "\".\{-}\""
-"syn region	scString start=+\v\\@<!"+ end=+\v\\@<!"+ 
-syn region  scString start=+"+ skip=+\\\\\|\\"+ end=+"+
+" keywords
+syn match   scControl	"\<\%(break\|rescue\|return\)\>[?!]\@!"
+syn match   scKeyword	"\<\%(super\|this\|new\|yield\)\>[?!]\@!"
+syn match   scBoolean	"\<\%(true\|false\)\>[?!]\@!"
+syn match   scControl "\<\%(case\|begin\|do\|forBy\|loop\|if\|while\|else\)\>[?!]\@!"
 
-"syn match	scClass "\u\w*"	"upper case followed by any wordchar
-
-syn keyword	scSpecialval nil true false inf this
-
-"syn keyword	repeat do for while
-
-"syn region	literalarray start="\#\[" end="\]"
-"need to figure out how to make it match the mattching braket
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" rate
-
-"syn match scFun "\.\@<=\a\w*"
-
+" scsynth
 syn match scArate "\v\.@<=ar(\w)@!"
 syn match scKrate "\v\.@<=kr(\w)@!"
 
-" TODO we hard code the paths for now
-runtime! syntax/supercollider_objects.vim
-runtime! syntax/supercollider_operators.vim
+" operators
+syn keyword  scUnaryoperator  neg reciprocal abs floor ceil frac sign squared cubed sqrt exp midicps cpsmidi midiratio ratiomidi dbamp ampdb octcps cpsoct log log2 log10 sin cos tan asin acos atan sinh cosh tanh distort softclip isPositive isNegative isStrictlyPositive
+syn keyword  scBinaryoperator  min max round trunc atan2 hypot hypotApx ring1 ring2 ring3 ring4 sumsqr difsqr sqrsum sqrdif absdif thresh amclip scaleneg clip2 wrap2 fold2 excess + - *
+
+syn match scBinaryoperator "+"
+syn match scBinaryoperator "-"
+syn match scBinaryoperator "*"
+syn match scBinaryoperator "/"
+syn match scBinaryoperator "%"
+syn match scBinaryoperator "\*\*"
+syn match scBinaryoperator "<"
+syn match scBinaryoperator "<="
+syn match scBinaryoperator ">"
+syn match scBinaryoperator "<>"
+syn match scBinaryoperator ">="
+syn match scBinaryoperator "="
+syn match scBinaryoperator "=="
+syn match scBinaryoperator "==="
+syn match scBinaryoperator "!="
+syn match scBinaryoperator "!=="
+syn match scBinaryoperator "&"
+syn match scBinaryoperator "|"
+syn match scBinaryoperator "<!"
+syn match scBinaryoperator "?"
+syn match scBinaryoperator "??"
+syn match scBinaryoperator "!?"
+syn match scBinaryoperator "!"
+syn match scBinaryoperator "#"
+syn match scBinaryoperator "_"
+syn match scBinaryoperator "\.\."
+syn match scBinaryoperator "\.\.\."
+syn match scBinaryoperator "`"
+syn match scBinaryoperator ":"
 
 " comments
-syn match	  scLineComment	"\/\/.*" 
-syn region	scComment	start="/\*" end="\*/" 
+syn keyword scCommentTodo   TODO FIXME XXX TBD contained
+syn match   scLineComment   "\/\/.*" contains=@Spell,scCommentTodo
+syn region  scComment	      start="/\*"  end="\*/" contains=@Spell,scCommentTodo
 
+
+" object syntax file is regenerated on startup
+runtime! syntax/supercollider_objects.vim
+
+"""""""""""""""""""""""""""""""""""""""""
+" linkage
 
 hi def link scObject Identifier
-hi def link scLang Identifier
 hi def link scBinaryoperator Special
 hi def link scUnaryoperator Special
 hi def link scAoperator Statement
@@ -93,12 +117,16 @@ hi def link scSymbol Constant
 hi def link scString String
 hi def link scChar String
 hi def link scInteger Number
-hi def link scFloat Number
-hi def link scSpecialval Constant
+hi def link scInfinity Number
+hi def link scFloat Float
 hi def link scGlobVariable Define
-hi def link scComment     Comment
-hi def link scLineComment Comment
+hi def link scComment		Comment
+hi def link scLineComment		Comment
+hi def link scCommentTodo		Todo
 hi def link scVar Type
 hi def link scArg Type
+hi def link scControl Statement
+hi def link scKeyword Keyword
+hi def link scBoolean Boolean
 
 let b:current_syntax = "supercollider"
