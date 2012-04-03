@@ -39,7 +39,7 @@ au Filetype supercollider imap <buffer> <F6> :call SClang_send()<CR>a
 
 au Filetype supercollider nmap <buffer> <F12> :call SClang_thisProcess_stop()<CR>
 
-au Filetype supercollider nmap <leader>sk :SClangRestart<CR>
+au Filetype supercollider nmap <leader>sk :SClangRecompile<CR>
 au Filetype supercollider nmap <buffer>K yiw :call SChelp(""")<CR>
 au Filetype supercollider imap <C-Tab> :call SCfindArgs()<CR>a
 au Filetype supercollider nmap <C-Tab> :call SCfindArgs()<CR>

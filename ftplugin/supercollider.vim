@@ -38,7 +38,7 @@ let loaded_scvim = 1
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 0
+	let s:sclangKillOnExit = 1
 endif
 
 if exists("g:sclangTerm")
@@ -61,7 +61,7 @@ endif
 
 if !exists("loaded_kill_sclang")
 	if s:sclangKillOnExit
-		au VimLeave * call SClangKill()
+		au VimLeavePre * call SClangKill()
 	endif
 	let loaded_kill_sclang = 1
 endif
@@ -202,7 +202,7 @@ function SClangKill()
   call system(s:sclangDispatcher . " -q")
 endfunction
 
-function SClangRestart()
+function SClangRecompile()
   echo s:sclangDispatcher
   call system(s:sclangDispatcher . " -k")
   call system(s:sclangDispatcher . " -s ''")
@@ -255,7 +255,7 @@ endfun
 com -nargs=1 SClangfree call SClang_free("<args>")
 com -nargs=0 SClangStart call SClangStart()
 com -nargs=0 SClangKill call SClangKill()
-com -nargs=0 SClangRestart call SClangRestart()
+com -nargs=0 SClangRecompile call SClangRecompile()
 com -nargs=0 SCTags call SCTags()
 
 " end supercollider.vim

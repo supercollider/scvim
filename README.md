@@ -78,7 +78,7 @@ Commands:
 --------
 
 * `:SClangStart` launch sclang
-* `:SClangRestart` same as recompiling
+* `:SClangRecompile` recompile
 * `:SClangKill` what it says
 
 Key commands:
