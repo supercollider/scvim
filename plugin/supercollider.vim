@@ -22,8 +22,7 @@ endif
 au FileType supercollider setlocal shiftwidth=2 tabstop=2 noexpandtab
 au FileType supercollider execute "set tags+=".s:sclangTagsFile
 
-" required for matching
-" TODO does that really need to live here?
+"  matchit
 au Filetype supercollider let b:match_skip = 's:scComment\|scString\|scSymbol'
 au Filetype supercollider let b:match_words = '(:),[:],{:}'
 
@@ -37,7 +36,7 @@ au Filetype supercollider vmap <buffer> <F6> :call SClang_send()<CR>
 au Filetype supercollider nmap <buffer> <F6> :call SClang_send()<CR>
 au Filetype supercollider imap <buffer> <F6> :call SClang_send()<CR>a
 
-au Filetype supercollider nmap <buffer> <F12> :call SClang_thisProcess_stop()<CR>
+au Filetype supercollider nmap <buffer> <F12> :call SClangHardstop()<CR>
 
 au Filetype supercollider nmap <leader>sk :SClangRecompile<CR>
 au Filetype supercollider nmap <buffer>K yiw :call SChelp(""")<CR>

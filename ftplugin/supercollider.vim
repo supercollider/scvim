@@ -26,7 +26,6 @@
 " so $SCVIM_DIR/syntax/supercollider.vim
 runtime! syntax/supercollider.vim
 
-
 if exists("loaded_scvim") || &cp
    finish
 endif
@@ -209,19 +208,8 @@ function SClangRecompile()
   redraw!
 endfunction
 
-function SClang_thisProcess_stop()
-	call system(s:sclangDispatcher . ' -s thisProcess.stop;')
-	redraw!
-endfunction
-
-function SClang_free(server)
-	call SendToSC('s.freeAll;')
-	redraw!
-endfunction
-
-function SClang_TempoClock_clear()
-	call SendToSC('TempoClock.default.clear;')
-	redraw!
+function SClangHardstop()
+  call SendToSCSilent('thisProcess.hardStop()')
 endfunction
 
 " Introspection and Help Files
@@ -247,15 +235,16 @@ function SCfindArgs()
   call SendToSC('Help.methodArgs("' . l:subject . '");')
 endfun
 
-function SCTags()
+function SCtags()
   call SendToSC("SCVim.generateTagsFile();")
 endfun
 
 "custom commands (SChelp,SCdef,SClangfree)
-com -nargs=1 SClangfree call SClang_free("<args>")
+com -nargs=0 SClangHardstop call SClangHardstop()
 com -nargs=0 SClangStart call SClangStart()
 com -nargs=0 SClangKill call SClangKill()
 com -nargs=0 SClangRecompile call SClangRecompile()
-com -nargs=0 SCTags call SCTags()
+com -nargs=0 SCtags call SCtags()
+com -nargs=0 SChelp call SChelp('')
 
 " end supercollider.vim
