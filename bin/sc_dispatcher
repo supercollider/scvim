@@ -20,7 +20,9 @@ OptionParser.new do |opts|
   
    opts.on("-k", "Recompile the library") do
      File.open(SC::Pipe.pid_loc, "r") do |file|
-        d.interpret_silent("thisProcess.recompile;")
+        d.interpret_silent("thisProcess.shutdown;")
+        pid = file.read.chomp
+        exec "kill -HUP #{pid}"
      end
    end
   
