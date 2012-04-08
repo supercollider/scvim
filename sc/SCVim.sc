@@ -174,28 +174,29 @@ SCVim {
 
 		tagfile = File.open(tagPath, "w");
 
-		tagfile.write("!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;\" to lines/" ++ Char.nl);
+		tagfile.write('!sTAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/'.asString ++ Char.nl);
 		tagfile.write("!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/" ++ Char.nl);
 		tagfile.write("!_TAG_PROGRAM_AUTHOR	Stephen Lumenta /stephen.lumenta@gmail.com/" ++ Char.nl);
 		tagfile.write("!_TAG_PROGRAM_NAME	SCVim.sc//" ++ Char.nl);
 		tagfile.write("!_TAG_PROGRAM_URL	https://github.com/sbl/scvim" ++ Char.nl);
 		tagfile.write("!_TAG_PROGRAM_VERSION	1.0//" ++ Char.nl);
 
-		Class.allClasses.do {|klass|
+		Class.allClasses.do {
+			arg klass;
 			var klassName, klassFilename, klassSearchString;
 
 			klassName         = klass.asString;
-			klassFilename          = klass.filenameSymbol;
-			klassSearchString = format("/^%/;\"", klassName);
+			klassFilename     = klass.filenameSymbol;
+			/*klassSearchString = format("/^%/;\"", klassName);*/
 
 			tagfile.write(klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl);
 
 			klass.methods.do{|meth| 
 				var methName, methFilename, methSearchString;
-				methName         = meth.name;
-				methFilename		 = meth.filenameSymbol;
+				methName     = meth.name;
+				methFilename = meth.filenameSymbol;
 				// this was throwing compile errors before, hence the asString()
-				methSearchString = format('/% {/;"'.asString, methName);
+				/*methSearchString = format('/% {/;"'.asString, methName);*/
 
 				tagfile.write(methName ++ Char.tab ++ methFilename ++ Char.tab ++ methSearchString ++ Char.nl);
 			}
