@@ -1,8 +1,7 @@
 // Copyright 2007 Alex Norman
 // with modifications 2008 Dan Stowell
-// rewritten 2010 Stephen Lumenta
-// most of the code here comes from the supercollider.tmbundle by rfwatson
-// https://github.com/rfwatson/supercollider-tmbundle
+//
+// rewritten 2010 - 2012 Stephen Lumenta
 //
 // This file is part of SCVIM.
 //
@@ -21,8 +20,7 @@
 
 /*
 
-SCVim.methodReferences("replace");
-SCVim.methodTemplates("replace");
+SCVim.generateTagsFile();
 */
 
 SCVim {
@@ -58,36 +56,9 @@ SCVim {
 			file.write(hugeString);
 			file.close;
 		};
-		
 	}
 
-	// use this if you want to display the text without the html formatting
-	*findHelp {|klass|
-		var helpPath;
-		var fname;
-		var helpString;
-
-		// we create a tmp file -> you need to do that so you can execute sc code from it
-		if((helpPath=Help.findHelpFile(klass)).notNil){
-
-			fname = "/tmp/" ++ klass ++ "_help.sc"; // create and cache the file
-			
-			if(File.exists(fname).not){
-				helpString = File.new(helpPath, "r").readAllString.stripHTML.escapeChar('"');
-
-				File.use(fname, "w") { |f|
-					f << helpString;
-				};
-			};
-
-			// read it
-			(vimPath + "-R" + fname).unixCmd(postOutput: false);
-		} {
-			("no help found for " ++ klass).error;
-		};
-	}
-
-
+	// DEPRECTATED in favor of tags system
 	*openClass{ |klass|
 		// TM version only
 		var fname, cmd;
@@ -114,6 +85,7 @@ SCVim {
 		}{"sorry class "++klass++" not found".postln}
 	}
 	
+	// DEPRECTATED in favor of tags system
 	// TODO improve this to jump to the right implementations even if they are
 	// buried in a class extension
 	*methodTemplates { |name, openInVIM=true|
@@ -168,6 +140,7 @@ SCVim {
 			};
 	}
 
+	// DEPRECTATED in favor of tags system
 	*methodReferences { |name, openInVIM=true|
 		var out, references, fname;
 		name = name.asSymbol;
@@ -192,8 +165,45 @@ SCVim {
 		});
 	}
 
-	*displayMethods { |variable|
-		variable.class.methods.collect(_.name).sort.do(_.postln);	
-		^'';
+	*generateTagsFile {
+		var tagPath;
+		var tagfile;
+
+		tagPath = "SCVIM_TAGFILE".getenv ? "~/.sctags";
+		tagPath = tagPath.standardizePath;
+
+		tagfile = File.open(tagPath, "w");
+
+		tagfile.write('!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/'.asString ++ Char.nl);
+		tagfile.write("!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_AUTHOR	Stephen Lumenta /stephen.lumenta@gmail.com/" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_NAME	SCVim.sc//" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_URL	https://github.com/sbl/scvim" ++ Char.nl);
+		tagfile.write("!_TAG_PROGRAM_VERSION	1.0//" ++ Char.nl);
+
+		Class.allClasses.do {
+			arg klass;
+			var klassName, klassFilename, klassSearchString;
+
+			klassName         = klass.asString;
+			klassFilename     = klass.filenameSymbol;
+			klassSearchString = format("/^%/;\"", klassName);
+
+			tagfile.write(klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl);
+
+			klass.methods.do{|meth| 
+				var methName, methFilename, methSearchString;
+				methName     = meth.name;
+				methFilename = meth.filenameSymbol;
+				// this strange fandango dance is necessary for sc to not complain
+				// when compiling 123 is the curly bracket
+				methSearchString = format('/% %/;"'.asString, methName, 123.asAscii);
+
+				tagfile.write(methName ++ Char.tab ++ methFilename ++ Char.tab ++ methSearchString ++ Char.nl);
+			}
+		};
+
+		tagfile.close();
+		"finished generating tagsfile".postln;
 	}
 } // end class

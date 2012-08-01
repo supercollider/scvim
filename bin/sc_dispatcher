@@ -20,15 +20,16 @@ OptionParser.new do |opts|
   
    opts.on("-k", "Recompile the library") do
      File.open(SC::Pipe.pid_loc, "r") do |file|
-        d.interpret_silent("thisProcess.shutdown;")
+        d.interpret_silent("Server.quitAll;")
         pid = file.read.chomp
         exec "kill -HUP #{pid}"
      end
    end
   
    opts.on("-q", "Quit SuperCollider and all the belonging prcesses") do
+     d.interpret_silent("Server.quitAll;")
+
      File.open(SC::Pipe.pid_loc, "r") do |file|
-        d.interpret_silent("Server.quitAll;")
         pid = file.read.chomp
         exec "kill -INT #{pid}"
      end

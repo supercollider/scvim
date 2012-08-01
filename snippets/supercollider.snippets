@@ -18,6 +18,8 @@ snippet sdef
 	}).add;
 	)
 # language
+snippet *
+	*[${1}]
 snippet if
 	if(${1:condition}) {
 		${2://true};
@@ -27,19 +29,23 @@ snippet sw
 		${2:case}, {${3://reaction}}
 	)
 # live-coding
+snippet nd
+	Ndef(\${1:proxy}, {
+		${2:// snd}
+	}).play;
 snippet px
 	p = ProxySpace.push(s.boot);
 	$1
 snippet pb
-	Pbind(*[
-		${1:dur}: ${2:0.2}
-	])
+	Pbind(
+		${1:\dur}, ${2:0.2},
+	)
 snippet pd
 	(
 	Pdef(\${1:proxy},
-		Pbind(*[
-			${2:dur}: ${3:0.2}
-		])
+		Pbind(
+			${2:\dur}, ${3:0.2},
+		)
 	).play;
 	)
 snippet pdn

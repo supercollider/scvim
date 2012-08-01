@@ -26,29 +26,18 @@
 " so $SCVIM_DIR/syntax/supercollider.vim
 runtime! syntax/supercollider.vim
 
-" ========================================================================================
-
 if exists("loaded_scvim") || &cp
    finish
 endif
 let loaded_scvim = 1
 
-"first if SCVIM_CACHE_DIR is defined, use that,
-"otherwise use ~/.scvim
-if exists("$SCVIM_CACHE_DIR") 
-	let s:scvim_cache_dir = $SCVIM_CACHE_DIR
-else
-	let s:scvim_cache_dir = $HOME . "/.scvim"
-	let $SCVIM_CACHE_DIR = s:scvim_cache_dir
-endif
-
-"add the cache dir to 
-set runtimepath+=$SCVIM_CACHE_DIR
+" ========================================================================================
+" VARIABLES
 
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 0
+	let s:sclangKillOnExit = 1
 endif
 
 if exists("g:sclangTerm")
@@ -71,7 +60,7 @@ endif
 
 if !exists("loaded_kill_sclang")
 	if s:sclangKillOnExit
-		au VimLeave * call SClangKill()
+		au VimLeavePre * call SClangKill()
 	endif
 	let loaded_kill_sclang = 1
 endif
@@ -213,26 +202,15 @@ function SClangKill()
   call system(s:sclangDispatcher . " -q")
 endfunction
 
-function SClangRestart()
+function SClangRecompile()
   echo s:sclangDispatcher
   call system(s:sclangDispatcher . " -k")
   call system(s:sclangDispatcher . " -s ''")
   redraw!
 endfunction
 
-function SClang_thisProcess_stop()
-	call system(s:sclangDispatcher . ' -s thisProcess.stop;')
-	redraw!
-endfunction
-
-function SClang_free(server)
-	call SendToSC('s.freeAll;')
-	redraw!
-endfunction
-
-function SClang_TempoClock_clear()
-	call SendToSC('TempoClock.default.clear;')
-	redraw!
+function SClangHardstop()
+  call SendToSCSilent('thisProcess.hardStop()')
 endfunction
 
 " Introspection and Help Files
@@ -242,7 +220,7 @@ function SCdef(subject)
 endfun
 
 function SChelp(subject)
-  call SendToSCSilent('SCVim.findHelp("' . a:subject . '");')
+  call SendToSCSilent('HelpBrowser.openHelpFor("' . a:subject . '");')
 endfun
 
 function SCreference(subject)
@@ -253,14 +231,21 @@ function SCimplementation(subject)
   call SendToSCSilent('SCVim.methodTemplates("' . a:subject . '");')
 endfun
 
-function SCfindMethods(subject)
-  call SendToSCSilent('SCVim.displayMethods("' . a:subject . '");')
+function SCfindArgs()
+  let l:subject = getline(line("."))
+  call SendToSC('Help.methodArgs("' . l:subject . '");')
+endfun
+
+function SCtags()
+  call SendToSC("SCVim.generateTagsFile();")
 endfun
 
 "custom commands (SChelp,SCdef,SClangfree)
-com -nargs=1 SClangfree call SClang_free("<args>")
+com -nargs=0 SClangHardstop call SClangHardstop()
 com -nargs=0 SClangStart call SClangStart()
 com -nargs=0 SClangKill call SClangKill()
-com -nargs=0 SClangRestart call SClangRestart()
+com -nargs=0 SClangRecompile call SClangRecompile()
+com -nargs=0 SCtags call SCtags()
+com -nargs=0 SChelp call SChelp('')
 
 " end supercollider.vim
