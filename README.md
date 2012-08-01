@@ -50,6 +50,9 @@ ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc ~/Library/Application\
 Support/SuperCollider/Extensions/SCVim.sc
 `
 
+Make sure you are using QT as your main GUI by adding `GUI.qt;` to you
+startup.scd file.
+
 The rest should hopefully work automatically (that is if you have SuperCollider
 installed in the default directory `/Applications/SuperCollider.app`).  Edit
 plugin/supercollider.vim to taste. Or override corresponding function in your
