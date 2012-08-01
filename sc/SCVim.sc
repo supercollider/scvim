@@ -174,7 +174,7 @@ SCVim {
 
 		tagfile = File.open(tagPath, "w");
 
-		tagfile.write('!sTAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/'.asString ++ Char.nl);
+		tagfile.write('!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/'.asString ++ Char.nl);
 		tagfile.write("!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/" ++ Char.nl);
 		tagfile.write("!_TAG_PROGRAM_AUTHOR	Stephen Lumenta /stephen.lumenta@gmail.com/" ++ Char.nl);
 		tagfile.write("!_TAG_PROGRAM_NAME	SCVim.sc//" ++ Char.nl);
@@ -187,7 +187,7 @@ SCVim {
 
 			klassName         = klass.asString;
 			klassFilename     = klass.filenameSymbol;
-			/*klassSearchString = format("/^%/;\"", klassName);*/
+			klassSearchString = format("/^%/;\"", klassName);
 
 			tagfile.write(klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl);
 
@@ -195,8 +195,9 @@ SCVim {
 				var methName, methFilename, methSearchString;
 				methName     = meth.name;
 				methFilename = meth.filenameSymbol;
-				// this was throwing compile errors before, hence the asString()
-				/*methSearchString = format('/% {/;"'.asString, methName);*/
+				// this strange fandango dance is necessary for sc to not complain
+				// when compiling 123 is the curly bracket
+				methSearchString = format('/% %/;"'.asString, methName, 123.asAscii);
 
 				tagfile.write(methName ++ Char.tab ++ methFilename ++ Char.tab ++ methSearchString ++ Char.nl);
 			}
