@@ -21,12 +21,6 @@ If you have been using this plugin before check the keycommand deprecation
 notice and get used to the new commands which are more in line with vim
 standards.
 
-**A word of warning**: 
-
-It has been tested on a mac with MacVIM and vim via Terminal.app. If you
-refrain from using the deprecated (see below) commands this should work on a
-linux machine with minor modifications as well.
-
 Installation:
 ------------
 
@@ -43,20 +37,55 @@ git clone git://github.com/sbl/scvim.git ~/.vim/bundle/supercollider
 `
 
 Symlink SCVim.sc somewhere, where SuperCollider can find
-it. On a mac that would be 
+it. On a **mac** that would be:
 
 `
 ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc ~/Library/Application\
 Support/SuperCollider/Extensions/SCVim.sc
 `
 
+And on a common supercollider **debian/ubuntu** installation:
+
+`
+ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc /usr/share/SuperCollider/Extensions/SCVim.sc`
+`
+
 Make sure you are using QT as your main GUI by adding `GUI.qt;` to you
 startup.scd file.
 
-The rest should hopefully work automatically (that is if you have SuperCollider
-installed in the default directory `/Applications/SuperCollider.app`).  Edit
-plugin/supercollider.vim to taste. Or override corresponding function in your
-~/.vimrc.
+The rest should work automatically for **mac** and **linux** users.
+
+Plugin configuration:
+---------------------
+
+### ENV variables:
+
+Path to the tags file
+`export SCVIM_TAGFILE=/your/path` this defaults to "~/.sctags"
+
+
+### Configurable VIM variables:
+
+The following variables are available for configuration in your `.vimrc` file:
+
+* `g:sclangTerm`: Command to open a terminal window. Defaults to `"open -a
+Terminal.app"`.
+* `g:sclangPipeApp`: Absolute path to the plugin **start_pipe** script. Defaults
+to `"~/.vim/bundle/supercollider/bin/start_pipe"`. Change it if you have installed
+the plugin in other location.
+* `g:sclangDispatcher`: Absolute path to the plugin **sc_dispatcher** script.
+Defaults to `"~/.vim/bundle/supercollider/bin/sc_dispatcher"`. Change it if you
+have installed the plugin in other location.
+
+Example `.vimrc` line for debian/ubuntu users:
+
+    let g:sclangTerm = "gnome-terminal -x $SHELL -ic"
+
+If for some reason vim can't find the path to the two launch scripts
+**start_pipe** and **sc_dispatcher** you can set them manually in your .vimrc:
+
+    let g:sclangPipeApp     = "~/.vim/bundle/scvim/bin/start_pipe"
+    let g:sclangDispatcher  = "~/.vim/bundle/scvim/bin/sc_dispatcher"
 
 Using it:
 --------
@@ -75,15 +104,13 @@ This gives you a couple of things:
 * You get tags completion with ctrl-x ctrl-] (use the vim supertab plugin if this is too
   bothersome to type)
 
-Commands:
---------
+### Commands:
 
 * `:SClangStart` launch sclang
 * `:SClangRecompile` recompile
 * `:SClangKill` what it says
 
-Key commands:
-------------
+### Key commands:
 
 in insert mode
 
@@ -110,22 +137,6 @@ be removed with the next revision. Use the tags file for a general workflow.
 * `<leader>sr` on a word opens the references to ...
 * `<leader>sd` on a word opens the corresponding helpfile inside the
   supercollider help
-
-Variables:
-----------
-
-ENV variables:
-
-Path to the tags file
-`export SCVIM_TAGFILE=/your/path` this defaults to "~/.sctags"
-
-If for some reason vim can't find the path to the two launch scripts
-`start_pipe` and `sc_dispatcher` you can set them manually in your .vimrc
-
-e.g.:
-
-`let g:sclangPipeApp     = "~/.vim/bundle/supercollider/bin/start_pipe"`
-`let g:sclangDispatcher  = "~/.vim/bundle/supercollider/bin/sc_dispatcher"`
 
 --------------------------------------------------------------------
 
