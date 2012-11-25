@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -wKU
+#!/usr/bin/ruby
 
 # copyright 2010 sbl
 # part of the supercollider textmate bundle 
@@ -11,7 +11,7 @@ module SC
   class Dispatcher
     
     def initialize
-      unless File.exists?(SC::Pipe.pipe_loc && SC::Pipe.pid_loc)
+      unless SC::Pipe.exists?
         raise "Please run a sclang session first."
       end
       @pipe = SC::Pipe.pipe_loc
