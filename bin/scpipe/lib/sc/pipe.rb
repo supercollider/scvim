@@ -4,37 +4,48 @@
 # Copyright 2007 Alex Norman under GPL
 # 
 # modified 2010 stephen lumenta 
+# modified 2012 José Fernández Ramos
 
 require 'fileutils'
 require 'singleton'
+require 'tmpdir'
 
 module SC
   
+  @@sclang_path = `which sclang`
+
+  def self.sclang_path
+    @@sclang_path
+  end
+
   class Pipe 
     include Singleton
-    
-    @@pipe_loc = "/tmp/sclang-pipe"
-    @@rundir = "/Applications/SuperCollider.app/Contents/Resources"
-    @@pid_loc = "/tmp/sclangpipe_app-pid" 
-    @@app = File.join(@@rundir, 'sclang')            
-         
+
+    @@pipe_loc = File.join(Dir::tmpdir, "sclang-pipe")
+    @@pid_loc = File.join(Dir::tmpdir, "sclangpipe_app-pid")
+
     class << self
+
+      def exists?
+        return File.exists?(@@pipe_loc && @@pid_loc)
+      end
+
       def serve
         prepare_pipe
         run_pipe
-        clean_up      
+        clean_up
       end
-      
+
       def pipe_loc
         @@pipe_loc
       end
-      
+
       def pid_loc
         @@pid_loc
       end
-            
+
       private
-      
+
       def prepare_pipe
         File.open(@@pid_loc, "w"){ |f|
           f.puts Process.pid
@@ -47,13 +58,14 @@ module SC
         #make a new pipe
         system("mkfifo", @@pipe_loc)
       end
-   
+
       def run_pipe
         @@pipeproc = Proc.new {
           trap("INT") do
             Process.exit
           end
-          IO.popen("cd #{@@rundir} && #{@@app} -d #{@@rundir.chomp} -i scvim", "w") do |sclang|
+          rundir = File.dirname(SC.sclang_path)
+          IO.popen("cd #{rundir} && #{SC.sclang_path} -d #{rundir.chomp} -i scvim", "w") do |sclang|
             loop {
               x = `cat #{@@pipe_loc}`
               sclang.print x if x
@@ -80,7 +92,7 @@ module SC
         #we sleep until a signal comes
         sleep(1) until false
       end
-    
+
       def remove_files
         FileUtils.rm(@@pipe_loc)
         FileUtils.rm(@@pid_loc)
