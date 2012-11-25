@@ -53,7 +53,12 @@ ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc /usr/share/SuperCollider/Extension
 Make sure you are using QT as your main GUI by adding `GUI.qt;` to you
 startup.scd file.
 
-The rest should work automatically for **mac** and **linux** users.
+The rest should work automatically for **mac** users.
+
+In **Linux** and other unix systems the vim variable `g:sclangTerm` should be
+set in your `.vimrc` file to let the plugin know which terminal application
+should it use for launching sclang. Please, read on the next section for more
+details.
 
 Plugin configuration:
 ---------------------
@@ -62,7 +67,6 @@ Plugin configuration:
 
 Path to the tags file
 `export SCVIM_TAGFILE=/your/path` this defaults to "~/.sctags"
-
 
 ### Configurable VIM variables:
 
