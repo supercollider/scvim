@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 # 
 # SC:Pipe derived from sclang_pipe (SCVIM Package)
 # Copyright 2007 Alex Norman under GPL

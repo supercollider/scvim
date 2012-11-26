@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # copyright 2010 sbl
 # part of the supercollider textmate bundle 
