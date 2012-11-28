@@ -15,7 +15,16 @@ module SC
   @@sclang_path = `which sclang`
 
   def self.sclang_path
-    @@sclang_path
+    if @@sclang_path.empty?
+      if File.exists?("/Applications/SuperCollider.app/Contents/Resources/sclang")
+        return "/Applications/SuperCollider.app/Contents/Resources/sclang"
+      else
+        warn "Could not find sclang executable.\nPlease make sure that SC is either installed at the default location e.g. '/Applications/SuperCollider.app' on a mac or add sclang to your shells search path."
+        exit
+      end
+    else
+      return @@sclang_path
+    end
   end
 
   class Pipe 
