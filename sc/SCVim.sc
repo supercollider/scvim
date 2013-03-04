@@ -27,7 +27,7 @@ SCVim {
 	classvar nodes, <>vimPath;
 
 	*initClass {
-		nodes = List[];    
+		nodes = List[];
 
 		// TODO this has to be not so mac-centric
 		Platform.case(\osx) {
@@ -43,7 +43,10 @@ SCVim {
 
 		// thanks to Dionysis Athinaios
 		StartUp.add { //do after startup has finished
-			var classList, file, hugeString = "syn keyword scObject";
+			var classList, file, hugeString = "syn keyword scObject", basePath;
+
+            basePath = "~/.vim/bundle/supercollider";
+
 			//collect all class names as strings in a Array
 			classList =
 			Object.allSubclasses.collect{ arg i; var name;
@@ -52,9 +55,15 @@ SCVim {
 			};
 			// TODO as all things this should be not that hardcoded
 			//create a file that contains all the names
-			file = File("~/.vim/bundle/supercollider/syntax/supercollider_objects.vim".standardizePath,"w");
-			file.write(hugeString);
-			file.close;
+
+            if (File.exists(basePath.standardizePath)) {
+                file = File((basePath ++ "/syntax/supercollider_objects.vim").standardizePath,"w");
+                file.write(hugeString);
+                file.close;
+            } {
+                ("\nSCVim could not be initialized, please check if the bundle is installed in '~/.vim/bundle/supercollider'\n" ++
+                "Consult the README how to set up SCVim.\n").error;
+            }
 		};
 	}
 
@@ -69,7 +78,7 @@ SCVim {
 		if(allClasses.detect{ |str| str == klass }.notNil) { // .includes doesn't work?
 			fname = klass.interpret.filenameSymbol;
 			cmd = "grep -nh \"^" ++ klass ++ "\" \"" ++ fname ++ "\" > /tmp/grepout.tmp";
-			cmd.unixCmd(postOutput: false, action: { 
+			cmd.unixCmd(postOutput: false, action: {
 				File.use("/tmp/grepout.tmp", "r") { |f|
 					var content = f.readAllString;
 					var split = content.split($:);
@@ -84,7 +93,7 @@ SCVim {
 			});
 		}{"sorry class "++klass++" not found".postln}
 	}
-	
+
 	// DEPRECTATED in favor of tags system
 	// TODO improve this to jump to the right implementations even if they are
 	// buried in a class extension
@@ -136,7 +145,7 @@ SCVim {
 						f << out.collection.asString;
 						(vimPath + fname).unixCmd(postOutput: false);
 					};
-				}; 
+				};
 			};
 	}
 
@@ -191,7 +200,7 @@ SCVim {
 
 			tagfile.write(klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl);
 
-			klass.methods.do{|meth| 
+			klass.methods.do{|meth|
 				var methName, methFilename, methSearchString;
 				methName     = meth.name;
 				methFilename = meth.filenameSymbol;
