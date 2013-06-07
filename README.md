@@ -28,26 +28,26 @@ It is highly recommended to use pathogen
 (<https://github.com/tpope/vim-pathogen>) to keep your .vim paths clean. See the
 supplied helpfile how to setup pathogen if you haven't used it before. 
 
-Rename the whole scvim folder to "supercollider" and drop it into your "bundle" folder, e.g.
-"~/.vim/bundle/supercollider". 
+Make sure the folder is named 'scvim' and drop it into your "bundle" folder, e.g.
+"~/.vim/bundle/scvim". 
 
 Or just do:
 `
-git clone git://github.com/sbl/scvim.git ~/.vim/bundle/supercollider
+git clone git://github.com/sbl/scvim.git ~/.vim/bundle/scvim
 `
 
 Symlink SCVim.sc somewhere, where SuperCollider can find
 it. On a **mac** that would be:
 
 `
-ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc ~/Library/Application\
+ln -s ~/.vim/bundle/scvim/sc/SCVim.sc ~/Library/Application\
 Support/SuperCollider/Extensions/SCVim.sc
 `
 
 And on a common supercollider **debian/ubuntu** installation:
 
 `
-ln -s ~/.vim/bundle/supercollider/sc/SCVim.sc /usr/share/SuperCollider/Extensions/SCVim.sc`
+ln -s ~/.vim/bundle/scvim/sc/SCVim.sc /usr/share/SuperCollider/Extensions/SCVim.sc`
 `
 
 Make sure you are using QT as your main GUI by adding `GUI.qt;` to you
@@ -75,10 +75,10 @@ The following variables are available for configuration in your `.vimrc` file:
 * `g:sclangTerm`: Command to open a terminal window. Defaults to `"open -a
 Terminal.app"`.
 * `g:sclangPipeApp`: Absolute path to the plugin **start_pipe** script. Defaults
-to `"~/.vim/bundle/supercollider/bin/start_pipe"`. Change it if you have installed
+to `"~/.vim/bundle/scvim/bin/start_pipe"`. Change it if you have installed
 the plugin in other location.
 * `g:sclangDispatcher`: Absolute path to the plugin **sc_dispatcher** script.
-Defaults to `"~/.vim/bundle/supercollider/bin/sc_dispatcher"`. Change it if you
+Defaults to `"~/.vim/bundle/scvim/bin/sc_dispatcher"`. Change it if you
 have installed the plugin in other location.
 
 Example `.vimrc` line for debian/ubuntu users:

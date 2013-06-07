@@ -45,7 +45,7 @@ SCVim {
 		StartUp.add { //do after startup has finished
 			var classList, file, hugeString = "syn keyword scObject", basePath;
 
-            basePath = "~/.vim/bundle/supercollider";
+            basePath = "~/.vim/bundle/scvim";
 
 			//collect all class names as strings in a Array
 			classList =
@@ -61,7 +61,7 @@ SCVim {
                 file.write(hugeString);
                 file.close;
             } {
-                ("\nSCVim could not be initialized, please check if the bundle is installed in '~/.vim/bundle/supercollider'\n" ++
+                ("\nSCVim could not be initialized, please check if the bundle is installed in '~/.vim/bundle/scvim'\n" ++
                 "Consult the README how to set up SCVim.\n").error;
             }
 		};
