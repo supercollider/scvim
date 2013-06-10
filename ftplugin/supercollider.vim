@@ -33,6 +33,7 @@ let loaded_scvim = 1
 
 " ========================================================================================
 " VARIABLES
+let s:bundlePath = expand('<sfile>:p:h:h')
 
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit
@@ -49,13 +50,13 @@ endif
 if exists("g:sclangPipeApp")
 	let s:sclangPipeApp	= g:sclangPipeApp
 else
-	let s:sclangPipeApp	= "~/.vim/bundle/supercollider/bin/start_pipe"
+	let s:sclangPipeApp	=  s:bundlePath . "/bin/start_pipe"
 endif
 
 if exists("g:sclangDispatcher")
 	let s:sclangDispatcher = g:sclangDispatcher
 else
-	let s:sclangDispatcher = "~/.vim/bundle/supercollider/bin/sc_dispatcher"
+	let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
 endif
 
 if !exists("loaded_kill_sclang")
