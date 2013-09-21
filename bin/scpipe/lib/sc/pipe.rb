@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-# 
+#
 # SC:Pipe derived from sclang_pipe (SCVIM Package)
 # Copyright 2007 Alex Norman under GPL
-# 
-# modified 2010 stephen lumenta 
+#
+# modified 2010 stephen lumenta
 # modified 2012 José Fernández Ramos
 
 require 'fileutils'
@@ -11,7 +11,7 @@ require 'singleton'
 require 'tmpdir'
 
 module SC
-  
+
   @@sclang_path = `which sclang`
 
   def self.sclang_path
@@ -27,7 +27,7 @@ module SC
     end
   end
 
-  class Pipe 
+  class Pipe
     include Singleton
 
     @@pipe_loc = File.join(Dir::tmpdir, "sclang-pipe")

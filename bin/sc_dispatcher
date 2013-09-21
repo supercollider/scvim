@@ -9,15 +9,15 @@ d = SC::Dispatcher.new
 OptionParser.new do |opts|
    opts.banner = "Usage: sc_dispatcher.rb [options]"
    opts.separator "----"
-   
+
    opts.on("-i <sc_code>", "Interpret SC Code") do |sc_code|
      d.interpret(sc_code)
    end
 
-   opts.on("-s <sc_code>", "Interpret SC Code without printing results") do |sc_code|    
+   opts.on("-s <sc_code>", "Interpret SC Code without printing results") do |sc_code|
      d.interpret_silent(sc_code)
    end
-  
+
    opts.on("-k", "Recompile the library") do
      File.open(SC::Pipe.pid_loc, "r") do |file|
         d.interpret_silent("Server.quitAll;")
@@ -25,7 +25,7 @@ OptionParser.new do |opts|
         exec "kill -HUP #{pid}"
      end
    end
-  
+
    opts.on("-q", "Quit SuperCollider and all the belonging prcesses") do
      d.interpret_silent("Server.quitAll;")
 
@@ -34,7 +34,7 @@ OptionParser.new do |opts|
         exec "kill -INT #{pid}"
      end
    end
-     
+
    opts.on_tail("-h", "--help", "Show this message") do
      puts opts
      exit
