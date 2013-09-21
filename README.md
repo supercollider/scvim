@@ -142,6 +142,10 @@ be removed with the next revision. Use the tags file for a general workflow.
 * `<leader>sd` on a word opens the corresponding helpfile inside the
   supercollider help
 
+### Snippets:
+
+Find snippets compatible with snipmate at https://gist.github.com/sbl/6648566
+
 --------------------------------------------------------------------
 
 This program is free software: you can redistribute it and/or modify it under
