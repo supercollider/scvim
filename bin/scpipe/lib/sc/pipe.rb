@@ -74,7 +74,7 @@ module SC
             Process.exit
           end
           rundir = File.dirname(SC.sclang_path)
-          IO.popen("cd #{rundir} && #{SC.sclang_path} -d #{rundir.chomp} -i scvim", "w") do |sclang|
+          IO.popen("cd #{rundir} && #{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
             loop {
               x = `cat #{@@pipe_loc}`
               sclang.print x if x
