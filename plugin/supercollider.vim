@@ -18,8 +18,6 @@ else
   let s:sclangTagsFile = "~/.sctags"
 endif
 
-" default tab settings
-au FileType supercollider setlocal shiftwidth=2 tabstop=2 noexpandtab
 au FileType supercollider execute "set tags+=".s:sclangTagsFile
 
 "  matchit
