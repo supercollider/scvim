@@ -73,7 +73,7 @@ module SC
           trap("INT") do
             Process.exit
           end
-          rundir = File.dirname(SC.sclang_path)
+          rundir = Dir.pwd
           IO.popen("cd #{rundir} && #{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
             loop {
               x = `cat #{@@pipe_loc}`
