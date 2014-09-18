@@ -1,4 +1,4 @@
-SCVim (3.5 QT)
+SCVim (> 3.5)
 ==============
 
 A vim plugin for supercollider. 
