@@ -1,12 +1,12 @@
 SCVim (> 3.5)
 ==============
 
-A vim plugin for supercollider. 
+A vim plugin for supercollider.
 
 This is based of the original scvim by Alex Norman (see:
-<http://www.x37v.info/scvim/>). 
+<http://www.x37v.info/scvim/>).
 
-Features 
+Features
 
 * Syntax Highlighting
 * A faked REPL via the terminal
@@ -26,10 +26,10 @@ Installation:
 
 It is highly recommended to use pathogen
 (<https://github.com/tpope/vim-pathogen>) to keep your .vim paths clean. See the
-supplied helpfile how to setup pathogen if you haven't used it before. 
+supplied helpfile how to setup pathogen if you haven't used it before.
 
 Make sure the folder is named 'scvim' and drop it into your "bundle" folder, e.g.
-"~/.vim/bundle/scvim". 
+"~/.vim/bundle/scvim".
 
 Or just do:
 `
@@ -73,7 +73,8 @@ Path to the tags file
 The following variables are available for configuration in your `.vimrc` file:
 
 * `g:sclangTerm`: Command to open a terminal window. Defaults to `"open -a
-Terminal.app"`.
+Terminal.app"` on OSX, and `"x-terminal-emulator -e $SHELL -ic"` on Linux. On
+some Linux systems this value may need to changed.
 * `g:sclangPipeApp`: Absolute path to the plugin **start_pipe** script. Defaults
 to `"~/.vim/bundle/scvim/bin/start_pipe"`. Change it if you have installed
 the plugin in other location.
@@ -81,7 +82,7 @@ the plugin in other location.
 Defaults to `"~/.vim/bundle/scvim/bin/sc_dispatcher"`. Change it if you
 have installed the plugin in other location.
 
-Example `.vimrc` line for debian/ubuntu users:
+Example `.vimrc` line for gnome-terminal users:
 
     let g:sclangTerm = "gnome-terminal -x $SHELL -ic"
 
@@ -94,15 +95,15 @@ If for some reason vim can't find the path to the two launch scripts
 Using it:
 --------
 To start open a file with the right extension :e foo.sc(d)
-Enter `:SClangStart` and a terminal should open with a running sclang session. 
+Enter `:SClangStart` and a terminal should open with a running sclang session.
 
-See the commands reference for general usage. 
+See the commands reference for general usage.
 
 _ctags support_:
 
 run `:SCTags` from vim or  `SCVim.generateTagsFile()` from sclang
 
-This gives you a couple of things: 
+This gives you a couple of things:
 
 * You can jump to any known class or method
 * You get tags completion with ctrl-x ctrl-] (use the vim supertab plugin if this is too
