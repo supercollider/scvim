@@ -116,10 +116,6 @@ This gives you a couple of things:
 
 ### Key commands:
 
-in insert mode
-
-* `<C-Tab>` shows the method args for the current method (if found)
-
 in normal mode:
 
 * `<leader>sk` recompiles the sc library
