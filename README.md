@@ -13,7 +13,6 @@ Features
 * Code Navigation (jump to definitions) via a global tags file "~/.sctags"
 * Auto-Completion of known words via tag completion
 * Launch the SuperCollider QT Help System
-* SnipMate integration
 
 **UPGRADE NOTICE**
 
@@ -139,9 +138,6 @@ be removed with the next revision. Use the tags file for a general workflow.
 * `<leader>sd` on a word opens the corresponding helpfile inside the
   supercollider help
 
-### Snippets:
-
-Find snippets compatible with snipmate at https://gist.github.com/sbl/6648566
 
 --------------------------------------------------------------------
 
