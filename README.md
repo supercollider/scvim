@@ -14,11 +14,6 @@ Features
 * Auto-Completion of known words via tag completion
 * Launch the SuperCollider QT Help System
 
-**UPGRADE NOTICE**
-
-If you have been using this plugin before check the keycommand deprecation
-notice and get used to the new commands which are more in line with vim
-standards.
 
 Installation:
 ------------
@@ -128,16 +123,6 @@ in normal/insert mode:
 * `F5` to execute a block of code scvim will attempt to find the outermost bracket
 * `F6` to execute the current line of code
 * `F12` is a hard stop
-
-The following are _DEPRECATED_ (they only work with macvim anyways) and will
-be removed with the next revision. Use the tags file for a general workflow.
-
-* `<leader>sj` on a word opens the class file
-* `<leader>si` on a word opens the implementations of ...
-* `<leader>sr` on a word opens the references to ...
-* `<leader>sd` on a word opens the corresponding helpfile inside the
-  supercollider help
-
 
 --------------------------------------------------------------------
 
