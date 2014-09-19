@@ -43,6 +43,8 @@ endif
 
 if exists("g:sclangTerm")
 	let s:sclangTerm = g:sclangTerm
+elseif system('uname') =~ 'Linux'
+	let s:sclangTerm = "x-terminal-emulator -e $SHELL -ic"
 else
 	let s:sclangTerm = "open -a Terminal.app"
 endif
@@ -196,7 +198,7 @@ endfunction
 " ========================================================================================
 
 function SClangStart()
-  call system(s:sclangTerm . " " . s:sclangPipeApp)
+  call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
 endfunction
 
 function SClangKill()
