@@ -198,7 +198,15 @@ endfunction
 " ========================================================================================
 
 function SClangStart()
-  call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+    if $TERM[0:5] == "screen"
+        if executable("tmux")
+            call system("tmux split-window -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -U")
+        else
+            echo "Sorry, screen is not supported yet.."
+        endif
+    else
+        call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+    endif
 endfunction
 
 function SClangKill()
