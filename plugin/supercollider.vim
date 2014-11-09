@@ -40,6 +40,7 @@ au Filetype supercollider nnoremap <leader>sk :SClangRecompile<CR>
 au Filetype supercollider nnoremap <buffer>K :call SChelp(expand('<cword>'))<CR>
 au Filetype supercollider inoremap <C-Tab> :call SCfindArgs()<CR>a
 au Filetype supercollider nnoremap <C-Tab> :call SCfindArgs()<CR>
+au Filetype supercollider vnoremap <C-Tab> :call SCfindArgsFromSelection()<CR>
 
 " DEPRECATED
 au Filetype supercollider nnoremap <leader>sd yiw :call SChelp(""")<CR>
