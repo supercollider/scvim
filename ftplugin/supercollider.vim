@@ -247,9 +247,25 @@ function SCfindArgs()
   call SendToSC('Help.methodArgs("' . l:subject . '");')
 endfun
 
+function SCfindArgsFromSelection()
+  let l:subject = s:get_visual_selection()
+  call SendToSC('Help.methodArgs("' . l:subject . '");')
+endfun
+
 function SCtags()
   call SendToSC("SCVim.generateTagsFile();")
 endfun
+
+function! s:get_visual_selection()
+  " http://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript
+  " Why is this not a built-in Vim script function?!
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
+endfunction
 
 "custom commands (SChelp,SCdef,SClangfree)
 com -nargs=0 SClangHardstop call SClangHardstop()

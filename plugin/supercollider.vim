@@ -37,9 +37,10 @@ au Filetype supercollider inoremap <buffer> <F6> :call SClang_send()<CR>a
 au Filetype supercollider nnoremap <buffer> <F12> :call SClangHardstop()<CR>
 
 au Filetype supercollider nnoremap <leader>sk :SClangRecompile<CR>
-au Filetype supercollider nnoremap <buffer>K yiw :call SChelp(""")<CR>
+au Filetype supercollider nnoremap <buffer>K :call SChelp(expand('<cword>'))<CR>
 au Filetype supercollider inoremap <C-Tab> :call SCfindArgs()<CR>a
 au Filetype supercollider nnoremap <C-Tab> :call SCfindArgs()<CR>
+au Filetype supercollider vnoremap <C-Tab> :call SCfindArgsFromSelection()<CR>
 
 " DEPRECATED
 au Filetype supercollider nnoremap <leader>sd yiw :call SChelp(""")<CR>
