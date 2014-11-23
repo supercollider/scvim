@@ -54,6 +54,10 @@ set in your `.vimrc` file to let the plugin know which terminal application
 should it use for launching sclang. Please, read on the next section for more
 details.
 
+Also, if Ruby is not installed on your linux system, install it with:
+
+`sudo apt-get install ruby` or `sudo yum install ruby`
+
 Plugin configuration:
 ---------------------
 
