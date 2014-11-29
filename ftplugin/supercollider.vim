@@ -63,7 +63,7 @@ endif
 
 if !exists("loaded_kill_sclang")
 	if s:sclangKillOnExit
-		au VimLeavePre * call SClangKill()
+		au VimLeavePre * call SClangKillIfStarted()
 	endif
 	let loaded_kill_sclang = 1
 endif
@@ -197,20 +197,30 @@ endfunction
 
 " ========================================================================================
 
+let s:sclangStarted = 0
+
 function SClangStart()
     if $TERM[0:5] == "screen"
         if executable("tmux")
             call system("tmux split-window -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -U")
+            let s:sclangStarted = 1
         else
             echo "Sorry, screen is not supported yet.."
         endif
     else
         call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+        let s:sclangStarted = 1
     endif
 endfunction
 
 function SClangKill()
   call system(s:sclangDispatcher . " -q")
+endfunction
+
+function SClangKillIfStarted()
+  if s:sclangStarted == 1
+    call SClangKill()
+  endif
 endfunction
 
 function SClangRecompile()
