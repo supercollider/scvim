@@ -200,9 +200,6 @@ endfunction
 let s:sclangStarted = 0
 
 function SClangStart()
-  if filereadable("/tmp/sclang-pipe")
-    echo "sclang is already running"
-  else
     if $TERM[0:5] == "screen"
         if executable("tmux")
             call system("tmux split-window -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -U")
@@ -214,7 +211,6 @@ function SClangStart()
         call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
         let s:sclangStarted = 1
     endif
-  endif
 endfunction
 
 function SClangKill()
