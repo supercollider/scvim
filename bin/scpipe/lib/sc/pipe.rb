@@ -75,10 +75,12 @@ module SC
           end
           rundir = Dir.pwd
           IO.popen("cd #{rundir} && #{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
-            loop {
-              x = `cat #{@@pipe_loc}`
-              sclang.print x if x
-            }
+            File.open(@@pipe_loc, "r") do |f|
+              loop {
+                x = f.read 
+                sclang.print x if x
+              }
+            end
           end
         }
         $p = Process.fork { @@pipeproc.call }
