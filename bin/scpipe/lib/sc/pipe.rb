@@ -41,8 +41,9 @@ module SC
 
       def serve
         prepare_pipe
-        run_pipe
         clean_up
+        run_pipe
+        remove_files
       end
 
       def pipe_loc
@@ -56,6 +57,7 @@ module SC
       private
 
       def prepare_pipe
+        @done=false
         File.open(@@pid_loc, "w"){ |f|
           f.puts Process.pid
         }
@@ -69,39 +71,32 @@ module SC
       end
 
       def run_pipe
-        @@pipeproc = Proc.new {
-          trap("INT") do
-            Process.exit
-          end
-          rundir = Dir.pwd
+        rundir = Dir.pwd
+        while @done==false do
           IO.popen("cd #{rundir} && #{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
-            File.open(@@pipe_loc, "r") do |f|
-              loop {
-                x = f.read 
+            @f = File.open(@@pipe_loc, "r")
+            begin
+              while x = @f.read do 
                 sclang.print x if x
-              }
+              end
+            rescue IOError => e
             end
           end
-        }
-        $p = Process.fork { @@pipeproc.call }
+        end
       end
 
       def clean_up
         #if we get a hup then we kill the pipe process and
         #restart it
         trap("HUP") do
-          Process.kill("INT", $p)
-          $p = Process.fork { @@pipeproc.call }
+          @f.close
         end
 
         #clean up after us
         trap("INT") do
-          Process.kill("INT", $p)
-          remove_files
-          exit
+          @done=true
+          @f.close
         end
-        #we sleep until a signal comes
-        sleep(1) until false
       end
 
       def remove_files
