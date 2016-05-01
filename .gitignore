@@ -3,3 +3,9 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 install_manifest.txt
+
+# Ignore mac files
+.DS_Store
+
+# Ignore build folder
+/build*
