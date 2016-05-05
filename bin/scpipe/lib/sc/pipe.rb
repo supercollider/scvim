@@ -73,7 +73,7 @@ module SC
       def run_pipe
         rundir = Dir.pwd
         while @done==false do
-          IO.popen("cd #{rundir} && #{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
+          IO.popen("#{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
             @f = File.open(@@pipe_loc, "r")
             begin
               while x = @f.read do 
