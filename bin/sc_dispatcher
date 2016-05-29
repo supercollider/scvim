@@ -22,7 +22,7 @@ OptionParser.new do |opts|
      File.open(SC::Pipe.pid_loc, "r") do |file|
         d.interpret_silent("Server.quitAll;")
         pid = file.read.chomp
-        exec "kill -USR1 #{pid}"
+        Process.kill('USR1', pid.to_i)
      end
    end
 
@@ -31,7 +31,7 @@ OptionParser.new do |opts|
 
      File.open(SC::Pipe.pid_loc, "r") do |file|
         pid = file.read.chomp
-        exec "kill -INT #{pid}"
+        Process.kill('INT', pid.to_i)
      end
    end
 
