@@ -56,14 +56,13 @@ module SC
       private
 
       def prepare_pipe
-        File.open(@@pid_loc, "w"){ |f|
-          f.puts Process.pid
-        }
-
         if File.exists?(@@pipe_loc)
           warn "there is already a sclang session running, remove it first, than retry"
           exit
         end
+        File.open(@@pid_loc, "w"){ |f|
+          f.puts Process.pid
+        }
         system("mkfifo", @@pipe_loc)
       end
 
