@@ -43,7 +43,6 @@ module SC
         prepare_pipe
         clean_up
         run_pipe
-        remove_files
       end
 
       def pipe_loc
@@ -88,6 +87,9 @@ module SC
       end
 
       def clean_up
+        at_exit do
+          remove_files
+        end
       end
 
       def remove_files
