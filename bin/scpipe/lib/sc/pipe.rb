@@ -57,7 +57,6 @@ module SC
       private
 
       def prepare_pipe
-        @done=false
         File.open(@@pid_loc, "w"){ |f|
           f.puts Process.pid
         }
@@ -66,37 +65,29 @@ module SC
           warn "there is already a sclang session running, remove it first, than retry"
           exit
         end
-        #make a new pipe
         system("mkfifo", @@pipe_loc)
       end
 
       def run_pipe
         rundir = Dir.pwd
-        while @done==false do
-          IO.popen("#{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
-            @f = File.open(@@pipe_loc, "r")
-            begin
+        while true do
+          begin
+            IO.popen("#{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
+              @f = File.open(@@pipe_loc, "r")
               while x = @f.read do 
                 sclang.print x if x
               end
-            rescue IOError => e
+            end
+          rescue SignalException => e
+            # Exit on all signals except usr1, which restarts
+            unless e.signo == Signal.list["HUP"]
+              break
             end
           end
         end
       end
 
       def clean_up
-        #if we get a hup then we kill the pipe process and
-        #restart it
-        trap("HUP") do
-          @f.close
-        end
-
-        #clean up after us
-        trap("INT") do
-          @done=true
-          @f.close
-        end
       end
 
       def remove_files
