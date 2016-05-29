@@ -79,7 +79,7 @@ module SC
             end
           rescue SignalException => e
             # Exit on all signals except usr1, which restarts
-            unless e.signo == Signal.list["HUP"]
+            unless e.signo == Signal.list["USR1"]
               break
             end
           end
