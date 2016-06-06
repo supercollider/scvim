@@ -68,12 +68,14 @@ module SC
 
       def run_pipe
         rundir = Dir.pwd
-        while true do
+        loop do
           begin
             IO.popen("#{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
-              @f = File.open(@@pipe_loc, "r")
-              while x = @f.read do 
-                sclang.print x if x
+              loop do
+                File.open(@@pipe_loc, "r") do |f|
+                  x = f.read
+                  sclang.print x if x
+                end
               end
             end
           rescue SignalException => e
