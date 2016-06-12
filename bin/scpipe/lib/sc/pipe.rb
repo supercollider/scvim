@@ -41,8 +41,8 @@ module SC
 
       def serve
         prepare_pipe
-        run_pipe
         clean_up
+        run_pipe
       end
 
       def pipe_loc
@@ -56,50 +56,41 @@ module SC
       private
 
       def prepare_pipe
-        File.open(@@pid_loc, "w"){ |f|
-          f.puts Process.pid
-        }
-
         if File.exists?(@@pipe_loc)
           warn "there is already a sclang session running, remove it first, than retry"
           exit
         end
-        #make a new pipe
+        File.open(@@pid_loc, "w"){ |f|
+          f.puts Process.pid
+        }
         system("mkfifo", @@pipe_loc)
       end
 
       def run_pipe
-        @@pipeproc = Proc.new {
-          trap("INT") do
-            Process.exit
+        rundir = Dir.pwd
+        loop do
+          begin
+            IO.popen("#{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
+              loop do
+                File.open(@@pipe_loc, "r") do |f|
+                  x = f.read
+                  sclang.print x if x
+                end
+              end
+            end
+          rescue SignalException => e
+            # Exit on all signals except usr1, which restarts
+            unless e.signo == Signal.list["USR1"]
+              break
+            end
           end
-          rundir = Dir.pwd
-          IO.popen("cd #{rundir} && #{SC.sclang_path.chomp} -d #{rundir.chomp} -i scvim", "w") do |sclang|
-            loop {
-              x = `cat #{@@pipe_loc}`
-              sclang.print x if x
-            }
-          end
-        }
-        $p = Process.fork { @@pipeproc.call }
+        end
       end
 
       def clean_up
-        #if we get a hup then we kill the pipe process and
-        #restart it
-        trap("HUP") do
-          Process.kill("INT", $p)
-          $p = Process.fork { @@pipeproc.call }
-        end
-
-        #clean up after us
-        trap("INT") do
-          Process.kill("INT", $p)
+        at_exit do
           remove_files
-          exit
         end
-        #we sleep until a signal comes
-        sleep(1) until false
       end
 
       def remove_files
