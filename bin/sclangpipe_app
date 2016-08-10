@@ -37,6 +37,8 @@ app = nil
 [
   `which sclang`.chomp,
   '/Applications/SuperCollider/SuperCollider.app/Contents/Resources/sclang',
+  '/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang',
+  '/Applications/SuperCollider.app/Contents/MacOS/sclang',
   '/Applications/SuperCollider/sclang',
 ].each do |l|
   if File.exists?(l)
