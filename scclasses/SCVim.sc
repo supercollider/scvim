@@ -96,7 +96,7 @@ classvar <scvim_dir, <scvim_cache_dir,
 } // end *updateCaches
 
 *updateHelpCache { | helpPaths |
-    var getFiles, createHelp, objHelpPath, docDir, tagsDict, makeHelpFile, plain_text, new_path;
+    var getFiles, glob_files, createHelp, objHelpPath, docDir, tagsDict, makeHelpFile, plain_text, new_path, all_help_files;
 
     r{
         //TODO currently ignoring helpPaths..
@@ -118,6 +118,7 @@ classvar <scvim_dir, <scvim_cache_dir,
                         "html", { f.readAllStringHTML },
                         "htm", { f.readAllStringHTML },
                         "rtf", { f.readAllStringRTF },
+                        "schelp", { f.readAllString },
                         "scd", { f.readAllString },
                         { Error("unsupported file format " ++ source_file).throw; }
                       );
@@ -155,8 +156,24 @@ classvar <scvim_dir, <scvim_cache_dir,
         };
 
         postln("SCVim: processing help docs, this takes a little while....");
+        // regexp searching for filenames
+        glob_files = { arg folder, match;
+                var p;
+                PathName(folder).filesDo { arg x;
+                        if (match.matchRegexp(x.fileName)) {
+                                p = p.add(x.fileNameWithoutExtension);
+                                p = p.add(x.fullPath);
+                        }
+                };
+                p
+        };
+        postln("SCVim: Searching for all help files in " ++ Platform.resourceDir);
+        all_help_files =  Dictionary.newFrom(glob_files.value(Platform.resourceDir, "(?i)\\.(html|htm|rtf|schelp|scd)$"));
+
+        postln("SCVim: processing " ++ (all_help_files.keys.size) ++ " help docs, this takes a little while....");
         ("mkdir -p " ++ docDir).systemCmd;
-        getFiles.value(Help.tree);
+
+        getFiles.value(all_help_files);
 
         //add the scvim doc if it doesn't already exist
         if((File.exists(docDir ++ "/" ++ "SCVim.scd") && tagsDict.keys.asArray.includesAny([SCVim, "SCVim"]).not),
