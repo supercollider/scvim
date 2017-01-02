@@ -117,7 +117,6 @@ classvar <scvim_dir, <scvim_cache_dir,
                 switch(source_file.splitext[1],
                         "html", { f.readAllStringHTML },
                         "htm", { f.readAllStringHTML },
-                        "rtf", { f.readAllStringRTF },
                         "schelp", { f.readAllString },
                         "scd", { f.readAllString },
                         { Error("unsupported file format " ++ source_file).throw; }
@@ -168,7 +167,7 @@ classvar <scvim_dir, <scvim_cache_dir,
                 p
         };
         postln("SCVim: Searching for all help files in " ++ Platform.resourceDir);
-        all_help_files =  Dictionary.newFrom(glob_files.value(Platform.resourceDir, "(?i)\\.(html|htm|rtf|schelp|scd)$"));
+        all_help_files =  Dictionary.newFrom(glob_files.value(Platform.resourceDir, "(?i)\\.(html|htm|schelp|scd)$"));
 
         postln("SCVim: processing " ++ (all_help_files.keys.size) ++ " help docs, this takes a little while....");
         ("mkdir -p " ++ docDir).systemCmd;
