@@ -3,8 +3,7 @@ SCVim (> 3.5)
 
 A vim plugin for supercollider.
 
-This is based of the original scvim by Alex Norman (see:
-<http://www.x37v.info/scvim/>).
+This is based of the original [scvim by Alex Norman](http://www.x37v.info/scvim/).
 
 Features
 
@@ -18,38 +17,27 @@ Features
 Installation:
 ------------
 
-It is highly recommended to use pathogen
-(<https://github.com/tpope/vim-pathogen>) to keep your .vim paths clean. See the
-supplied helpfile how to setup pathogen if you haven't used it before.
+### `scvim` plugin installation
 
-Make sure the folder is named 'scvim' and drop it into your "bundle" folder, e.g.
-"~/.vim/bundle/scvim".
+It is highly recommended to use a plugin manager to install `scvim`. Most common ones are:
 
-Or just do:
-`
-git clone git://github.com/sbl/scvim.git ~/.vim/bundle/scvim
-`
+* [pathogen](https://github.com/tpope/vim-pathogen)
+* [vundle](https://github.com/VundleVim/Vundle.vim)
+* [vim-plug](https://github.com/junegunn/vim-plug)
 
-Symlink SCVim.sc somewhere, where SuperCollider can find
-it. On a **mac** that would be:
+### `SCVim.sc`
 
-`
-ln -s ~/.vim/bundle/scvim/sc/SCVim.sc ~/Library/Application\
-Support/SuperCollider/Extensions/SCVim.sc
-`
-
-And on a common supercollider **debian/ubuntu** installation:
-
-`
-ln -s ~/.vim/bundle/scvim/sc/SCVim.sc /usr/share/SuperCollider/Extensions/SCVim.sc`
-`
-
-Make sure you are using QT as your main GUI by adding `GUI.qt;` to you
-startup.scd file.
+If your SuperCollider version was not build with vim support (i.e. if the class
+`SCVim` does not exist), you'll need to either symlink `sc/SCVim.sc` somewhere
+where SuperCollider can find it (typically that would be in `Platform.userExtensionDir`
+from within SuperCollider), either add (the absolute path to) `scvim/sc` to
+`includePaths:` in your `sclang_conf.yaml`.
 
 The rest should work automatically for **mac** users.
 
-In **Linux** and other unix systems the vim variable `g:sclangTerm` should be
+### Linux notes
+
+On **Linux** and other unix systems the vim variable `g:sclangTerm` should be
 set in your `.vimrc` file to let the plugin know which terminal application
 should it use for launching sclang. Please, read on the next section for more
 details.
@@ -64,21 +52,21 @@ Plugin configuration:
 ### ENV variables:
 
 Path to the tags file
-`export SCVIM_TAGFILE=/your/path` this defaults to "~/.sctags"
+`export SCVIM_TAGFILE=/your/path` this defaults to `~/.sctags`
 
 ### Configurable VIM variables:
 
 The following variables are available for configuration in your `.vimrc` file:
 
 * `g:sclangTerm`: Command to open a terminal window. Defaults to `"open -a
-Terminal.app"` on OSX, and `"x-terminal-emulator -e $SHELL -ic"` on Linux. On
-some Linux systems this value may need to changed.
+Terminal.app"` on OSX, and `"x-terminal-emulator -e $SHELL -ic"` on Linux.
+On some Linux systems this value may need to changed.
 * `g:sclangPipeApp`: Absolute path to the plugin **start_pipe** script. Defaults
-to `"~/.vim/bundle/scvim/bin/start_pipe"`. Change it if you have installed
-the plugin in other location.
+to `"~/.vim/bundle/scvim/bin/start_pipe"`.
+Change it if you have installed the plugin in other location.
 * `g:sclangDispatcher`: Absolute path to the plugin **sc_dispatcher** script.
-Defaults to `"~/.vim/bundle/scvim/bin/sc_dispatcher"`. Change it if you
-have installed the plugin in other location.
+Defaults to `"~/.vim/bundle/scvim/bin/sc_dispatcher"`.
+Change it if you have installed the plugin in other location.
 
 Example `.vimrc` line for gnome-terminal users:
 
@@ -99,7 +87,7 @@ See the commands reference for general usage.
 
 _ctags support_:
 
-run `:SCTags` from vim or  `SCVim.generateTagsFile()` from sclang
+run `:SCTags` from vim or `SCVim.generateTagsFile()` from sclang
 
 This gives you a couple of things:
 
@@ -127,17 +115,3 @@ in normal/insert mode:
 * `F5` to execute a block of code scvim will attempt to find the outermost bracket
 * `F6` to execute the current line of code
 * `F12` is a hard stop
-
---------------------------------------------------------------------
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <http://www.gnu.org/licenses/>.
