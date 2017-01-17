@@ -45,30 +45,30 @@ SCVim {
 		StartUp.add { //do after startup has finished
 			var classList, file, hugeString = "syn keyword scObject", basePath;
 
-			basePath = "~/.vim/bundle/scvim";
+			PathName("~/.vim".standardizePath).folders.do{ |folder|
+				var path = folder +/+ PathName("scvim");
+				if(path.isFolder) {
+					basePath = path.fullPath;
+				}
+			};
 
-			case
-			{ File.exists("~/.vim/bundle/scvim".standardizePath) } { basePath = "~/.vim/bundle/scvim" }
-			{ File.exists("~/.vim/bundle/supercollider".standardizePath) } { basePath = "~/.vim/bundle/supercollider" }
-			// default case
-			{ true } {
-				("\nSCVim could not be initialized, please check if the bundle is installed in '~/.vim/bundle/scvim'\n"
-					++ "Consult the README how to set up SCVim.\n").error };
+			if(basePath.isNil) {
+				("\nSCVim could not be initialized.\n"
+					++ "Consult the README to see how to install scvim.\n").error
+			};
 
-					//collect all class names as strings in a Array
-					classList =
-					Object.allSubclasses.collect{ arg i; var name;
-						name = i.asString;
-						hugeString = hugeString + name;
-					};
+			//collect all class names as strings in a Array
+			classList = Object.allSubclasses.collect{ arg i; var name;
+				name = i.asString;
+				hugeString = hugeString + name;
+			};
 
-					//create a file that contains all the class names
-					file = File((basePath ++ "/syntax/supercollider_objects.vim").standardizePath,"w");
-					file.write(hugeString);
-					file.close;
-
-				};
-			}
+			//create a file that contains all the class names
+			file = File((basePath ++ "/syntax/supercollider_objects.vim").standardizePath,"w");
+			file.write(hugeString);
+			file.close;
+		}
+	}
 
 	// DEPRECTATED in favor of tags system
 	*openClass{ |klass|
