@@ -1,435 +1,288 @@
-"SuperCollider/Vim interaction scripts
-"Copyright 2007 Alex Norman
+" SuperCollider/Vim interaction scripts
+" Copyright 2007 Alex Norman
+" 
+" modified 2010 stephen lumenta
+" Don't worry about the pipes in here. This is all taken care of inside of the
+" ruby script
 "
-"This file is part of SCVIM.
 "
-"SCVIM is free software: you can redistribute it and/or modify
-"it under the terms of the GNU General Public License as published by
-"the Free Software Foundation, either version 3 of the License, or
-"(at your option) any later version.
-"
-"SCVIM is distributed in the hope that it will be useful,
-"but WITHOUT ANY WARRANTY; without even the implied warranty of
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-"GNU General Public License for more details.
-"
-"You should have received a copy of the GNU General Public License
-"along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
+" This file is part of SCVIM.
+"  
+" SCVIM is free software: you can redistribute it and/or modify
+" it under the terms of the GNU General Public License as published by
+" the Free Software Foundation, either version 3 of the License, or
+" (at your option) any later version.
+" 
+" SCVIM is distributed in the hope that it will be useful,
+" but WITHOUT ANY WARRANTY; without even the implied warranty of
+" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+" GNU General Public License for more details.
+" 
+" You should have received a copy of the GNU General Public License
+" along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
+ 
 
-"au VimLeave
-
-"if exists("$SCVIM_DIR") == 0
-" echo "$SCVIM_DIR must be defined for SCVIM to work"
-" finish
-"endif
-
-
-"source the syntax file as it can change
-"so $SCVIM_DIR/syntax/supercollider.vim
+" source the syntax file as it can change
+" so $SCVIM_DIR/syntax/supercollider.vim
 runtime! syntax/supercollider.vim
 
 if exists("loaded_scvim") || &cp
-  finish
+   finish
 endif
 let loaded_scvim = 1
 
-"first if SCVIM_CACHE_DIR is defined, use that,
-"otherwise use ~/.scvim
-if exists("$SCVIM_CACHE_DIR") 
-  let s:scvim_cache_dir = $SCVIM_CACHE_DIR
-else
-  let s:scvim_cache_dir = $HOME . "/.scvim"
-  let $SCVIM_CACHE_DIR = s:scvim_cache_dir
-endif
-
-"source the scvimrc file if it exists
-if filereadable($HOME . "/.scvimrc")
-  source $HOME/.scvimrc
-end
-
-"add the cache dir to SCVIM_CACHE_DIR
-set runtimepath+=$SCVIM_CACHE_DIR
+" ========================================================================================
+" VARIABLES
+let s:bundlePath = expand('<sfile>:p:h:h')
 
 if exists("g:sclangKillOnExit")
-  let s:sclangKillOnExit = g:sclangKillOnExit
+	let s:sclangKillOnExit = g:sclangKillOnExit
 else
-  let s:sclangKillOnExit = 1
+	let s:sclangKillOnExit = 1
 endif
-
-if exists("g:sclangPipeLoc")
-  let s:sclangPipeLoc = g:sclangPipeLoc
-else
-  let s:sclangPipeLoc = "/tmp/sclang-pipe"
-endif
-let $SCVIM_PIPE_LOC = s:sclangPipeLoc
-
-if exists("g:sclangPipeAppPidLoc")
-  let s:sclangPipeAppPidLoc = g:sclangPipeAppPidLoc
-else
-  let s:sclangPipeAppPidLoc = "/tmp/sclangpipe_app-pid"
-endif
-let $SCVIM_PIPE_PID_LOC = s:sclangPipeAppPidLoc
 
 if exists("g:sclangTerm")
-  let s:sclangTerm = g:sclangTerm
+	let s:sclangTerm = g:sclangTerm
+elseif system('uname') =~ 'Linux'
+	let s:sclangTerm = "x-terminal-emulator -e $SHELL -ic"
 else
-  let s:sclangTerm = "xterm -e"
+	let s:sclangTerm = "open -a Terminal.app"
 endif
 
 if exists("g:sclangPipeApp")
-  let s:sclangPipeApp = g:sclangPipeApp
+	let s:sclangPipeApp	= g:sclangPipeApp
 else
-  let s:sclangPipeApp = "sclangpipe_app"
+	let s:sclangPipeApp	=  s:bundlePath . "/bin/start_pipe"
 endif
 
-" Check if scvim in tmux and screen should be split vertically (default)
-if exists("g:scvimSplitVertical")
-  let s:scvimSplitVertical = g:scvimSplitVertical
+if exists("g:sclangDispatcher")
+	let s:sclangDispatcher = g:sclangDispatcher
 else
-  let s:scvimSplitVertical = 1
+	let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
 endif
 
-" Check if size of tmux split or screen region is set (in lines),
-" otherwise set default (30 lines/blocks)
-if exists("g:scvimSplitSize")
-  let s:scvimSplitSize = g:scvimSplitSize
-else
-  let s:scvimSplitSize = 30
+if !exists("loaded_kill_sclang")
+	if s:sclangKillOnExit
+		au VimLeavePre * call SClangKillIfStarted()
+	endif
+	let loaded_kill_sclang = 1
 endif
 
-"function SClangRunning()
-" if s:sclang_pid != 0 && `pidof "#{$sclangsclangPipeApp_no_quotes}"`.chomp != ""
-"   return true
-" else
-"   $sclang_pid = 0
-"   return false
-" end
-"end
-
+" ========================================================================================
 
 function! FindOuterMostBlock()
-  "search backwards for parens dont wrap
-  let l:search_expression_up = "call searchpair('(', '', ')', 'bW'," .
-    \"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
-    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
-    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
-  "search forward for parens, don't wrap
-  let l:search_expression_down = "call searchpair('(', '', ')', 'W'," .
-    \"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
-    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
-    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
+	"search backwards for parens dont wrap
+	let l:search_expression_up = "call searchpair('(', '', ')', 'bW'," .
+		\"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
+		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
+		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
+	"search forward for parens, don't wrap
+	let l:search_expression_down = "call searchpair('(', '', ')', 'W'," .
+		\"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
+		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
+		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
 
-  "save our current cursor position
-  let l:returnline = line(".")
-  let l:returncol = col(".")
+	"save our current cursor position
+	let l:returnline = line(".")
+	let l:returncol = col(".")
+	
+	"if we're on an opening paren then we should actually go to the closing one to start the search
+	"if buf[l:returnline][l:returncol-1,1] == "("
+	if strpart(getline(line(".")),col(".") - 1,1) == "("
+		exe l:search_expression_down
+	endif
 
-  "if we're on an opening paren then we should actually go to the closing one to start the search
-  "if buf[l:returnline][l:returncol-1,1] == "("
-  if strpart(getline(line(".")),col(".") - 1,1) == "("
-    exe l:search_expression_down
-  endif
+	let l:origline = line(".")
+	let l:origcol = col(".")
 
-  let l:origline = line(".")
-  let l:origcol = col(".")
+	"these numbers will define our range, first init them to illegal values
+	let l:range_e = [-1, -1]
+	let l:range_s = [-1, -1]
 
-  "these numbers will define our range, first init them to illegal values
-  let l:range_e = [-1, -1]
-  let l:range_s = [-1, -1]
+	"this is the last line in our search
+	let l:lastline = line(".")
+	let l:lastcol = col(".")
 
-  "this is the last line in our search
-  let l:lastline = line(".")
-  let l:lastcol = col(".")
+	exe l:search_expression_up
 
-  exe l:search_expression_up
+	while line(".") != l:lastline || (line(".") == l:lastline && col(".") != l:lastcol)
+		"keep track of the last line/col we were on
+		let l:lastline = line(".")
+		let l:lastcol = col(".")
+		"go to the matching paren
+		exe l:search_expression_down
 
-  while line(".") != l:lastline || (line(".") == l:lastline && col(".") != l:lastcol)
-    "keep track of the last line/col we were on
-    let l:lastline = line(".")
-    let l:lastcol = col(".")
-    "go to the matching paren
-    exe l:search_expression_down
+		"if there isn't a match print an error
+		if l:lastline == line(".") && l:lastcol == col(".")
+			call cursor(l:returnline,l:returncol)
+			throw "UnmachedParen at line:" . l:lastline . ", col: " . l:lastcol
+		endif
 
-    "if there isn't a match print an error
-    if l:lastline == line(".") && l:lastcol == col(".")
-      call cursor(l:returnline,l:returncol)
-      throw "UnmachedParen at line:" . l:lastline . ", col: " . l:lastcol
-    endif
+		"if this is equal to or later than our original cursor position
+		if line(".") > l:origline || (line(".") == l:origline && col(".") >= l:origcol)
+			let l:range_e = [line("."), col(".")]
+			"go back to opening paren
+			exe l:search_expression_up
+			let l:range_s = [line("."), col(".")]
+		else
+			"go back to opening paren
+			exe l:search_expression_up
+		endif
+		"find next paren (if there is one)
+		exe l:search_expression_up
+	endwhile
 
-    "if this is equal to or later than our original cursor position
-    if line(".") > l:origline || (line(".") == l:origline && col(".") >= l:origcol)
-      let l:range_e = [line("."), col(".")]
-      "go back to opening paren
-      exe l:search_expression_up
-      let l:range_s = [line("."), col(".")]
-    else
-      "go back to opening paren
-      exe l:search_expression_up
-    endif
-    "find next paren (if there is one)
-    exe l:search_expression_up
-  endwhile
+	"restore the settings
+	call cursor(l:returnline,l:returncol)
 
-  "restore the settings
-  call cursor(l:returnline,l:returncol)
-
-  if l:range_s[0] == -1 || l:range_s[1] == -1
-    throw "OutsideOfParens"
-  endif
-
-  "return the ranges
-   return [l:range_s, l:range_e]
+	if l:range_s[0] == -1 || l:range_s[1] == -1
+		throw "OutsideOfParens"
+	endif
+	
+	"return the ranges
+	 return [l:range_s, l:range_e]
 endfunction
 
+" ========================================================================================
 
-"this causes the sclang pipe / terminal app to be killed when you exit vim, if you don't
-"want that to happen then just comment this out
-if !exists("loaded_kill_sclang")
-  if s:sclangKillOnExit
-    au VimLeave * call SClangKill()
-  endif
-  let loaded_kill_sclang = 1
-endif
 
-" Resize the current sclang_pipe tmux split or screen region (positive values
-" enlargen, negative values lower the size of the pipe output)
-function SCresize(lines)
-  " If using tmux resize its pane
-  if $TMUX != ""
-    " If the tmux split is vertical, resize vertically
-    if s:scvimSplitVertical == 1
-      if a:lines > 0
-        call system("tmux resizep -L ".a:lines)
-      elseif a:lines < 0
-        call system("tmux resizep -R ".(a:lines*(-1)))
-      endif
-    else
-      if a:lines > 0
-        call system("tmux resizep -U ".a:lines)
-      elseif a:lines < 0
-        call system("tmux resizep -D ".(a:lines*(-1)))
-      endif
-    endif
-  " If using screen, resize its region
-  elseif $STY != ""
-    " If the screen region is vertical or horizontal, resize accordingly
-    if a:lines > 0
-      call system("screen -D -R -X resize -".a:lines)
-    elseif a:lines < 0
-      call system("screen -D -R -X resize +".(a:lines*(-1)))
-    endif
-  endif
+function SCFormatText(text)
+	let l:text = substitute(a:text, '\', '\\\\', 'g')
+	let l:text = substitute(l:text, '"', '\\"', 'g')
+	let l:text = substitute(l:text, '`', '\\`', 'g')
+  let l:text = '"' . l:text .'"'
+
+  return l:text
 endfunction
 
-"the vim version of SendToSC
 function SendToSC(text)
-  let l:text = substitute(a:text, '\', '\\\\', 'g')
-  let l:text = substitute(l:text, '"', '\\"', 'g')
-  let l:cmd = system('echo "' . l:text . '" >> ' . s:sclangPipeLoc)
-  "let l:cmd = system('echo "' . l:text . '" >> /tmp/test')
+  let l:text = SCFormatText(a:text)
+
+  call system(s:sclangDispatcher . " -i " . l:text)
+  redraw!
 endfunction
 
-function SendLineToSC(linenum)
-  let cmd = a:linenum . "w! >> " . s:sclangPipeLoc
-  silent exe cmd
-  "let cmd = a:linenum . "w! >> /tmp/test" 
-  "silent exe cmd
+function SendToSCSilent(text)
+  let l:text = SCFormatText(a:text)
+
+  call system(s:sclangDispatcher . " -s " . l:text)
+  redraw!
 endfunction
 
-let s:trackoflines = ""
+" a variable to hold the buffer content
+let s:cmdBuf = ""
 
-function! SClang_send()
-  let s:trackoflines .= getline(".") . "\n"
-  if line(".") == a:lastline
-    call SendToSC(s:trackoflines)
-    let s:trackoflines = ""
-    call SendToSC('')
-    "redraw!
+function SClang_send()
+  let currentline = line(".")
+  let s:cmdBuf = s:cmdBuf . getline(currentline) . "\n"
+  
+  if(a:lastline == currentline)
+    call SendToSC(s:cmdBuf)
+
+    " clear the buffer again
+    let s:cmdBuf = ""
   endif
 endfunction
+
+function SClang_block()
+	let [blkstart,blkend] = FindOuterMostBlock()
+	"blkstart[0],blkend[0] call SClang_send()
+	"these next lines are just a hack, how can i do the above??
+	let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
+	let l:origline = line(".")
+	let l:origcol = col(".")
+	exe cmd
+	call cursor(l:origline,l:origcol)
+endfunction
+
+" ========================================================================================
+
+let s:sclangStarted = 0
 
 function SClangStart()
-  if !filewritable(s:sclangPipeAppPidLoc)
-    " If tmux is running, spawn a seperate split for the sclang_pipe and
-    " rename the window to scvim
-    if $TMUX != ""
-      if s:scvimSplitVertical == 1
-        call system("tmux splitw -h -p ". s:scvimSplitSize ."; tmux send-keys " . s:sclangPipeApp . " C-m; tmux selectp -l; sleep 1; tmux renamew scvim")
-      else
-        call system("tmux splitw -v -p ". s:scvimSplitSize ."; tmux send-keys " . s:sclangPipeApp . " C-m; tmux selectp -l; sleep 1; tmux renamew scvim")
-      endif
-    " If screen is running, spawn a seperate region for the sclang_pipe and
-    " change the window's caption to scvim
-    elseif $STY != ""
-      if s:scvimSplitVertical == 1
-        " Open screen with vertical region
-        call system("screen -D -R -X split -v; screen -D -R -X focus; screen -D -R -X resize ". s:scvimSplitSize ."; screen -D -R -X screen " . s:sclangPipeApp . "; screen -D -R -X focus")
-      else
-        " Open screen with horizontal region
-        call system("screen -D -R -X split; screen -D -R -X focus; screen -D -R -X resize ". s:scvimSplitSize ."; screen -D -R -X screen " . s:sclangPipeApp . "; screen -D -R -X focus")
-      endif
-      " set screen caption to scvim
-      call system("screen -D -R -X caption string scvim")
+    if $TERM[0:5] == "screen"
+        if executable("tmux")
+            call system("tmux split-window -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -U")
+            let s:sclangStarted = 1
+        else
+            echo "Sorry, screen is not supported yet.."
+        endif
     else
-      call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+        call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+        let s:sclangStarted = 1
     endif
-  else
-    "TODO: If this happens, make sure to remove the pipe and restart scvim
-    throw s:sclangPipeAppPidLoc . " exists, is " . s:sclangPipeApp . " running?  If not try deleting " . s:sclangPipeAppPidLoc
-  endif
 endfunction
 
 function SClangKill()
-  if filewritable(s:sclangPipeAppPidLoc)
-    call SendToSC("Server.quitAll;")
-    :sleep 10 m
-    call system("kill $(pidof cat " . s:sclangPipeAppPidLoc . "); for i in $(pidof ruby $(which sclangpipe_app)); do kill $i; done; kill $(pidof cat " . s:sclangPipeLoc . "); rm " . s:sclangPipeAppPidLoc . "; rm " . s:sclangPipeLoc )
-    " If using tmux, kill remaining panes and rename the window back to the
-    " shell currently in use (not necessarily the one in $SHELL!)
-    if $TMUX != ""
-      call system("tmux killp -t 1; tmux renamew $(ps -p $$|grep pts|cut -c16-|cut -d ' ' -f2)")
-    elseif $STY != ""
-      "If screen is running, kill its region spawned to contain sclangpipe_app
-      call system("screen -D -R -X only")
-    endif
-  end
+  call system(s:sclangDispatcher . " -q")
 endfunction
 
-function SClangRestart()
-  if filewritable(s:sclangPipeAppPidLoc)
-    " Kill all processes, that were spawned
-    call system("kill $(pidof cat " . s:sclangPipeAppPidLoc . "); for i in $(pidof ruby $(which sclangpipe_app)); do kill $i; done; kill $(pidof cat " . s:sclangPipeLoc . "); rm " . s:sclangPipeAppPidLoc . "; rm " . s:sclangPipeLoc )
-    " If tmux is running, kill the pane for sclangpipe_app
-    if $TMUX != ""
-      call system("tmux killp -t 1")
-    elseif $STY != ""
-      "If screen is running, kill its region spawned to contain sclangpipe_app
-      call system("screen -D -R -X only")
-    endif
-    call SClangStart()
-  else
-    call SClangStart()
-  end
+function SClangKillIfStarted()
+  if s:sclangStarted == 1
+    call SClangKill()
+  endif
 endfunction
 
-function SClang_free(server)
-  call SendToSC('s.freeAll;')
+function SClangRecompile()
+  echo s:sclangDispatcher
+  call system(s:sclangDispatcher . " -k")
+  call system(s:sclangDispatcher . " -s ''")
   redraw!
 endfunction
 
-function SClang_thisProcess_stop()
-  call SendToSC('thisProcess.stop;')
-  redraw!
+function SClangHardstop()
+  call SendToSCSilent('thisProcess.hardStop()')
 endfunction
 
-function SClang_TempoClock_clear()
-  call SendToSC('TempoClock.default.clear;')
-  redraw!
-endfunction
-
-function! SClang_block()
-  let [blkstart,blkend] = FindOuterMostBlock()
-  "blkstart[0],blkend[0] call SClang_send()
-  "these next lines are just a hack, how can i do the above??
-  let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
-  let l:origline = line(".")
-  let l:origcol = col(".")
-  exe cmd
-  call cursor(l:origline,l:origcol)
-  
-  ""if the range is just one line
-  "if blkstart[0] == blkend[0]
-  " "XXX call SendToSC(strpart(getline(blkstart[0]),blkstart[1] - 1, (blkend[1] - blkstart[1] + 1)))
-  " call SendLineToSC(blkstart[0])
-  "else
-  " let linen = blkstart[0] - 1
-  " "send the first line as it might not be a full line
-  " "XXX let line = getline(linen)
-  " "XXX call SendToSC(strpart(line, blkstart[1] - 1))
-  " call SendLineToSC(linen)
-  " let linen += 1
-  " let endlinen = blkend[0]
-  " while linen < endlinen
-  "   "XXX call SendToSC(getline(linen))
-  "   call SendLineToSC(linen)
-  "   let linen += 1
-  " endwhile
-  " "send the last line as it might not be a full line
-  " "XXX let line = getline(endlinen)
-  " "XXX call SendToSC(strpart(line,0,blkend[1]))
-  " call SendLineToSC(endlinen)
-  "endif
-  "call SendToSC('')
-endfunction
+" Introspection and Help Files
 
 function SCdef(subject)
-  let l:tagfile = s:scvim_cache_dir . "/TAGS_SCDEF"
-  let l:tagdest = s:scvim_cache_dir . "/doc/tags"
-
-  if !filereadable(l:tagfile)
-    echo "definition tag cache does not exist, you must run SCVim.updateCaches in supercollider"
-    let l:dontcare = system("echo 'SC:SCVim SCVim.scd /^' > " . l:tagdest)
-    exe "help SC:SCVim"
-  else
-    let l:dontcare = system("grep SCdef:" . a:subject . " " . l:tagfile . " > " . l:tagdest)
-    exe "help SCdef:" . a:subject
-  end
+  call SendToSCSilent('SCVim.openClass("' . a:subject . '");')
 endfun
 
 function SChelp(subject)
-  let l:tagfile = s:scvim_cache_dir . "/doc/TAGS_HELP"
-  let l:tagdest = s:scvim_cache_dir . "/doc/tags"
-  if !filereadable(l:tagfile)
-    echo "help tag cache does not exist, you must run SCVim.updateHelpCache in supercollider in order have help docs"
-    let l:dontcare = system("echo 'SC:SCVim SCVim.scd /^' > $SCVIM_CACHE_DIR/doc/tags")
-    exe "help SC:SCVim"
-    return
-  end
-
-  "the keybindings won't find * but will find ** for some reason
-  if a:subject == ""
-    let l:dontcare = system("grep \"SC:Help\" " . l:tagfile . " > " . l:tagdest)
-    exe "help SC:Help"
-  elseif a:subject == "*"
-    let l:dontcare = system("grep \"SC:\\*\" " . l:tagfile . " > " . l:tagdest)
-    exe "help SC:\*" . a:subject
-  elseif a:subject == "**"
-    let l:dontcare = system("grep \"SC:\\*\\*\" " . l:tagfile . " > " . l:tagdest)
-    exe "help SC:\*\*" . a:subject
-  else
-    let l:dontcare = system("grep SC:\"" . a:subject . "\" " . l:tagfile . " > " . l:tagdest)
-    exe "help SC:" . a:subject
-  endif
+  call SendToSCSilent('HelpBrowser.openHelpFor("' . a:subject . '");')
 endfun
 
-" search help files for word under the cursor
-" or open the HelpBrowser front page
-function! HelpBrowser(subject)
-    if strlen(a:subject) > 0 && a:subject!~" " && a:subject!~"\t" 
-        let string= "HelpBrowser.openHelpFor"
-        let format= "(\"" . a:subject . "\");"
-        let string= string . format
-        call SendToSC(string)
-    else
-        call SendToSC('Help.gui;')
-    endif
+function SCreference(subject)
+  call SendToSCSilent('SCVim.methodReferences("' . a:subject . '");')
+endfun
+
+function SCimplementation(subject)
+  call SendToSCSilent('SCVim.methodTemplates("' . a:subject . '");')
+endfun
+
+function SCfindArgs()
+  let l:subject = getline(line("."))
+  call SendToSC('Help.methodArgs("' . l:subject . '");')
+endfun
+
+function SCfindArgsFromSelection()
+  let l:subject = s:get_visual_selection()
+  call SendToSC('Help.methodArgs("' . l:subject . '");')
+endfun
+
+function SCtags()
+  call SendToSC("SCVim.generateTagsFile();")
+endfun
+
+function! s:get_visual_selection()
+  " http://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript
+  " Why is this not a built-in Vim script function?!
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
 endfunction
 
-function ListSCObjects(A,L,P)
-  return system("cat $SCVIM_CACHE_DIR/sc_object_completion")
-endfun
-
-function ListSCHelpItems(A,L,P)
-  return system("cat $SCVIM_CACHE_DIR/doc/sc_help_completion")
-endfun
-
-
 "custom commands (SChelp,SCdef,SClangfree)
-com -complete=custom,ListSCHelpItems -nargs=? SChelp call SChelp("<args>")
-com -complete=custom,ListSCObjects -nargs=1 SCdef call SCdef("<args>")
-com -nargs=1 SClangfree call SClang_free("<args>")
+com -nargs=0 SClangHardstop call SClangHardstop()
 com -nargs=0 SClangStart call SClangStart()
 com -nargs=0 SClangKill call SClangKill()
-com -nargs=0 SClangRestart call SClangRestart()
-com -nargs=1 SCresize call SCresize("<args>")
+com -nargs=0 SClangRecompile call SClangRecompile()
+com -nargs=0 SCtags call SCtags()
+com -nargs=0 SChelp call SChelp('')
 
 " end supercollider.vim

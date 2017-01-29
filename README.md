@@ -1,155 +1,117 @@
-Scvim
-=====
+SCVim (> 3.5)
+==============
 
-Created by Alex Norman, it is in its early stages, use at your own risk
-This is SCVIM-git
-The webpage is here: http://www.x37v.info/projects/scvim
-If you have improvements/suggestions email `alex at x37v dot info`
+A vim plugin for supercollider.
+
+This is based of the original [scvim by Alex Norman](http://www.x37v.info/scvim/).
+
+Features
+
+* Syntax Highlighting
+* A faked REPL via the terminal
+* Code Navigation (jump to definitions) via a global tags file "~/.sctags"
+* Auto-Completion of known words via tag completion
+* Launch the SuperCollider QT Help System
 
 
-Requirements
+Installation:
 ------------
 
-- vim
-- supercollider (sclang)
-- ruby (sclangpipe_app, scvim)
-- cmake
-- pidof (for killing spawned processes, when closing)
+### `scvim` plugin installation
 
-### Optional:
+It is highly recommended to use a plugin manager to install `scvim`. Most common ones are:
 
-- gvim or MacVim
+* [pathogen](https://github.com/tpope/vim-pathogen)
+* [vundle](https://github.com/VundleVim/Vundle.vim)
+* [vim-plug](https://github.com/junegunn/vim-plug)
 
+### `SCVim.sc`
 
-Installation steps
-------------------
+If your SuperCollider version was not build with vim support (i.e. if the class
+`SCVim` does not exist), you'll need to either symlink `sc/SCVim.sc` somewhere
+where SuperCollider can find it (typically that would be in `Platform.userExtensionDir`
+from within SuperCollider), either add (the absolute path to) `scvim/sc` to
+`includePaths:` in your `sclang_conf.yaml`.
 
-Note: If you installed SuperCollider from source and didn't disable scvim when running cmake, scvim should already be installed.
+The rest should work automatically for **mac** users.
 
-If you'd like to install scvim directly, without using the whole SuperCollider install process you can do:
+### Linux notes
 
-```
-$> cmake . && sudo make install
-```
+On **Linux** and other unix systems the vim variable `g:sclangTerm` should be
+set in your `.vimrc` file to let the plugin know which terminal application
+should it use for launching sclang. Please, read on the next section for more
+details.
 
-You will have to enter your password in order to finalize the installation.
+Also, if Ruby is not installed on your linux system, install it with:
 
-Some people prefer to use a build directory [though scvim doesn't actually build anything, but cmake does create some output files] to do that, from the scvim directory, type:
+`sudo apt-get install ruby` or `sudo yum install ruby`
 
-```
-$> mkdir build && cd build
-$> cmake .. && sudo make install
-```
+Plugin configuration:
+---------------------
 
-Now you should be ready to use scvim, e.g. by running `scvim` or `scvim -g` from a command prompt.
+### ENV variables:
 
+Path to the tags file
+`export SCVIM_TAGFILE=/your/path` this defaults to `~/.sctags`
 
-Optional extra installation steps
----------------------------------
+### Configurable VIM variables:
 
-* If you want to be able to read supercollider files with syntax highlighting, 
-have the ability to start the language and have the keybindings you've set
-up during a normal vim editing session [without launching as 'scvim'] then
-source your scvimrc file in your `~/.vimrc`.
+The following variables are available for configuration in your `.vimrc` file:
 
-For example, if you have a `~/.scvimrc` file you could put this line in your `~/.vimrc`:
+* `g:sclangTerm`: Command to open a terminal window. Defaults to `"open -a
+Terminal.app"` on OSX, and `"x-terminal-emulator -e $SHELL -ic"` on Linux.
+On some Linux systems this value may need to changed.
+* `g:sclangPipeApp`: Absolute path to the plugin **start_pipe** script. Defaults
+to `"~/.vim/bundle/scvim/bin/start_pipe"`.
+Change it if you have installed the plugin in other location.
+* `g:sclangDispatcher`: Absolute path to the plugin **sc_dispatcher** script.
+Defaults to `"~/.vim/bundle/scvim/bin/sc_dispatcher"`.
+Change it if you have installed the plugin in other location.
 
-   `so ~/.scvimrc`
+Example `.vimrc` line for gnome-terminal users:
 
-* I put this in my `~/.config/SuperCollider/startup.scd` so that each time I start sclang I have updated
-Object completion and highlighting, as well as Object Definition Lookup:
+    let g:sclangTerm = "gnome-terminal -x $SHELL -ic"
 
-  ```
-  //set up the scvim stuff
-  SCVim.updateCaches;
-  ```
+If for some reason vim can't find the path to the two launch scripts
+**start_pipe** and **sc_dispatcher** you can set them manually in your .vimrc:
 
-You'll probably want to execute this at least once after an install of
-supercollider to get the most up-to-date Object info
+    let g:sclangPipeApp     = "~/.vim/bundle/scvim/bin/start_pipe"
+    let g:sclangDispatcher  = "~/.vim/bundle/scvim/bin/sc_dispatcher"
 
-* sclang's working directory defaults to /tmp on linux and
-/Applications/SuperCollider on mac when using scvim. If you want to
-set it to something else you can set the bash environment variable
-`SCLANG_RUNDIR`
+Using it:
+--------
+To start open a file with the right extension :e foo.sc(d)
+Enter `:SClangStart` and a terminal should open with a running sclang session.
 
-* I've put the colorscheme that I use in the "extra" folder. This makes
-`strings, symbols and chars variations on the same color but all look
-different.  Feel free to use/modify it to your liking.
+See the commands reference for general usage.
 
+_ctags support_:
 
-Usage
------
+run `:SCTags` from vim or `SCVim.generateTagsFile()` from sclang
 
-Defaults (most work in both command and insert mode):
+This gives you a couple of things:
 
-`:SClangStart` starts/restarts the interpreter in an xterm
-(if you want to recompile the supercollider library just type `:SClangStart` and you'll
-kill the current interpreter, start up a new one and have a recompiled library)
-`:SClangKill` kills the xterm/interpreter (exiting vim also kills the interpreter)
-`:SCresize [-]N` resizes the sclang output if scvim is used from within terminal multiplexers like tmux or screen by N lines
+* You can jump to any known class or method
+* You get tags completion with ctrl-x ctrl-] (use the vim supertab plugin if this is too
+  bothersome to type)
 
-`F1` calls the SuperCollider Help on the keyword under the current cursor
-`F5` sends a whole block (looks for the outermost parens and sends that data)
-`F6` sends a single line (the line the cursor is currently on)
-`F7` calls `TempoClock.default.clear;`
-`F8` calls `s.freeAll;`
-`F12` calls `thisProcess.stop;` (i.e. the same as `cmd-.` on Mac)
+### Commands:
 
-In visual mode `F5` and `F6` both send the whole visual block
+* `:SClangStart` launch sclang
+* `:SClangRecompile` recompile
+* `:SClangKill` what it says
 
-Use `:SChelp` to get to SC help topics, or use `K` on a word (in command mode)
-   (this has tab completion)
-use `:SCdef` to see the class definitions for an object, or use `^k` (in command or normal mode)
-on a word (this also has tab completion)
+### Key commands:
 
-These key bindings can all be changed through editing your scvimrc file.
+in normal mode:
 
+* `<leader>sk` recompiles the sc library
+* `K` on a word opens the corresponding helpfile inside the supercollider help
+* `^]` jumps to a tagfile (this works for classes only so far but will be
+  extended)
 
-Help docs
----------
+in normal/insert mode:
 
-`scvim` uses preprocessed versions of the help files (converted to plain-text),
-and to update these help files from the main files you can run the following
-line in sclang:
-
-  ```
-  SCVim.updateHelpCache;
-  ```
-
-
-Troubleshooting
----------------
-
-If you cannot find the scvim executable, make sure that `/usr/local/bin` is
-in your PATH, this is where scvim is installed by default.
-
-If you get errors about _FileWrite (like the error printed below) when you run
-`SCVim.updateHelpCache` or `SCVim.updateCaches` it is likely that you don't have
-write permissions for your scvim_cache_dir.
-This directory is normally: `~/.scvim`
-You can verify that by executing: `SCVIM.scvim_cache_dir`
-Most often the solution is to do this: `sudo chown -R <yourusername> ~/.scvim`
-
-```
-ERROR: Primitive '_FileWrite' failed.
-Failed.
-RECEIVER:
-Instance of File { (B7837DD0, gc=40, fmt=00, flg=00, set=01)
- instance variables [1]
- fileptr : nil
-}
-```
-
-
-Thanks
-------
-
-- Dan Stowell for his help:
-Converting the SuperCollider code into a class, improving the README,
-getting scvim into the SuperCollider svn, etc.
-
-- John Yates for providing the indent functionality [which I have changed slightly] and help with the help file processor
-
-- Andrzej Kopec for work on removing html from help
-
-- Renick Bell for testing out the install process and providing notes.
+* `F5` to execute a block of code scvim will attempt to find the outermost bracket
+* `F6` to execute the current line of code
+* `F12` is a hard stop

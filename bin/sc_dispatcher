@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/scpipe/lib/sc'
+require 'optparse'
+
+options = {}
+
+d = SC::Dispatcher.new
+
+OptionParser.new do |opts|
+   opts.banner = "Usage: sc_dispatcher.rb [options]"
+   opts.separator "----"
+
+   opts.on("-i <sc_code>", "Interpret SC Code") do |sc_code|
+     d.interpret(sc_code)
+   end
+
+   opts.on("-s <sc_code>", "Interpret SC Code without printing results") do |sc_code|
+     d.interpret_silent(sc_code)
+   end
+
+   opts.on("-k", "Recompile the library") do
+     File.open(SC::Pipe.pid_loc, "r") do |file|
+        d.interpret_silent("Server.quitAll;")
+        pid = file.read.chomp
+        Process.kill('USR1', pid.to_i)
+     end
+   end
+
+   opts.on("-q", "Quit SuperCollider and all the belonging prcesses") do
+     d.interpret_silent("Server.quitAll;")
+
+     File.open(SC::Pipe.pid_loc, "r") do |file|
+        pid = file.read.chomp
+        Process.kill('INT', pid.to_i)
+     end
+   end
+
+   opts.on_tail("-h", "--help", "Show this message") do
+     puts opts
+     exit
+   end
+
+end.parse!
