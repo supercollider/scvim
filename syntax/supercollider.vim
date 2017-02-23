@@ -20,6 +20,10 @@
 " Version:	0.2
 " Last change:	2012-03-31
 
+if exists("b:current_syntax")
+    finish
+endif
+
 syn clear
 
 syn match	scAoperator	"{"
