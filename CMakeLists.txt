@@ -1,10 +1,10 @@
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   install(FILES sc/SCVim.sc
-    DESTINATION "$ENV{HOME}/Library/Application Support/SuperCollider/Extensions/scvim"
+    DESTINATION "$ENV{HOME}/Library/Application Support/SuperCollider/Extensions/scide_scvim"
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 ELSE()
   install(FILES sc/SCVim.sc
-    DESTINATION share/SuperCollider/Extensions/scvim
+    DESTINATION share/SuperCollider/Extensions/scide_scvim
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 ENDIF()
 
