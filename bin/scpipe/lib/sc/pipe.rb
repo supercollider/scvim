@@ -18,10 +18,10 @@ module SC
     return @@sclang_path unless @@sclang_path.empty?
     # sclang path changed with sc-3.7.2 (https://github.com/supercollider/scvim/pull/11)
     @paths = [
-      "Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang",
-      "Applications/SuperCollider.app/Contents/MacOS/sclang",
-      "Applications/SuperCollider/SuperCollider.app/Contents/Resources/sclang",
-      "Applications/SuperCollider.app/Contents/Resources/sclang"
+      "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang",
+      "/Applications/SuperCollider.app/Contents/MacOS/sclang",
+      "/Applications/SuperCollider/SuperCollider.app/Contents/Resources/sclang",
+      "/Applications/SuperCollider.app/Contents/Resources/sclang"
     ]
     @paths.each do |path|
       return path if File.exists?(path)
