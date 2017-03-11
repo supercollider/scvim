@@ -87,7 +87,7 @@ See the commands reference for general usage.
 
 _ctags support_:
 
-run `:SCTags` from vim or `SCVim.generateTagsFile()` from sclang
+run `:SCtags` from vim or `SCVim.generateTagsFile()` from sclang
 
 This gives you a couple of things:
 
