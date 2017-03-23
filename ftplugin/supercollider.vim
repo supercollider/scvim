@@ -311,9 +311,19 @@ function Flash(pattern)
   " Highlight the pattern (line or region) for 150ms if `scFlash` is enabled
   if !exists('g:scFlash') | return | endif
 
-  call matchadd("Evaluated", a:pattern)
+  call matchadd('Evaluated', a:pattern)
   redraw
-  sleep 150m
+
+  " timers were introduced in vim-8.0
+  if has('timers')
+    call timer_start(200, 'ClearFlash')
+  else
+    sleep 200m
+    call ClearFlash()
+  endif
+endfunction
+
+function ClearFlash(...)
   call clearmatches()
 endfunction
 
