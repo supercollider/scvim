@@ -67,10 +67,15 @@ Change it if you have installed the plugin in other location.
 * `g:sclangDispatcher`: Absolute path to the plugin **sc_dispatcher** script.
 Defaults to `"~/.vim/bundle/scvim/bin/sc_dispatcher"`.
 Change it if you have installed the plugin in other location.
+* `g:scFlash`: Highlighting of evaluated code
 
 Example `.vimrc` line for gnome-terminal users:
 
     let g:sclangTerm = "gnome-terminal -x $SHELL -ic"
+
+To enable highlighting of evaluated code:
+
+    let g:scFlash = 1
 
 If for some reason vim can't find the path to the two launch scripts
 **start_pipe** and **sc_dispatcher** you can set them manually in your .vimrc:
