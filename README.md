@@ -115,3 +115,55 @@ in normal/insert mode:
 * `F5` to execute a block of code scvim will attempt to find the outermost bracket
 * `F6` to execute the current line of code
 * `F12` is a hard stop
+
+
+Using scvim on command-line only systems: `tmux` (e.g. Raspbian light)
+----------------------------------------------------------------------
+
+When sclang is started from scvim, another terminal is opened in which sclang
+output is posted. In a command line only interface this is not possible out of
+the box. Therefore scvim makes use of `tmux` to provide multiple frames in a
+single terminal window. Tmux is provided by all Linux distributions, as well as
+by Homebrew on the Mac. While tmux offers many configuration options, basic use
+just requires to execute the command `tmux` before starting `vim`. Then sclang
+output will appear in a split window at the bottom of the screen.
+
+*NOTE for Linux*: at the time of this writing (3.9dev) there is a bug in sclang
+with inbuilt Qt that prevents it from starting on cli-only systems, or systems
+where X has not been started. Note that neither terminals started from within X,
+nor MacOS are affected. A workaround is to run jackd and sclang with `xvfb-run`:
+
+    $> xvfb-run -a jackd ...
+    $> xvfb-run -a sclang
+
+Xvfb-run is part of the xvfb package. A more involved solution, preferred on low
+resources systems, is to compile jackd without dbus-, and SC without Qt support.
+
+
+Remote access via ssh
+---------------------
+
+Like on X-less systems, a ssh terminal cannot easily provide multiple windows
+for vim and sclang output (see above), but `tmux` works perfectly in a ssh
+session also. The capability to attach- and dettach from sessions that keep
+running after logging off, is particularly valuable in remote access.
+
+If the sclang server accessed uses X11 (i.e. Linux and siblings), 'X-forwarding'
+is an interesting alternative to tmux, because it also allows to transmit
+graphical content. If X-forwarding is supported on server and client, it can be
+activated by adding the option `-Y` or `-X` to the `ssh` command:
+
+    ssh -Y user@domain
+
+For graphical content to load on the client, a X-server has to be available on
+the client. On MacOS XQuartz needs to be installed, on Windows multiple
+alternatives exist, for example VcXsrv, Xming or the X-server provided by
+Cygwin.
+
+On Windows the X-server has to be started when making the ssh connection, and
+the environment variable `DISPLAY` set:
+
+    set DISPLAY=:0
+
+Note that setting the variable `DISPLAY` can also be necessary on the Linux
+*server*, if accessed via ssh (`export DISPLAY=:0.0`).
