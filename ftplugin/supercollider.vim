@@ -184,6 +184,14 @@ function SClang_send()
   endif
 endfunction
 
+function SClang_line()
+  " Wrapper to be able to call `SClang_send()` without calling `FlashLine()`
+  call SClang_send()
+
+  let currentline = line('.')
+  call FlashLine(currentline)
+endfunction
+
 function SClang_block()
 	let [blkstart,blkend] = FindOuterMostBlock()
 	"blkstart[0],blkend[0] call SClang_send()
@@ -193,6 +201,7 @@ function SClang_block()
 	let l:origcol = col(".")
 	exe cmd
 	call cursor(l:origline,l:origcol)
+	call FlashRegion(blkstart[0], blkend[0])
 endfunction
 
 " ========================================================================================
@@ -275,6 +284,47 @@ function! s:get_visual_selection()
   let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
   return join(lines, "\n")
+endfunction
+
+" ========================================================================================
+
+" Compatibility
+highlight Evaluated term=reverse cterm=reverse guibg=Grey
+
+function FlashLine(line)
+  let pattern = '\%' . a:line . 'l'
+  call Flash(pattern)
+endfunction
+
+function FlashRegion(start, end)
+  let first = a:start - 1
+  let last  = a:end + 1
+  let pattern  = ''
+  let pattern .= '\%>' . first . 'l'
+  let pattern .= '\%<' . last . 'l'
+  let pattern .= '.'
+
+  call Flash(pattern)
+endfunction
+
+function Flash(pattern)
+  " Highlight the pattern (line or region) for 150ms if `scFlash` is enabled
+  if !exists('g:scFlash') | return | endif
+
+  call matchadd('Evaluated', a:pattern)
+  redraw
+
+  " timers were introduced in vim-8.0
+  if has('timers')
+    call timer_start(200, 'ClearFlash')
+  else
+    sleep 200m
+    call ClearFlash()
+  endif
+endfunction
+
+function ClearFlash(...)
+  call clearmatches()
 endfunction
 
 "custom commands (SChelp,SCdef,SClangfree)
