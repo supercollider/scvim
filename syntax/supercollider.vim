@@ -39,6 +39,7 @@ syn match	scSymbol "\w\+:"
 
 syn region  scString start=+"+ skip=+\\\\\|\\"+ end=+"+
 
+syn match	scChar	"\$[^ ]"
 syn match	scChar	"\$\w"
 syn match	scChar	"\$\\\\"
 syn match	scChar	"\$\\\w"
