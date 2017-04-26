@@ -1,11 +1,12 @@
 SCVim (> 3.5)
 ==============
 
-A vim plugin for supercollider.
+A vim plugin for supercollider (tested on Linux and Mac OSX).
 
 This is based of the original [scvim by Alex Norman](http://www.x37v.info/scvim/).
 
 Features
+--------
 
 * Syntax Highlighting
 * A faked REPL via the terminal
@@ -13,8 +14,13 @@ Features
 * Auto-Completion of known words via tag completion
 * Launch the SuperCollider QT Help System
 
+Requirements
+------------
 
-Installation:
+* ruby
+* supercollider >= 3.9 (for current **master** - [Linux only](https://github.com/supercollider/scvim/issues/27))
+
+Installation
 ------------
 
 ### `scvim` plugin installation
@@ -27,27 +33,14 @@ It is highly recommended to use a plugin manager to install `scvim`. Most common
 
 ### `SCVim.sc`
 
-If your SuperCollider version was not build with vim support (i.e. if the class
-`SCVim` does not exist), you'll need to either symlink `sc/SCVim.sc` somewhere
-where SuperCollider can find it (typically that would be in `Platform.userExtensionDir`
-from within SuperCollider), either add (the absolute path to) `scvim/sc` to
-`includePaths:` in your `sclang_conf.yaml`.
+If your SuperCollider version was not build with vim support (i.e. the class
+`SCVim` does not exist yet), you'll need to either symlink `sc/SCVim.sc`
+somewhere where SuperCollider can find it (typically that would be in
+`Platform.userExtensionDir` from within SuperCollider), or add (the absolute
+path to) `scvim/sc` to `includePaths:` in your `sclang_conf.yaml`.
 
-The rest should work automatically for **mac** users.
-
-### Linux notes
-
-On **Linux** and other unix systems the vim variable `g:sclangTerm` should be
-set in your `.vimrc` file to let the plugin know which terminal application
-should it use for launching sclang. Please, read on the next section for more
-details.
-
-Also, if Ruby is not installed on your linux system, install it with:
-
-`sudo apt-get install ruby` or `sudo yum install ruby`
-
-Plugin configuration:
----------------------
+Configuration
+-------------
 
 ### ENV variables:
 
@@ -83,8 +76,8 @@ If for some reason vim can't find the path to the two launch scripts
     let g:sclangPipeApp     = "~/.vim/bundle/scvim/bin/start_pipe"
     let g:sclangDispatcher  = "~/.vim/bundle/scvim/bin/sc_dispatcher"
 
-Using it:
---------
+Usage
+-----
 To start open a file with the right extension :e foo.sc(d)
 Enter `:SClangStart` and a terminal should open with a running sclang session.
 
