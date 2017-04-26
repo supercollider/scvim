@@ -19,11 +19,17 @@ Installation:
 
 ### `scvim` plugin installation
 
-It is highly recommended to use a plugin manager to install `scvim`. Most common ones are:
+It is highly recommended to use a plugin manager to install `scvim`. Most
+common ones are:
 
 * [pathogen](https://github.com/tpope/vim-pathogen)
 * [vundle](https://github.com/VundleVim/Vundle.vim)
 * [vim-plug](https://github.com/junegunn/vim-plug)
+* [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager)
+
+The plugin folder is expected to be found somewhere below `~/.vim`, at a
+maximum depth of two folders and with the word `scvim` in it (which should in
+theory cover all use-cases for the above plugin managers).
 
 ### `SCVim.sc`
 
