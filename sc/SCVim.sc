@@ -41,33 +41,36 @@ SCVim {
 			vimPath = vimPath.replace("\n", "");
 		};
 
-		// thanks to Dionysis Athinaios
-		StartUp.add { //do after startup has finished
-			var classList, file, hugeString = "syn keyword scObject", basePath;
+    StartUp.add {
+      var classList, file, hugeString = "syn keyword scObject", basePath;
+      // search two folders deep below ~/.vim for a folder named "*scvim*"
+      PathName("~/.vim".standardizePath).folders.do{ |folder|
+        if(folder.fullPath.contains("scvim")) {
+          basePath = folder.fullPath;
+        } {
+          folder.folders.do{ |subfolder|
+            if(subfolder.fullPath.contains("scvim")) {
+              basePath = subfolder.fullPath;
+            }
+          }
+        };
+      };
 
-			PathName("~/.vim".standardizePath).folders.do{ |folder|
-				var path = folder +/+ PathName("scvim");
-				if(path.isFolder) {
-					basePath = path.fullPath;
-				}
-			};
-
-			if(basePath.isNil) {
-				("\nSCVim could not be initialized.\n"
-					++ "Consult the README to see how to install scvim.\n").error
-			};
-
-			//collect all class names as strings in a Array
-			classList = Object.allSubclasses.collect{ arg i; var name;
-				name = i.asString;
-				hugeString = hugeString + name;
-			};
-
-			//create a file that contains all the class names
-			file = File((basePath ++ "/syntax/supercollider_objects.vim").standardizePath,"w");
-			file.write(hugeString);
-			file.close;
-		}
+      if(basePath.isNil) {
+        ("\nSCVim could not be initialized.\n"
+        ++ "Consult the README to see how to install scvim.\n").error
+      } {
+        //collect all class names as strings in a Array
+        classList = Object.allSubclasses.collect{ arg i; var name;
+          name = i.asString;
+          hugeString = hugeString + name;
+        };
+        //create a file that contains all the class names
+        file = File((basePath ++ "/syntax/supercollider_objects.vim").standardizePath,"w");
+        file.write(hugeString);
+        file.close;
+      }
+    };
 	}
 
 	// DEPRECTATED in favor of tags system
