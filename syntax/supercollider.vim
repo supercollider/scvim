@@ -39,10 +39,7 @@ syn match	scSymbol "\w\+:"
 
 syn region  scString start=+"+ skip=+\\\\\|\\"+ end=+"+
 
-syn match	scChar	"\$[^ ]"
-syn match	scChar	"\$\w"
-syn match	scChar	"\$\\\\"
-syn match	scChar	"\$\\\w"
+syn match	scChar	"\$\\\?."
 
 syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[xX]\x\+\%(_\x\+\)*\>"								display
 syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0[dD]\)\=\%(0\|[1-9]\d*\%(_\d\+\)*\)\>"						display
