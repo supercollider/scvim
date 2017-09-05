@@ -68,6 +68,18 @@ if !exists("loaded_kill_sclang")
 	let loaded_kill_sclang = 1
 endif
 
+if exists("g:sclangWindowOrientation")
+	let s:sclangWindowOrientation = g:sclangWindowOrientation
+else
+	let s:sclangWindowOrientation = "v"
+endif
+
+if exists("g:sclangWindowPercentage")
+	let s:sclangWindowPercentage = g:sclangWindowPercentage
+else
+	let s:sclangWindowPercentage = 20
+endif
+
 " ========================================================================================
 
 function! FindOuterMostBlock()
@@ -209,18 +221,61 @@ endfunction
 
 let s:sclangStarted = 0
 
-function SClangStart()
-    if $TERM[0:5] == "screen"
-        if executable("tmux")
-            call system("tmux split-window -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -U")
-            let s:sclangStarted = 1
-        else
-            echo "Sorry, screen is not supported yet.."
-        endif
-    else
-        call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
-        let s:sclangStarted = 1
-    endif
+function SClangStart(...)
+	if $TERM[0:5] == "screen"
+		if executable("tmux")
+			if a:0 == 0 
+				call system("tmux split-window -" . s:sclangWindowOrientation . " -p " . s:sclangWindowPercentage . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
+			endif
+			if a:0 == 1 
+				call system("tmux split-window -" . a:1 . " -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux lelect-pane -l")
+			endif
+			if a:0 == 2 
+				call system("tmux split-window -" . a:1 . " -p " . a:2 . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
+			endif
+			let s:sclangStarted = 1
+		else
+			echo "Sorry, tmux is not supported yet.."
+		endif
+		if executable("screen")
+			if a:0 == 0
+				let b:screenName = system("echo -n $STY")
+				call system("screen -S " . b:screenName . " -X eval split focus screen focus")
+				call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
+
+			endif
+			if a:0 == 1
+				if a:1 == "h"
+					let b:screenName = system("echo -n $STY")
+					call system("screen -S " . b:screenName . " -X eval split focus screen focus")
+				endif
+				if a:1 == "v"
+					let b:screenName = system("echo -n $STY")
+					call system("screen -S " . b:screenName . " -X split -v")
+					call system("screen -S " . b:screenName . " -X eval focus screen focus")
+				endif
+				call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
+			endif
+			if a:0 == 2
+				if a:1 == "h"
+					let b:screenName = system("echo -n $STY")
+					call system("screen -S " . b:screenName . " -X split")
+				endif
+				if a:1 == "v"
+					let b:screenName = system("echo -n $STY")
+					call system("screen -S " . b:screenName . " -X split -v")
+				endif
+				call system("screen -S " . b:screenName . " -X eval focus screen focus")
+				call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
+				call system("screen -S " . b:screenName . " -X resize " . a:2)
+			endif
+			call system("screen -S " . b:screenName . " -X bindkey -k k5 ")
+			let s:sclangStarted = 1
+		endif
+	else
+		call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+		let s:sclangStarted = 1
+	endif
 endfunction
 
 function SClangKill()
