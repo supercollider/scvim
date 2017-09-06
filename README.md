@@ -69,7 +69,7 @@ Change it if you have installed the plugin in other location.
 * `g:scFlash`: Highlighting of evaluated code
 * `g:sclangWindowOrientation`: sets default window orientation when using
 a supported terminal multiplexer. See Multiplexer Options for more info
-* `g:sclangWindowSize': sets default window size when using a supported 
+* `g:sclangWindowSize`: sets default window size when using a supported 
 terminal multiplexer. See Multiplexer Options for more info
 
 Example `.vimrc` line for gnome-terminal users:
@@ -128,10 +128,11 @@ Terminal Multiplexer Options
 -----
 
 Supported Terminal Multiplexers are 'tmux' and 'screen'. To use with scvim,
-open the multiplexer before opening vim. For example:
+open the multiplexer before opening vim.  
+For example:
 
-user@pc-555: tmux
-user@pc-555: vim mySCfile.scd
+`user@pc-555: tmux  
+user@pc-555: vim mySCfile.scd`  
 
 Default settings for window orienation and window size can be set in
 your .vimrc file. 
@@ -146,7 +147,7 @@ windows on top and bottom.
 The window size option for tmux is the percentage of the screen you want the
 sclang window to take up. For example: 
 
-let g:sclangWindowSize = 30
+`let g:sclangWindowSize = 30`
 
 The above option will cause your sclang window to take up 30% of the screen, and 
 your vim window to take up the other 70% of the screen.
@@ -162,14 +163,14 @@ file, they are set to the follwing defaults respectivly:
 tmux: "h", 30
 screen: "v", 140
 
-### Changing Multiplexor Options on SClangStart
+### Changing Multiplexor Options on SClangStart:
 
 Options for the multiplexer of your choice can be set on the fly when you use the
 SClangStart command. To do so, you must use :call before SClangStart. If only one 
 argument is used you can change window orientation. If two arguments are used you
 can change window orientation and window size. For example:
 
-:call SClangStart("h", 45)
+`:call SClangStart("h", 45)`
 
 The resulting windows from calling this command will depend on whether you are 
 using tmux or screen.
