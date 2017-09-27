@@ -131,11 +131,7 @@ Supported Terminal Multiplexers are 'tmux' and 'screen'. To use with scvim,
 open the multiplexer before opening vim.  
 For example:
 
-<<<<<<< HEAD
 `user@pc-555: tmux new -s sc`  
-=======
-`user@pc-555: tmux`  
->>>>>>> ec8f634b635612ccc31774dc6342877294e727d8
 `user@pc-555: vim mySCfile.scd`  
 
 Default settings for window orienation and window size can be set in
