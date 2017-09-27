@@ -69,7 +69,7 @@ Change it if you have installed the plugin in other location.
 * `g:scFlash`: Highlighting of evaluated code
 * `g:sclangWindowOrientation`: sets default window orientation when using
 a supported terminal multiplexer. See Multiplexer Options for more info
-* `g:sclangWindowSize`: sets default window size when using a supported 
+* `g:sclangWindowSize`: sets default window size (percentage of screen) when using a supported 
 terminal multiplexer. See Multiplexer Options for more info
 
 Example `.vimrc` line for gnome-terminal users:
@@ -131,13 +131,17 @@ Supported Terminal Multiplexers are 'tmux' and 'screen'. To use with scvim,
 open the multiplexer before opening vim.  
 For example:
 
+<<<<<<< HEAD
+`user@pc-555: tmux new -s sc`  
+=======
 `user@pc-555: tmux`  
+>>>>>>> ec8f634b635612ccc31774dc6342877294e727d8
 `user@pc-555: vim mySCfile.scd`  
 
 Default settings for window orienation and window size can be set in
 your .vimrc file. 
 
-Window orientation options are "h" for horizonatal and "v" for veritcal. 
+Window orientation options are "h" for horizontal and "v" for vertical. 
 The double quotes are required. In tmux the "h" option will give you the vim 
 window on the left and the sclang window on the right, and the "v" will give you
 the vim window on the top and the sclang window on the bottom. In screen this 
