@@ -34,6 +34,7 @@ let loaded_scvim = 1
 " ========================================================================================
 " VARIABLES
 let s:bundlePath = expand('<sfile>:p:h:h')
+let &iskeyword="@,48-57,_,192-255"
 
 if exists("g:sclangKillOnExit")
 	let s:sclangKillOnExit = g:sclangKillOnExit

@@ -9,9 +9,6 @@ augroup scvim
   autocmd!
 augroup END
 
-" set up the plugin
-au scvim BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255"
-
 " set this via EXPORT ... if you want to change it
 if exists($SCVIM_TAGFILE)
   let s:sclangTagsFile = $SCVIM_TAGFILE
