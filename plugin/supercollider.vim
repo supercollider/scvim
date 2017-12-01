@@ -34,11 +34,11 @@ au scvim Filetype supercollider inoremap <buffer> <F6> :call SClang_line()<CR>a
 
 au scvim Filetype supercollider nnoremap <buffer> <F12> :call SClangHardstop()<CR>
 
-au scvim Filetype supercollider nnoremap <leader>sk :SClangRecompile<CR>
-au scvim Filetype supercollider nnoremap <buffer>K :call SChelp(expand('<cword>'))<CR>
-au scvim Filetype supercollider inoremap <C-Tab> :call SCfindArgs()<CR>a
-au scvim Filetype supercollider nnoremap <C-Tab> :call SCfindArgs()<CR>
-au scvim Filetype supercollider vnoremap <C-Tab> :call SCfindArgsFromSelection()<CR>
+au scvim Filetype supercollider nnoremap <buffer> K :call SChelp(expand('<cword>'))<CR>
+au scvim Filetype supercollider nnoremap <buffer> <leader>sk :SClangRecompile<CR>
+au scvim Filetype supercollider inoremap <buffer> <C-Tab> :call SCfindArgs()<CR>a
+au scvim Filetype supercollider nnoremap <buffer> <C-Tab> :call SCfindArgs()<CR>
+au scvim Filetype supercollider vnoremap <buffer> <C-Tab> :call SCfindArgsFromSelection()<CR>
 
 " DEPRECATED
 au scvim Filetype supercollider nnoremap <leader>sd yiw :call SChelp(""")<CR>
