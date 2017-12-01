@@ -5,8 +5,12 @@
 " ====================================
 " Start the plugin
 
+augroup scvim
+  autocmd!
+augroup END
+
 " set up the plugin
-au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255"
+au scvim BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd let &iskeyword="@,48-57,_,192-255"
 
 " set this via EXPORT ... if you want to change it
 if exists($SCVIM_TAGFILE)
@@ -15,33 +19,33 @@ else
   let s:sclangTagsFile = "~/.sctags"
 endif
 
-au FileType supercollider execute "set tags+=".s:sclangTagsFile
+au scvim FileType supercollider execute "set tags+=".s:sclangTagsFile
 
 "  matchit
-au Filetype supercollider let b:match_skip = 's:scComment\|scString\|scSymbol'
-au Filetype supercollider let b:match_words = '(:),[:],{:}'
+au scvim Filetype supercollider let b:match_skip = 's:scComment\|scString\|scSymbol'
+au scvim Filetype supercollider let b:match_words = '(:),[:],{:}'
 
 " key bindings
 
-au Filetype supercollider nnoremap <buffer> <F5> :call SClang_block()<CR>
-au Filetype supercollider inoremap <buffer> <F5> :call SClang_block()<CR>a
-au Filetype supercollider vnoremap <buffer> <F5> :call SClang_line()<CR>
+au scvim Filetype supercollider nnoremap <buffer> <F5> :call SClang_block()<CR>
+au scvim Filetype supercollider inoremap <buffer> <F5> :call SClang_block()<CR>a
+au scvim Filetype supercollider vnoremap <buffer> <F5> :call SClang_line()<CR>
 
-au Filetype supercollider vnoremap <buffer> <F6> :call SClang_line()<CR>
-au Filetype supercollider nnoremap <buffer> <F6> :call SClang_line()<CR>
-au Filetype supercollider inoremap <buffer> <F6> :call SClang_line()<CR>a
+au scvim Filetype supercollider vnoremap <buffer> <F6> :call SClang_line()<CR>
+au scvim Filetype supercollider nnoremap <buffer> <F6> :call SClang_line()<CR>
+au scvim Filetype supercollider inoremap <buffer> <F6> :call SClang_line()<CR>a
 
-au Filetype supercollider nnoremap <buffer> <F12> :call SClangHardstop()<CR>
+au scvim Filetype supercollider nnoremap <buffer> <F12> :call SClangHardstop()<CR>
 
-au Filetype supercollider nnoremap <leader>sk :SClangRecompile<CR>
-au Filetype supercollider nnoremap <buffer>K :call SChelp(expand('<cword>'))<CR>
-au Filetype supercollider inoremap <C-Tab> :call SCfindArgs()<CR>a
-au Filetype supercollider nnoremap <C-Tab> :call SCfindArgs()<CR>
-au Filetype supercollider vnoremap <C-Tab> :call SCfindArgsFromSelection()<CR>
+au scvim Filetype supercollider nnoremap <leader>sk :SClangRecompile<CR>
+au scvim Filetype supercollider nnoremap <buffer>K :call SChelp(expand('<cword>'))<CR>
+au scvim Filetype supercollider inoremap <C-Tab> :call SCfindArgs()<CR>a
+au scvim Filetype supercollider nnoremap <C-Tab> :call SCfindArgs()<CR>
+au scvim Filetype supercollider vnoremap <C-Tab> :call SCfindArgsFromSelection()<CR>
 
 " DEPRECATED
-au Filetype supercollider nnoremap <leader>sd yiw :call SChelp(""")<CR>
-au Filetype supercollider nnoremap <leader>sj yiw :call SCdef(""")<CR>
-au Filetype supercollider nnoremap <leader>si yiw :call SCimplementation(""")<CR>
-au Filetype supercollider nnoremap <leader>sr yiw :call SCreference(""")<CR>
+au scvim Filetype supercollider nnoremap <leader>sd yiw :call SChelp(""")<CR>
+au scvim Filetype supercollider nnoremap <leader>sj yiw :call SCdef(""")<CR>
+au scvim Filetype supercollider nnoremap <leader>si yiw :call SCimplementation(""")<CR>
+au scvim Filetype supercollider nnoremap <leader>sr yiw :call SCreference(""")<CR>
 
