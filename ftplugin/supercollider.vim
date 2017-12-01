@@ -22,10 +22,6 @@
 " along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
  
 
-" source the syntax file as it can change
-" so $SCVIM_DIR/syntax/supercollider.vim
-runtime! syntax/supercollider.vim
-
 if exists("loaded_scvim") || &cp
    finish
 endif
@@ -275,6 +271,8 @@ endfun
 
 function SCtags()
   call SendToSC("SCVim.generateTagsFile();")
+  " source the syntax if object file changed
+  runtime! syntax/supercollider_objects.vim
 endfun
 
 function! s:get_visual_selection()
