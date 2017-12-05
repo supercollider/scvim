@@ -128,11 +128,11 @@ Terminal Multiplexer Options
 -----
 
 Supported Terminal Multiplexers are 'tmux' and 'screen'. To use with scvim,
-open the multiplexer before opening vim.  
+open the multiplexer before opening vim.
 For example:
 
-`user@pc-555: tmux new -s sc`  
-`user@pc-555: vim mySCfile.scd`  
+`user@pc-555: tmux new -s sc`
+`user@pc-555: vim mySCfile.scd`
 
 Default settings for window orienation and window size can be set in
 your .vimrc file. 
@@ -145,19 +145,19 @@ behavior is reversed. "v" gives you windows on left and right, "h" gives you
 windows on top and bottom.
 
 The window size option for tmux is the percentage of the screen you want the
-sclang window to take up. For example: 
+sclang window to take up. For example:
 
 `let g:sclangWindowSize = 30`
 
-The above option will cause your sclang window to take up 30% of the screen, and 
+The above option will cause your sclang window to take up 30% of the screen, and
 your vim window to take up the other 70% of the screen.
 
-The window size option for screen controls the size of the vim window, not the 
+The window size option for screen controls the size of the vim window, not the
 sclang window. If window orientation is "h", the size specifies the size in
-number of lines. If window orientation is "v", the units are unknown. A nice 
-size to start with for "v" is 140. 
+number of lines. If window orientation is "v", the units are unknown. A nice
+size to start with for "v" is 140.
 
-If g:sclangWindowOrientation and g:sclangWindowSize are not set in your .vimrc 
+If g:sclangWindowOrientation and g:sclangWindowSize are not set in your .vimrc
 file, they are set to the follwing defaults respectivly:
 
 tmux: "h", 30
@@ -166,11 +166,11 @@ screen: "v", 140
 ### Changing Multiplexor Options on SClangStart:
 
 Options for the multiplexer of your choice can be set on the fly when you use the
-SClangStart command. To do so, you must use :call before SClangStart. If only one 
+SClangStart command. To do so, you must use :call before SClangStart. If only one
 argument is used you can change window orientation. If two arguments are used you
 can change window orientation and window size. For example:
 
 `:call SClangStart("h", 45)`
 
-The resulting windows from calling this command will depend on whether you are 
+The resulting windows from calling this command will depend on whether you are
 using tmux or screen.

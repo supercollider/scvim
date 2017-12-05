@@ -1,26 +1,26 @@
 " SuperCollider/Vim interaction scripts
 " Copyright 2007 Alex Norman
-" 
+"
 " modified 2010 stephen lumenta
 " Don't worry about the pipes in here. This is all taken care of inside of the
 " ruby script
 "
 "
 " This file is part of SCVIM.
-"  
+"
 " SCVIM is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
 " the Free Software Foundation, either version 3 of the License, or
 " (at your option) any later version.
-" 
+"
 " SCVIM is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU General Public License for more details.
-" 
+"
 " You should have received a copy of the GNU General Public License
 " along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 
 " source the syntax file as it can change
 " so $SCVIM_DIR/syntax/supercollider.vim
@@ -107,7 +107,7 @@ function! FindOuterMostBlock()
 	"save our current cursor position
 	let l:returnline = line(".")
 	let l:returncol = col(".")
-	
+
 	"if we're on an opening paren then we should actually go to the closing one to start the search
 	"if buf[l:returnline][l:returncol-1,1] == "("
 	if strpart(getline(line(".")),col(".") - 1,1) == "("
@@ -160,7 +160,7 @@ function! FindOuterMostBlock()
 	if l:range_s[0] == -1 || l:range_s[1] == -1
 		throw "OutsideOfParens"
 	endif
-	
+
 	"return the ranges
 	 return [l:range_s, l:range_e]
 endfunction
@@ -198,7 +198,7 @@ let s:cmdBuf = ""
 function SClang_send()
   let currentline = line(".")
   let s:cmdBuf = s:cmdBuf . getline(currentline) . "\n"
-  
+
   if(a:lastline == currentline)
     call SendToSC(s:cmdBuf)
 
@@ -234,13 +234,13 @@ let s:sclangStarted = 0
 function SClangStart(...)
 	if $TERM[0:5] == "screen"
 		if executable("tmux")
-			if a:0 == 0 
+			if a:0 == 0
 				call system("tmux split-window -" . s:sclangWindowOrientation . " -p " . s:sclangWindowSize . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
 			endif
-			if a:0 == 1 
+			if a:0 == 1
 				call system("tmux split-window -" . a:1 . " -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux lelect-pane -l")
 			endif
-			if a:0 == 2 
+			if a:0 == 2
 				call system("tmux split-window -" . a:1 . " -p " . a:2 . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
 			endif
 			let s:sclangStarted = 1
