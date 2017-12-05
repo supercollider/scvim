@@ -36,144 +36,144 @@ let loaded_scvim = 1
 let s:bundlePath = expand('<sfile>:p:h:h')
 
 if exists("g:sclangKillOnExit")
-	let s:sclangKillOnExit = g:sclangKillOnExit
+  let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 1
+  let s:sclangKillOnExit = 1
 endif
 
 if exists("g:sclangTerm")
-	let s:sclangTerm = g:sclangTerm
+  let s:sclangTerm = g:sclangTerm
 elseif system('uname') =~ 'Linux'
-	let s:sclangTerm = "x-terminal-emulator -e $SHELL -ic"
+  let s:sclangTerm = "x-terminal-emulator -e $SHELL -ic"
 else
-	let s:sclangTerm = "open -a Terminal.app"
+  let s:sclangTerm = "open -a Terminal.app"
 endif
 
 if exists("g:sclangPipeApp")
-	let s:sclangPipeApp	= g:sclangPipeApp
+  let s:sclangPipeApp = g:sclangPipeApp
 else
-	let s:sclangPipeApp	=  s:bundlePath . "/bin/start_pipe"
+  let s:sclangPipeApp =  s:bundlePath . "/bin/start_pipe"
 endif
 
 if exists("g:sclangDispatcher")
-	let s:sclangDispatcher = g:sclangDispatcher
+  let s:sclangDispatcher = g:sclangDispatcher
 else
-	let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
+  let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
 endif
 
 if !exists("loaded_kill_sclang")
-	if s:sclangKillOnExit
-		au VimLeavePre * call SClangKillIfStarted()
-	endif
-	let loaded_kill_sclang = 1
+  if s:sclangKillOnExit
+    au VimLeavePre * call SClangKillIfStarted()
+  endif
+  let loaded_kill_sclang = 1
 endif
 
 if exists("g:sclangWindowOrientation")
-	let s:sclangWindowOrientation = g:sclangWindowOrientation
+  let s:sclangWindowOrientation = g:sclangWindowOrientation
 else
-	if executable("tmux")
-		let s:sclangWindowOrientation = "h"
-	endif
-	if executable("screen")
-		let s:sclangWindowOrientation = "v"
-	endif
+  if executable("tmux")
+    let s:sclangWindowOrientation = "h"
+  endif
+  if executable("screen")
+    let s:sclangWindowOrientation = "v"
+  endif
 endif
 
 if exists("g:sclangWindowSize")
-	let s:sclangWindowSize = g:sclangWindowSize
+  let s:sclangWindowSize = g:sclangWindowSize
 else
-	if executable("tmux")
-		let s:sclangWindowSize = 50
-	endif
-	if executable("screen")
-		let s:sclangWindowSize = 140
-	endif
+  if executable("tmux")
+    let s:sclangWindowSize = 50
+  endif
+  if executable("screen")
+    let s:sclangWindowSize = 140
+  endif
 endif
 
 " ========================================================================================
 
 function! FindOuterMostBlock()
-	"search backwards for parens dont wrap
-	let l:search_expression_up = "call searchpair('(', '', ')', 'bW'," .
-		\"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
-	"search forward for parens, don't wrap
-	let l:search_expression_down = "call searchpair('(', '', ')', 'W'," .
-		\"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
+  "search backwards for parens dont wrap
+  let l:search_expression_up = "call searchpair('(', '', ')', 'bW'," .
+    \"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
+  "search forward for parens, don't wrap
+  let l:search_expression_down = "call searchpair('(', '', ')', 'W'," .
+    \"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
 
-	"save our current cursor position
-	let l:returnline = line(".")
-	let l:returncol = col(".")
+  "save our current cursor position
+  let l:returnline = line(".")
+  let l:returncol = col(".")
 
-	"if we're on an opening paren then we should actually go to the closing one to start the search
-	"if buf[l:returnline][l:returncol-1,1] == "("
-	if strpart(getline(line(".")),col(".") - 1,1) == "("
-		exe l:search_expression_down
-	endif
+  "if we're on an opening paren then we should actually go to the closing one to start the search
+  "if buf[l:returnline][l:returncol-1,1] == "("
+  if strpart(getline(line(".")),col(".") - 1,1) == "("
+    exe l:search_expression_down
+  endif
 
-	let l:origline = line(".")
-	let l:origcol = col(".")
+  let l:origline = line(".")
+  let l:origcol = col(".")
 
-	"these numbers will define our range, first init them to illegal values
-	let l:range_e = [-1, -1]
-	let l:range_s = [-1, -1]
+  "these numbers will define our range, first init them to illegal values
+  let l:range_e = [-1, -1]
+  let l:range_s = [-1, -1]
 
-	"this is the last line in our search
-	let l:lastline = line(".")
-	let l:lastcol = col(".")
+  "this is the last line in our search
+  let l:lastline = line(".")
+  let l:lastcol = col(".")
 
-	exe l:search_expression_up
+  exe l:search_expression_up
 
-	while line(".") != l:lastline || (line(".") == l:lastline && col(".") != l:lastcol)
-		"keep track of the last line/col we were on
-		let l:lastline = line(".")
-		let l:lastcol = col(".")
-		"go to the matching paren
-		exe l:search_expression_down
+  while line(".") != l:lastline || (line(".") == l:lastline && col(".") != l:lastcol)
+    "keep track of the last line/col we were on
+    let l:lastline = line(".")
+    let l:lastcol = col(".")
+    "go to the matching paren
+    exe l:search_expression_down
 
-		"if there isn't a match print an error
-		if l:lastline == line(".") && l:lastcol == col(".")
-			call cursor(l:returnline,l:returncol)
-			throw "UnmachedParen at line:" . l:lastline . ", col: " . l:lastcol
-		endif
+    "if there isn't a match print an error
+    if l:lastline == line(".") && l:lastcol == col(".")
+      call cursor(l:returnline,l:returncol)
+      throw "UnmachedParen at line:" . l:lastline . ", col: " . l:lastcol
+    endif
 
-		"if this is equal to or later than our original cursor position
-		if line(".") > l:origline || (line(".") == l:origline && col(".") >= l:origcol)
-			let l:range_e = [line("."), col(".")]
-			"go back to opening paren
-			exe l:search_expression_up
-			let l:range_s = [line("."), col(".")]
-		else
-			"go back to opening paren
-			exe l:search_expression_up
-		endif
-		"find next paren (if there is one)
-		exe l:search_expression_up
-	endwhile
+    "if this is equal to or later than our original cursor position
+    if line(".") > l:origline || (line(".") == l:origline && col(".") >= l:origcol)
+      let l:range_e = [line("."), col(".")]
+      "go back to opening paren
+      exe l:search_expression_up
+      let l:range_s = [line("."), col(".")]
+    else
+      "go back to opening paren
+      exe l:search_expression_up
+    endif
+    "find next paren (if there is one)
+    exe l:search_expression_up
+  endwhile
 
-	"restore the settings
-	call cursor(l:returnline,l:returncol)
+  "restore the settings
+  call cursor(l:returnline,l:returncol)
 
-	if l:range_s[0] == -1 || l:range_s[1] == -1
-		throw "OutsideOfParens"
-	endif
+  if l:range_s[0] == -1 || l:range_s[1] == -1
+    throw "OutsideOfParens"
+  endif
 
-	"return the ranges
-	 return [l:range_s, l:range_e]
+  "return the ranges
+  return [l:range_s, l:range_e]
 endfunction
 
 " ========================================================================================
 
 
 function SCFormatText(text)
-	let l:text = substitute(a:text, '\', '\\\\', 'g')
-	let l:text = substitute(l:text, '"', '\\"', 'g')
-	let l:text = substitute(l:text, '`', '\\`', 'g')
-	let l:text = substitute(l:text, '\$', '\\$', 'g')
-	let l:text = '"' . l:text . '"'
+  let l:text = substitute(a:text, '\', '\\\\', 'g')
+  let l:text = substitute(l:text, '"', '\\"', 'g')
+  let l:text = substitute(l:text, '`', '\\`', 'g')
+  let l:text = substitute(l:text, '\$', '\\$', 'g')
+  let l:text = '"' . l:text . '"'
 
   return l:text
 endfunction
@@ -216,15 +216,15 @@ function SClang_line()
 endfunction
 
 function SClang_block()
-	let [blkstart,blkend] = FindOuterMostBlock()
-	"blkstart[0],blkend[0] call SClang_send()
-	"these next lines are just a hack, how can i do the above??
-	let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
-	let l:origline = line(".")
-	let l:origcol = col(".")
-	exe cmd
-	call cursor(l:origline,l:origcol)
-	call FlashRegion(blkstart[0], blkend[0])
+  let [blkstart,blkend] = FindOuterMostBlock()
+  "blkstart[0],blkend[0] call SClang_send()
+  "these next lines are just a hack, how can i do the above??
+  let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
+  let l:origline = line(".")
+  let l:origcol = col(".")
+  exe cmd
+  call cursor(l:origline,l:origcol)
+  call FlashRegion(blkstart[0], blkend[0])
 endfunction
 
 " ========================================================================================
@@ -232,68 +232,68 @@ endfunction
 let s:sclangStarted = 0
 
 function SClangStart(...)
-	if $TERM[0:5] == "screen"
-		if executable("tmux")
-			if a:0 == 0
-				call system("tmux split-window -" . s:sclangWindowOrientation . " -p " . s:sclangWindowSize . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
-			endif
-			if a:0 == 1
-				call system("tmux split-window -" . a:1 . " -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux lelect-pane -l")
-			endif
-			if a:0 == 2
-				call system("tmux split-window -" . a:1 . " -p " . a:2 . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
-			endif
-			let s:sclangStarted = 1
-		else
-			echo "Sorry, something went wrong..."
-		endif
-		if executable("screen")
-			if a:0 == 0
-				let b:screenName = system("echo -n $STY")
-				if s:sclangWindowOrientation == "h"
-					call system("screen -S " . b:screenName . " -X split")
-				endif
-				if s:sclangWindowOrientation == "v"
-					call system("screen -S " . b:screenName . " -X split -v")
-				endif
-				call system("screen -S " . b:screenName . " -X eval focus screen focus")
-				call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
-				call system("screen -S " . b:screenName . " -X resize " . s:sclangWindowSize)
-			endif
-			if a:0 == 1
-				if a:1 == "h"
-					let b:screenName = system("echo -n $STY")
-					call system("screen -S " . b:screenName . " -X eval split focus screen focus")
-				endif
-				if a:1 == "v"
-					let b:screenName = system("echo -n $STY")
-					call system("screen -S " . b:screenName . " -X split -v")
-					call system("screen -S " . b:screenName . " -X eval focus screen focus")
-				endif
-				call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
-			endif
-			if a:0 == 2
-				if a:1 == "h"
-					let b:screenName = system("echo -n $STY")
-					call system("screen -S " . b:screenName . " -X split")
-				endif
-				if a:1 == "v"
-					let b:screenName = system("echo -n $STY")
-					call system("screen -S " . b:screenName . " -X split -v")
-				endif
-				call system("screen -S " . b:screenName . " -X eval focus screen focus")
-				call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
-				call system("screen -S " . b:screenName . " -X resize " . a:2)
-			endif
-			call system("screen -S " . b:screenName . " -X bindkey -k k5 ")
-			let s:sclangStarted = 1
-		else
-			echo "Sorry, something went wrong..."
-		endif
-	else
-		call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
-		let s:sclangStarted = 1
-	endif
+  if $TERM[0:5] == "screen"
+    if executable("tmux")
+      if a:0 == 0
+        call system("tmux split-window -" . s:sclangWindowOrientation . " -p " . s:sclangWindowSize . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
+      endif
+      if a:0 == 1
+        call system("tmux split-window -" . a:1 . " -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux lelect-pane -l")
+      endif
+      if a:0 == 2
+        call system("tmux split-window -" . a:1 . " -p " . a:2 . " ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l")
+      endif
+      let s:sclangStarted = 1
+    else
+      echo "Sorry, something went wrong..."
+    endif
+    if executable("screen")
+      if a:0 == 0
+        let b:screenName = system("echo -n $STY")
+        if s:sclangWindowOrientation == "h"
+          call system("screen -S " . b:screenName . " -X split")
+        endif
+        if s:sclangWindowOrientation == "v"
+          call system("screen -S " . b:screenName . " -X split -v")
+        endif
+        call system("screen -S " . b:screenName . " -X eval focus screen focus")
+        call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
+        call system("screen -S " . b:screenName . " -X resize " . s:sclangWindowSize)
+      endif
+      if a:0 == 1
+        if a:1 == "h"
+          let b:screenName = system("echo -n $STY")
+          call system("screen -S " . b:screenName . " -X eval split focus screen focus")
+        endif
+        if a:1 == "v"
+          let b:screenName = system("echo -n $STY")
+          call system("screen -S " . b:screenName . " -X split -v")
+          call system("screen -S " . b:screenName . " -X eval focus screen focus")
+        endif
+        call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
+      endif
+      if a:0 == 2
+        if a:1 == "h"
+          let b:screenName = system("echo -n $STY")
+          call system("screen -S " . b:screenName . " -X split")
+        endif
+        if a:1 == "v"
+          let b:screenName = system("echo -n $STY")
+          call system("screen -S " . b:screenName . " -X split -v")
+        endif
+        call system("screen -S " . b:screenName . " -X eval focus screen focus")
+        call system("screen -S " . b:screenName . " -X at 1# exec " . s:sclangPipeApp)
+        call system("screen -S " . b:screenName . " -X resize " . a:2)
+      endif
+      call system("screen -S " . b:screenName . " -X bindkey -k k5 ")
+      let s:sclangStarted = 1
+    else
+      echo "Sorry, something went wrong..."
+    endif
+  else
+    call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+    let s:sclangStarted = 1
+  endif
 endfunction
 
 function SClangKill()
