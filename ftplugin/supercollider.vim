@@ -220,17 +220,19 @@ endfunction
 let s:sclangStarted = 0
 
 function SClangStart(...)
-  if $TERM[0:5] == "screen"
+  let l:tmux = exists('$TMUX')
+  let l:screen = exists('$STY')
+  if l:tmux || l:screen
     let l:splitDir = (a:0 == 2) ? a:1 : g:scSplitDirection
     let l:splitSize = (a:0 == 2) ? a:2 : g:scSplitSize
 
-    if executable("tmux")
+    if l:tmux
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
       let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
       call system(l:cmd)
     endif
 
-    if executable("screen")
+    if l:screen
       " Main window will have focus when splitting, so recalculate splitSize percentage
       let l:splitSize = 100 - l:splitSize
       let l:splitDir = (l:splitDir == "v") ? "" : " -v"
