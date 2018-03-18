@@ -73,7 +73,7 @@ if exists("g:scSplitDirection")
   let s:scSplitDirection = g:scSplitDirection
 endif
 
-let s:scSplitSize = 50
+let s:scSplitSize = 30
 if exists("g:scSplitSize")
   let s:scSplitSize = g:scSplitSize
 endif
@@ -223,8 +223,8 @@ function SClangStart(...)
   let l:tmux = exists('$TMUX')
   let l:screen = exists('$STY')
   if l:tmux || l:screen
-    let l:splitDir = (a:0 == 2) ? a:1 : g:scSplitDirection
-    let l:splitSize = (a:0 == 2) ? a:2 : g:scSplitSize
+    let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
+    let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
 
     if l:tmux
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
