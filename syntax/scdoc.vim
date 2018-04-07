@@ -115,19 +115,31 @@ syn match scdocBullet /#\@<!##/ contained
 syn match scdocColumnSep /|\@<!||/ contained
 
 syn region scdocTable matchgroup=scdocSimpleTag
-            \ start=/\<Table::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet,scdocColumnSep
+            \ start=/\<Table::/ skip=/\\::/ end=/::/
+            \ contains=@SCDocModalTag,scdocBullet,scdocColumnSep,@SCDocStructure
 
 syn region scdocDefinitionList matchgroup=scdocSimpleTag
-            \ start=/\<DefinitionList::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet,scdocColumnSep
+            \ start=/\<DefinitionList::/ skip=/\\::/ end=/::/
+            \ contains=@SCDocModalTag,scdocBullet,scdocColumnSep,@SCDocStructure
 
 syn region scdocList matchgroup=scdocSimpleTag
-            \ start=/\<List::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
+            \ start=/\<List::/ skip=/\\::/ end=/::/
+            \ contains=@SCDocModalTag,scdocBullet,@SCDocStructure
 
 syn region scdocNumberedList matchgroup=scdocSimpleTag
-            \ start=/\<NumberedList::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
+            \ start=/\<NumberedList::/ skip=/\\::/ end=/::/
+            \ contains=@SCDocModalTag,scdocBullet,@SCDocStructure
 
 syn region scdocTree matchgroup=scdocSimpleTag
-            \ start=/\<Tree::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
+            \ start=/\<Tree::/ skip=/\\::/ end=/::/
+            \ contains=@SCDocModalTag,scdocBullet,@SCDocStructure
+
+syn cluster SCDocStructure contains=
+            \scdocTree,
+            \scdocList,
+            \scdocTable,
+            \scdocDefinitionList,
+            \scdocNumberedList
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " other tags
