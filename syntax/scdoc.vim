@@ -104,6 +104,24 @@ syn region scdocNote matchgroup=scdocSimpleTag start=/\<note::/ skip=/\\::/ end=
 syn region scdocWarning matchgroup=scdocSimpleTag start=/\<warning::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
 syn region scdocFootnote matchgroup=scdocSimpleTag start=/\<footnote::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
 
+syn match scdocBullet /#\@<!##/ contained
+syn match scdocColumnSep /|\@<!||/ contained
+
+syn region scdocTable matchgroup=scdocSimpleTag
+            \ start=/\<Table::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet,scdocColumnSep
+
+syn region scdocDefinitionList matchgroup=scdocSimpleTag
+            \ start=/\<DefinitionList::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet,scdocColumnSep
+
+syn region scdocList matchgroup=scdocSimpleTag
+            \ start=/\<List::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
+
+syn region scdocNumberedList matchgroup=scdocSimpleTag
+            \ start=/\<NumberedList::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
+
+syn region scdocTree matchgroup=scdocSimpleTag
+            \ start=/\<Tree::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
+
 syn case match
 
 """""""""""""""""""""""""""""""""""""""""
@@ -144,5 +162,8 @@ hi def link scdocWarning Todo
 hi def link scdocFootnote Comment
 
 hi def link scdocSimpleTag Special
+
+hi def link scdocColumnSep PreProc
+hi def link scdocBullet PreProc
 
 let b:current_syntax = "schelp"
