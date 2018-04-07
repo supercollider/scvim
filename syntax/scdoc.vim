@@ -88,7 +88,21 @@ syn include @SCCode syntax/supercollider.vim
 syn region scdocCode keepend matchgroup=scdocSimpleTag start=/\<code::/ end=/^::/ contains=@SCCode
 syn region scdocCode oneline keepend matchgroup=scdocSimpleTag start=/\<code::/ skip=/\\::/ end=/::/ contains=@SCCode
 
-" TODO: table, definitionlist, list, numberedlist, tree, note, warning, footnote
+" TODO: table, definitionlist, list, numberedlist, tree
+
+syn cluster SCDocModalTag contains=
+            \scdocStrong,
+            \scdocEmphasis,
+            \scdocSoft,
+            \scdocLink,
+            \scdocAnchor,
+            \scdocImage,
+            \scdocCode,
+            \scdocTeletype
+
+syn region scdocNote matchgroup=scdocSimpleTag start=/\<note::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
+syn region scdocWarning matchgroup=scdocSimpleTag start=/\<warning::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
+syn region scdocFootnote matchgroup=scdocSimpleTag start=/\<footnote::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
 
 syn case match
 
@@ -124,6 +138,10 @@ hi def link scdocLink Underlined
 hi def link scdocAnchor Underlined
 hi def link scdocImage Underlined
 hi def link scdocTeletype Statement
+
+hi def link scdocNote String
+hi def link scdocWarning Todo
+hi def link scdocFootnote Comment
 
 hi def link scdocSimpleTag Special
 
