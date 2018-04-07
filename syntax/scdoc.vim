@@ -24,7 +24,7 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-setlocal iskeyword=a-z,A-Z,48-57,:,_
+setlocal iskeyword=a-z,A-Z,48-57,_
 
 syn case ignore
 
@@ -33,59 +33,59 @@ syn case ignore
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " TODO: highlighting of remainder of lines?
-syn keyword scdocTitle title::
-syn keyword scdocCategories categories::
-syn keyword scdocRelated related::
-syn keyword scdocSummary summary::
-syn keyword scdocRedirect redirect::
+syn match scdocTitle /\<title::/
+syn match scdocCategories /\<categories::/
+syn match scdocRelated /\<related::/
+syn match scdocSummary /\<summary::/
+syn match scdocRedirect /\<redirect::/
 
 " deprecated
-syn keyword scdocClass class::
+syn match scdocClass /\<class::/
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " section tags
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " TODO: intelligent highlighting?
-syn keyword scdocSection section::
-syn keyword scdocDescription description::
-syn keyword scdocClassmethods classmethods::
-syn keyword scdocInstancemethods instancemethods::
-syn keyword scdocExamples examples::
-syn keyword scdocSubsection subsection::
+syn match scdocSection /\<section::/
+syn match scdocDescription /\<description::/
+syn match scdocClassmethods /\<classmethods::/
+syn match scdocInstancemethods /\<instancemethods::/
+syn match scdocExamples /\<examples::/
+syn match scdocSubsection /\<subsection::/
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " method tags
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " TODO: intelligent highlighting
-syn keyword scdocMethod method::
-syn keyword scdocPrivate private::
-syn keyword scdocCopymethod copymethod::
-syn keyword scdocArgument argument::
-syn keyword scdocReturns returns::
-syn keyword scdocDiscussion discussion::
+syn match scdocMethod /\<method::/
+syn match scdocPrivate /\<private::/
+syn match scdocCopymethod /\<copymethod::/
+syn match scdocArgument /\<argument::/
+syn match scdocReturns /\<returns::/
+syn match scdocDiscussion /\<discussion::/
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " modal tags
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-syn region scdocStrong matchgroup=scdocSimpleTag start="strong::" skip="\\::" end="::"
-syn region scdocEmphasis matchgroup=scdocSimpleTag start="emphasis::" skip="\\::" end="::"
-syn region scdocSoft matchgroup=scdocSimpleTag start="soft::" skip="\\::" end="::"
-syn region scdocLink matchgroup=scdocSimpleTag start="link::" skip="\\::" end="::"
-syn region scdocAnchor matchgroup=scdocSimpleTag start="anchor::" skip="\\::" end="::"
-syn region scdocImage matchgroup=scdocSimpleTag start="image::" skip="\\::" end="::"
+syn region scdocStrong matchgroup=scdocSimpleTag start=/\<strong::/ skip=/\\::/ end=/::/
+syn region scdocEmphasis matchgroup=scdocSimpleTag start=/\<emphasis::/ skip=/\\::/ end=/::/
+syn region scdocSoft matchgroup=scdocSimpleTag start=/\<soft::/ skip=/\\::/ end=/::/
+syn region scdocLink matchgroup=scdocSimpleTag start=/\<link::/ skip=/\\::/ end=/::/
+syn region scdocAnchor matchgroup=scdocSimpleTag start=/\<anchor::/ skip=/\\::/ end=/::/
+syn region scdocImage matchgroup=scdocSimpleTag start=/\<image::/ skip=/\\::/ end=/::/
 
 " teletype and code have inline and block forms
 " NOTE: make sure oneline version is last so it has priority!
-syn region scdocTeletype matchgroup=scdocSimpleTag start="teletype::" end="^::"
-syn region scdocTeletype oneline matchgroup=scdocSimpleTag start="teletype::" skip="\\::" end="::"
+syn region scdocTeletype matchgroup=scdocSimpleTag start=/\<teletype::/ end=/^::/
+syn region scdocTeletype oneline matchgroup=scdocSimpleTag start=/\<teletype::/ skip=/\\::/ end=/::/
 
 " code (see :syn-include)
 syn include @SCCode syntax/supercollider.vim
-syn region scdocCode matchgroup=scdocSimpleTag start="code::" end="^::" contains=@SCCode
-syn region scdocCode oneline matchgroup=scdocSimpleTag start="code::" skip="\\::" end="::" contains=@SCCode
+syn region scdocCode matchgroup=scdocSimpleTag start=/\<code::/rs=e end=/^::/ contains=@SCCode
+syn region scdocCode oneline matchgroup=scdocSimpleTag start=/\<code::/rs=e skip=/\\::/ end=/::/ contains=@SCCode
 
 " TODO: table, definitionlist, list, numberedlist, tree, note, warning, footnote
 
