@@ -70,6 +70,7 @@ syn match scdocDiscussion /\<discussion::/
 " modal tags
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" TODO: link and image highlighting based on #-separators
 syn region scdocStrong matchgroup=scdocSimpleTag start=/\<strong::/ skip=/\\::/ end=/::/
 syn region scdocEmphasis matchgroup=scdocSimpleTag start=/\<emphasis::/ skip=/\\::/ end=/::/
 syn region scdocSoft matchgroup=scdocSimpleTag start=/\<soft::/ skip=/\\::/ end=/::/
