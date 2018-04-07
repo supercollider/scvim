@@ -122,10 +122,18 @@ syn region scdocNumberedList matchgroup=scdocSimpleTag
 syn region scdocTree matchgroup=scdocSimpleTag
             \ start=/\<Tree::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag,scdocBullet
 
-syn case match
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" other tags
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""""""""""""""
+syn match scdocKeyword /\<keyword::/
+syn match scdocClasstree /\<classtree::/
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " linkage
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+syn case match
 
 hi def link scdocTitle Constant
 hi def link scdocCategories Constant
@@ -165,5 +173,8 @@ hi def link scdocSimpleTag Special
 
 hi def link scdocColumnSep PreProc
 hi def link scdocBullet PreProc
+
+hi def link scdocClasstree PreProc
+hi def link scdocKeyword PreProc
 
 let b:current_syntax = "schelp"
