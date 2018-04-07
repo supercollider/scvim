@@ -83,9 +83,10 @@ syn region scdocTeletype matchgroup=scdocSimpleTag start=/\<teletype::/ end=/^::
 syn region scdocTeletype oneline matchgroup=scdocSimpleTag start=/\<teletype::/ skip=/\\::/ end=/::/
 
 " code (see :syn-include)
+" keepend needed to avoid :: being matched as supercollider code
 syn include @SCCode syntax/supercollider.vim
-syn region scdocCode matchgroup=scdocSimpleTag start=/\<code::/rs=e end=/^::/ contains=@SCCode
-syn region scdocCode oneline matchgroup=scdocSimpleTag start=/\<code::/rs=e skip=/\\::/ end=/::/ contains=@SCCode
+syn region scdocCode keepend matchgroup=scdocSimpleTag start=/\<code::/rs=e end=/^::/ contains=@SCCode
+syn region scdocCode oneline keepend matchgroup=scdocSimpleTag start=/\<code::/rs=e skip=/\\::/ end=/::/ contains=@SCCode
 
 " TODO: table, definitionlist, list, numberedlist, tree, note, warning, footnote
 
