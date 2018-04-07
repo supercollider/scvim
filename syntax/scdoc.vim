@@ -88,8 +88,7 @@ syn include @SCCode syntax/supercollider.vim
 syn region scdocCode keepend matchgroup=scdocSimpleTag start=/\<code::/ end=/^::/ contains=@SCCode
 syn region scdocCode oneline keepend matchgroup=scdocSimpleTag start=/\<code::/ skip=/\\::/ end=/::/ contains=@SCCode
 
-" TODO: table, definitionlist, list, numberedlist, tree
-
+" notes and warnings
 syn cluster SCDocModalTag contains=
             \scdocStrong,
             \scdocEmphasis,
@@ -104,6 +103,7 @@ syn region scdocNote matchgroup=scdocSimpleTag start=/\<note::/ skip=/\\::/ end=
 syn region scdocWarning matchgroup=scdocSimpleTag start=/\<warning::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
 syn region scdocFootnote matchgroup=scdocSimpleTag start=/\<footnote::/ skip=/\\::/ end=/::/ contains=@SCDocModalTag
 
+" lists and tables
 syn match scdocBullet /#\@<!##/ contained
 syn match scdocColumnSep /|\@<!||/ contained
 
