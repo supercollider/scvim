@@ -74,9 +74,17 @@ syn match scdocDiscussion /\<discussion::/
 syn region scdocStrong matchgroup=scdocSimpleTag start=/\<strong::/ skip=/\\::/ end=/::/
 syn region scdocEmphasis matchgroup=scdocSimpleTag start=/\<emphasis::/ skip=/\\::/ end=/::/
 syn region scdocSoft matchgroup=scdocSimpleTag start=/\<soft::/ skip=/\\::/ end=/::/
-syn region scdocLink matchgroup=scdocSimpleTag start=/\<link::/ skip=/\\::/ end=/::/
+
+" only highlight the first part of the link. order is important here
+syn region scdocRealLink keepend start=/\(\<link::\)\@<=/ end=/::/he=s-1 contained
+syn region scdocRealLink keepend start=/\(\<link::\)\@<=/ end=/#/he=s-1 contained
+syn region scdocRealLink keepend start=/\(\<link::[^#]*#\)\@<=/ end=/::/he=s-1 contained
+syn region scdocRealLink keepend start=/\(\<link::[^#]*#\)\@<=/ end=/#/he=s-1 contained
+syn region scdocLink keepend matchgroup=scdocSimpleTag start=/\<link::/ skip=/\\::/ end=/::/ contains=scdocRealLink
+
 syn region scdocAnchor matchgroup=scdocSimpleTag start=/\<anchor::/ skip=/\\::/ end=/::/
 syn region scdocImage matchgroup=scdocSimpleTag start=/\<image::/ skip=/\\::/ end=/::/
+
 
 " teletype and code have inline and block forms
 " NOTE: make sure oneline version is last so it has priority!
@@ -179,7 +187,8 @@ hi def link scdocDiscussion Statement
 hi scdocStrong cterm=bold
 hi scdocEmphasis cterm=italic
 hi def link scdocSoft Comment
-hi def link scdocLink Underlined
+hi def link scdocRealLink Underlined
+" don't link scdocLink
 hi def link scdocAnchor Underlined
 hi def link scdocImage Underlined
 hi def link scdocTeletype Statement
