@@ -76,14 +76,14 @@ syn region scdocEmphasis matchgroup=scdocSimpleTag start=/\<emphasis::/ skip=/\\
 syn region scdocSoft matchgroup=scdocSimpleTag start=/\<soft::/ skip=/\\::/ end=/::/
 
 " only highlight the first part of the link. order is important here
-syn region scdocRealLink keepend start=/\(\<link::\)\@<=/ end=/::/he=s-1 contained
-syn region scdocRealLink keepend start=/\(\<link::\)\@<=/ end=/#/he=s-1 contained
-syn region scdocRealLink keepend start=/\(\<link::[^#]*#\)\@<=/ end=/::/he=s-1 contained
-syn region scdocRealLink keepend start=/\(\<link::[^#]*#\)\@<=/ end=/#/he=s-1 contained
+syn region scdocRealLink keepend start=// end=/::/he=s-1 contained
+syn region scdocRealLink keepend start=// end=/#/he=s-1 contained
+syn region scdocRealLink keepend start=/\(\<::[^#]*#\)\@<=/ end=/::/he=s-1 contained
+syn region scdocRealLink keepend start=/\(\<::[^#]*#\)\@<=/ end=/#/he=s-1 contained
 syn region scdocLink keepend matchgroup=scdocSimpleTag start=/\<link::/ skip=/\\::/ end=/::/ contains=scdocRealLink
 
 syn region scdocAnchor matchgroup=scdocSimpleTag start=/\<anchor::/ skip=/\\::/ end=/::/
-syn region scdocImage matchgroup=scdocSimpleTag start=/\<image::/ skip=/\\::/ end=/::/
+syn region scdocImage keepend matchgroup=scdocSimpleTag start=/\<image::/ skip=/\\::/ end=/::/ contains=scdocRealLink
 
 
 " teletype and code have inline and block forms
@@ -188,9 +188,8 @@ hi scdocStrong cterm=bold
 hi scdocEmphasis cterm=italic
 hi def link scdocSoft Comment
 hi def link scdocRealLink Underlined
-" don't link scdocLink
+" don't link scdocLink or scdocImage
 hi def link scdocAnchor Underlined
-hi def link scdocImage Underlined
 hi def link scdocTeletype Statement
 
 hi def link scdocNote String
