@@ -1,0 +1,10 @@
+#!/bin/bash
+
+TMUX=${TMUX:-"tmux"}
+SESSION=${SESSION:-"SuperCollider"}
+FILE=${FILE:-"$(date '+%d%m%Y').scd"}
+
+$TMUX attach-session -t $SESSION || $TMUX \
+  new-session -s $SESSION   \; \
+  send-keys -t 0 "vim $FILE -R" C-m   \; \
+  send-keys ":SClangStart" C-m   \; 
