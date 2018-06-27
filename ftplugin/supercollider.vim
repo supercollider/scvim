@@ -230,9 +230,7 @@ function SClangStart(...)
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
       let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
       call system(l:cmd)
-    endif
-
-    if l:screen
+    elseif l:screen
       " Main window will have focus when splitting, so recalculate splitSize percentage
       let l:splitSize = 100 - l:splitSize
       let l:splitDir = (l:splitDir == "v") ? "" : " -v"
@@ -241,7 +239,6 @@ function SClangStart(...)
       call system("screen -S " . l:screenName . " -X eval focus screen focus")
       call system("screen -S " . l:screenName . " -X at 1# exec " . s:sclangPipeApp)
       call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
-
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
 
