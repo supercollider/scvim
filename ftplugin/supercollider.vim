@@ -1,26 +1,26 @@
 " SuperCollider/Vim interaction scripts
 " Copyright 2007 Alex Norman
-" 
+"
 " modified 2010 stephen lumenta
 " Don't worry about the pipes in here. This is all taken care of inside of the
 " ruby script
 "
 "
 " This file is part of SCVIM.
-"  
+"
 " SCVIM is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
 " the Free Software Foundation, either version 3 of the License, or
 " (at your option) any later version.
-" 
+"
 " SCVIM is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU General Public License for more details.
-" 
+"
 " You should have received a copy of the GNU General Public License
 " along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 
 " source the syntax file as it can change
 " so $SCVIM_DIR/syntax/supercollider.vim
@@ -36,122 +36,132 @@ let loaded_scvim = 1
 let s:bundlePath = expand('<sfile>:p:h:h')
 
 if exists("g:sclangKillOnExit")
-	let s:sclangKillOnExit = g:sclangKillOnExit
+  let s:sclangKillOnExit = g:sclangKillOnExit
 else
-	let s:sclangKillOnExit = 1
+  let s:sclangKillOnExit = 1
 endif
 
 if exists("g:sclangTerm")
-	let s:sclangTerm = g:sclangTerm
+  let s:sclangTerm = g:sclangTerm
 elseif system('uname') =~ 'Linux'
-	let s:sclangTerm = "x-terminal-emulator -e $SHELL -ic"
+  let s:sclangTerm = "x-terminal-emulator -e $SHELL -ic"
 else
-	let s:sclangTerm = "open -a Terminal.app"
+  let s:sclangTerm = "open -a Terminal.app"
 endif
 
 if exists("g:sclangPipeApp")
-	let s:sclangPipeApp	= g:sclangPipeApp
+  let s:sclangPipeApp = g:sclangPipeApp
 else
-	let s:sclangPipeApp	=  s:bundlePath . "/bin/start_pipe"
+  let s:sclangPipeApp =  s:bundlePath . "/bin/start_pipe"
 endif
 
 if exists("g:sclangDispatcher")
-	let s:sclangDispatcher = g:sclangDispatcher
+  let s:sclangDispatcher = g:sclangDispatcher
 else
-	let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
+  let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
 endif
 
 if !exists("loaded_kill_sclang")
-	if s:sclangKillOnExit
-		au VimLeavePre * call SClangKillIfStarted()
-	endif
-	let loaded_kill_sclang = 1
+  if s:sclangKillOnExit
+    au VimLeavePre * call SClangKillIfStarted()
+  endif
+  let loaded_kill_sclang = 1
+endif
+
+let s:scSplitDirection = "h"
+if exists("g:scSplitDirection")
+  let s:scSplitDirection = g:scSplitDirection
+endif
+
+let s:scSplitSize = 30
+if exists("g:scSplitSize")
+  let s:scSplitSize = g:scSplitSize
 endif
 
 " ========================================================================================
 
 function! FindOuterMostBlock()
-	"search backwards for parens dont wrap
-	let l:search_expression_up = "call searchpair('(', '', ')', 'bW'," .
-		\"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
-	"search forward for parens, don't wrap
-	let l:search_expression_down = "call searchpair('(', '', ')', 'W'," .
-		\"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
-		\"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
+  "search backwards for parens dont wrap
+  let l:search_expression_up = "call searchpair('(', '', ')', 'bW'," .
+    \"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
+  "search forward for parens, don't wrap
+  let l:search_expression_down = "call searchpair('(', '', ')', 'W'," .
+    \"'synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scComment\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scString\" || " .
+    \"synIDattr(synID(line(\".\"), col(\".\"), 0), \"name\") =~? \"scSymbol\"')"
 
-	"save our current cursor position
-	let l:returnline = line(".")
-	let l:returncol = col(".")
-	
-	"if we're on an opening paren then we should actually go to the closing one to start the search
-	"if buf[l:returnline][l:returncol-1,1] == "("
-	if strpart(getline(line(".")),col(".") - 1,1) == "("
-		exe l:search_expression_down
-	endif
+  "save our current cursor position
+  let l:returnline = line(".")
+  let l:returncol = col(".")
 
-	let l:origline = line(".")
-	let l:origcol = col(".")
+  "if we're on an opening paren then we should actually go to the closing one to start the search
+  "if buf[l:returnline][l:returncol-1,1] == "("
+  if strpart(getline(line(".")),col(".") - 1,1) == "("
+    exe l:search_expression_down
+  endif
 
-	"these numbers will define our range, first init them to illegal values
-	let l:range_e = [-1, -1]
-	let l:range_s = [-1, -1]
+  let l:origline = line(".")
+  let l:origcol = col(".")
 
-	"this is the last line in our search
-	let l:lastline = line(".")
-	let l:lastcol = col(".")
+  "these numbers will define our range, first init them to illegal values
+  let l:range_e = [-1, -1]
+  let l:range_s = [-1, -1]
 
-	exe l:search_expression_up
+  "this is the last line in our search
+  let l:lastline = line(".")
+  let l:lastcol = col(".")
 
-	while line(".") != l:lastline || (line(".") == l:lastline && col(".") != l:lastcol)
-		"keep track of the last line/col we were on
-		let l:lastline = line(".")
-		let l:lastcol = col(".")
-		"go to the matching paren
-		exe l:search_expression_down
+  exe l:search_expression_up
 
-		"if there isn't a match print an error
-		if l:lastline == line(".") && l:lastcol == col(".")
-			call cursor(l:returnline,l:returncol)
-			throw "UnmachedParen at line:" . l:lastline . ", col: " . l:lastcol
-		endif
+  while line(".") != l:lastline || (line(".") == l:lastline && col(".") != l:lastcol)
+    "keep track of the last line/col we were on
+    let l:lastline = line(".")
+    let l:lastcol = col(".")
+    "go to the matching paren
+    exe l:search_expression_down
 
-		"if this is equal to or later than our original cursor position
-		if line(".") > l:origline || (line(".") == l:origline && col(".") >= l:origcol)
-			let l:range_e = [line("."), col(".")]
-			"go back to opening paren
-			exe l:search_expression_up
-			let l:range_s = [line("."), col(".")]
-		else
-			"go back to opening paren
-			exe l:search_expression_up
-		endif
-		"find next paren (if there is one)
-		exe l:search_expression_up
-	endwhile
+    "if there isn't a match print an error
+    if l:lastline == line(".") && l:lastcol == col(".")
+      call cursor(l:returnline,l:returncol)
+      throw "UnmachedParen at line:" . l:lastline . ", col: " . l:lastcol
+    endif
 
-	"restore the settings
-	call cursor(l:returnline,l:returncol)
+    "if this is equal to or later than our original cursor position
+    if line(".") > l:origline || (line(".") == l:origline && col(".") >= l:origcol)
+      let l:range_e = [line("."), col(".")]
+      "go back to opening paren
+      exe l:search_expression_up
+      let l:range_s = [line("."), col(".")]
+    else
+      "go back to opening paren
+      exe l:search_expression_up
+    endif
+    "find next paren (if there is one)
+    exe l:search_expression_up
+  endwhile
 
-	if l:range_s[0] == -1 || l:range_s[1] == -1
-		throw "OutsideOfParens"
-	endif
-	
-	"return the ranges
-	 return [l:range_s, l:range_e]
+  "restore the settings
+  call cursor(l:returnline,l:returncol)
+
+  if l:range_s[0] == -1 || l:range_s[1] == -1
+    throw "OutsideOfParens"
+  endif
+
+  "return the ranges
+  return [l:range_s, l:range_e]
 endfunction
 
 " ========================================================================================
 
 
 function SCFormatText(text)
-	let l:text = substitute(a:text, '\', '\\\\', 'g')
-	let l:text = substitute(l:text, '"', '\\"', 'g')
-	let l:text = substitute(l:text, '`', '\\`', 'g')
-	let l:text = substitute(l:text, '\$', '\\$', 'g')
-	let l:text = '"' . l:text . '"'
+  let l:text = substitute(a:text, '\', '\\\\', 'g')
+  let l:text = substitute(l:text, '"', '\\"', 'g')
+  let l:text = substitute(l:text, '`', '\\`', 'g')
+  let l:text = substitute(l:text, '\$', '\\$', 'g')
+  let l:text = '"' . l:text . '"'
 
   return l:text
 endfunction
@@ -176,7 +186,7 @@ let s:cmdBuf = ""
 function SClang_send()
   let currentline = line(".")
   let s:cmdBuf = s:cmdBuf . getline(currentline) . "\n"
-  
+
   if(a:lastline == currentline)
     call SendToSC(s:cmdBuf)
 
@@ -194,33 +204,49 @@ function SClang_line()
 endfunction
 
 function SClang_block()
-	let [blkstart,blkend] = FindOuterMostBlock()
-	"blkstart[0],blkend[0] call SClang_send()
-	"these next lines are just a hack, how can i do the above??
-	let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
-	let l:origline = line(".")
-	let l:origcol = col(".")
-	exe cmd
-	call cursor(l:origline,l:origcol)
-	call FlashRegion(blkstart[0], blkend[0])
+  let [blkstart,blkend] = FindOuterMostBlock()
+  "blkstart[0],blkend[0] call SClang_send()
+  "these next lines are just a hack, how can i do the above??
+  let cmd = blkstart[0] . "," . blkend[0] . " call SClang_send()"
+  let l:origline = line(".")
+  let l:origcol = col(".")
+  exe cmd
+  call cursor(l:origline,l:origcol)
+  call FlashRegion(blkstart[0], blkend[0])
 endfunction
 
 " ========================================================================================
 
 let s:sclangStarted = 0
 
-function SClangStart()
-    if $TERM[0:5] == "screen"
-        if executable("tmux")
-            call system("tmux split-window -p 20 ; tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -U")
-            let s:sclangStarted = 1
-        else
-            echo "Sorry, screen is not supported yet.."
-        endif
-    else
-        call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
-        let s:sclangStarted = 1
+function SClangStart(...)
+  let l:tmux = exists('$TMUX')
+  let l:screen = exists('$STY')
+  if l:tmux || l:screen
+    let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
+    let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
+
+    if l:tmux
+      let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
+      let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
+      call system(l:cmd)
+    elseif l:screen
+      " Main window will have focus when splitting, so recalculate splitSize percentage
+      let l:splitSize = 100 - l:splitSize
+      let l:splitDir = (l:splitDir == "v") ? "" : " -v"
+      let l:screenName = system("echo -n $STY")
+      call system("screen -S " . l:screenName . " -X split" . l:splitDir)
+      call system("screen -S " . l:screenName . " -X eval focus screen focus")
+      call system("screen -S " . l:screenName . " -X at 1# exec " . s:sclangPipeApp)
+      call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
+      call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
+
+  else
+    call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+  endif
+
+  let s:sclangStarted = 1
 endfunction
 
 function SClangKill()
