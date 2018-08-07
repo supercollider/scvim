@@ -23,8 +23,24 @@
 SCVim.generateTagsFile();
 */
 
+Document {
+    // needed for thisProcess.nowExecutingPath to work.. see Kernel::interpretCmdLine
+    var <path, <dataptr;
+    *new {|path, dataptr|
+        ^super.newCopyArgs(path, dataptr);
+    }
+    *current {
+        var path = SCVim.currentPath;
+        ^Document(path, true);
+    }
+	*dir {
+		^SCVim.currentPath
+	}
+}
+
+
 SCVim {
-	classvar nodes, <>vimPath;
+	classvar nodes, <>vimPath, <>vimServerName="scvim";
 
 	*initClass {
 		nodes = List[];
@@ -221,4 +237,17 @@ SCVim {
 		tagfile.close();
 		"finished generating tagsfile".postln;
 	}
+
+    *currentPath {
+        var cmd = "expand(\"%:p\")";
+        var path = "vim --servername % --remote-expr '%'".format(vimServerName, cmd).unixCmdGetStdOut;
+		if( path == "" ) {
+			//"can't get Vim current path".error; // also happen on unsaved files, but there is already an error message with .loadRelative
+			^nil
+		};
+        if (PathName(path).isAbsolutePath) {
+            ^path;
+        };
+        ^nil;
+    }
 } // end class
