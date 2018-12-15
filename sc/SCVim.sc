@@ -43,16 +43,26 @@ SCVim {
 
 		StartUp.add {
 			var classList, file, hugeString = "syn keyword scObject", basePath;
-			// search two folders deep below ~/.vim for a folder named "*scvim*"
-			PathName("~/.vim".standardizePath).folders.do{ |folder|
+
+			// search in vim's standard 'pack' directories
+			PathName("~/.vim/pack/*/*/".standardizePath).folders.do{ |folder|
 				if(folder.fullPath.contains("scvim")) {
 					basePath = folder.fullPath;
-				} {
-					folder.folders.do{ |subfolder|
-						if(subfolder.fullPath.contains("scvim")) {
-							basePath = subfolder.fullPath;
+				};
+			};
+
+			// search two folders deep below ~/.vim for a folder named "*scvim*"
+			if(basePath.isNil) {
+				PathName("~/.vim".standardizePath).folders.do{ |folder|
+					if(folder.fullPath.contains("scvim")) {
+						basePath = folder.fullPath;
+					} {
+						folder.folders.do{ |subfolder|
+							if(subfolder.fullPath.contains("scvim")) {
+								basePath = subfolder.fullPath;
+							}
 						}
-					}
+					};
 				};
 			};
 
