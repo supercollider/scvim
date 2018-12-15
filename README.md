@@ -36,12 +36,12 @@ The most common package manager addons are:
 * [vim-plug](https://github.com/junegunn/vim-plug)
 * [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager)
 
+To find help about vim's native `packages`, in vim, type `:help packages`
+
 The plugin folder is expected to be found in `~/.vim/pack/*/*/scvim`
 or somewhere below `~/.vim`, at a maximum depth of two folders and with the
 word `scvim` in it (which should in theory cover all use-cases for the above
 plugin managers).
-
-To find help about vim's native `packages`, in vim, type `:help packages`
 
 ### `SCVim.sc`
 
