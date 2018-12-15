@@ -46,7 +46,7 @@ plugin managers).
 #### Using Vim's native package management
 
 To automatically enable scvim when you use vim.
-Assuming that your vim `pack` package directory is called `my`
+Assuming that your vim `pack` package directory is called *my*
 
 Execute:
 ```
@@ -56,7 +56,7 @@ git clone https://github.com/supercollider/scvim.git ~/.vim/pack/my/start/scvim
 
 If you would like to only enable scvim when you first start editing a
 SuperCollider file.
-Assuming that your vim `pack` package directory is called `my`
+Assuming that your vim `pack` package directory is called *my*
 
 Execute:
 ```
