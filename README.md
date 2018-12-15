@@ -43,6 +43,34 @@ or somewhere below `~/.vim`, at a maximum depth of two folders and with the
 word `scvim` in it (which should in theory cover all use-cases for the above
 plugin managers).
 
+#### Using Vim's native package management
+
+To automatically enable scvim when you use vim.
+Assuming that your vim `pack` package directory is called `my`
+
+Execute:
+```
+mkdir -p ~/.vim/pack/my/start/
+git clone https://github.com/supercollider/scvim.git ~/.vim/pack/my/start/scvim
+```
+
+If you would like to only enable scvim when you first start editing a
+SuperCollider file.
+Assuming that your vim `pack` package directory is called `my`
+
+Execute:
+```
+mkdir -p ~/.vim/pack/my/opt/
+git clone https://github.com/supercollider/scvim.git ~/.vim/pack/my/opt/scvim
+```
+
+Then, add the following to your `~/.vimrc`
+
+```
+au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set filetype=supercollider
+au Filetype supercollider packadd scvim
+```
+
 ### `SCVim.sc`
 
 If your SuperCollider version was not build with vim support (i.e. the class
