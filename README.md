@@ -26,17 +26,50 @@ Installation
 
 ### `scvim` plugin installation
 
-It is highly recommended to use a plugin manager to install `scvim`. Most
-common ones are:
+It is highly recommended to use either Vim 8+'s native `packages` or a plugin
+manager to install `scvim`. 
+
+The most common package manager addons are:
 
 * [pathogen](https://github.com/tpope/vim-pathogen)
 * [vundle](https://github.com/VundleVim/Vundle.vim)
 * [vim-plug](https://github.com/junegunn/vim-plug)
 * [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager)
 
-The plugin folder is expected to be found somewhere below `~/.vim`, at a
-maximum depth of two folders and with the word `scvim` in it (which should in
-theory cover all use-cases for the above plugin managers).
+To find help about vim's native `packages`, in vim, type `:help packages`
+
+The plugin folder is expected to be found in `~/.vim/pack/*/*/scvim`
+or somewhere below `~/.vim`, at a maximum depth of two folders and with the
+word `scvim` in it (which should in theory cover all use-cases for the above
+plugin managers).
+
+#### Using Vim's native package management
+
+To automatically enable scvim when you use vim.
+Assuming that your vim `pack` package directory is called *my*
+
+Execute:
+```
+mkdir -p ~/.vim/pack/my/start/
+git clone https://github.com/supercollider/scvim.git ~/.vim/pack/my/start/scvim
+```
+
+If you would like to only enable scvim when you first start editing a
+SuperCollider file.
+Assuming that your vim `pack` package directory is called *my*
+
+Execute:
+```
+mkdir -p ~/.vim/pack/my/opt/
+git clone https://github.com/supercollider/scvim.git ~/.vim/pack/my/opt/scvim
+```
+
+Then, add the following to your `~/.vimrc`
+
+```
+au BufEnter,BufWinEnter,BufNewFile,BufRead *.sc,*.scd set filetype=supercollider
+au Filetype supercollider packadd scvim
+```
 
 ### `SCVim.sc`
 
