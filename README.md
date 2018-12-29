@@ -27,7 +27,7 @@ Installation
 ### `scvim` plugin installation
 
 It is highly recommended to use either Vim 8+'s native `packages` or a plugin
-manager to install `scvim`. 
+manager to install `scvim`.
 
 The most common package manager addons are:
 
@@ -91,20 +91,14 @@ Path to the tags file
 
 The following variables are available for configuration in your `.vimrc` file:
 
-* `g:sclangTerm`: Command to open a terminal window. Defaults to `"open -a
-Terminal.app"` on OSX, and `"x-terminal-emulator -e $SHELL -ic"` on Linux.
-On some Linux systems this value may need to changed.
-* `g:sclangPipeApp`: Absolute path to the plugin **start_pipe** script. (Default
-`"~/.vim/bundle/scvim/bin/start_pipe"`)
-Change it if you have installed the plugin in other location.
-* `g:sclangDispatcher`: Absolute path to the plugin **sc_dispatcher** script.
-(Default `"~/.vim/bundle/scvim/bin/sc_dispatcher"`)
-Change it if you have installed the plugin in other location.
-* `g:scFlash`: Highlighting of evaluated code. (Default `0`)
-* `g:scSplitDirection`: sets default window orientation when using a supported
-terminal multiplexer. See Multiplexer Options below for more info. (Default `"h"`)
-* `g:scSplitSize`: sets post window size (% of screen) when using a supported
-terminal multiplexer. See Multiplexer Options below for more info. (Default `50`)
+| Variable | Description | Default |
+| -------- | ----------- | ------- |
+| `g:sclangTerm`       | Command to open a terminal window                                | `"open -a Terminal.app"` on macOS,<br />`"x-terminal-emulator -e $SHELL -ic"` on Linux |
+| `g:sclangPipeApp`    | Absolute path to **start_pipe** script                           | `"~/.vim/bundle/scvim/bin/start_pipe"` |
+| `g:sclangDispatcher` | Absolute path to **sc_dispatcher** script                        | `"~/.vim/bundle/scvim/bin/sc_dispatcher"` |
+| `g:scFlash`          | Highlighting of evaluated code                                   | `0` |
+| `g:scSplitDirection` | Default window orientation when using a terminal multiplexer     | `"h"` |
+| `g:scSplitSize`      | Post window size (% of screen) when using a terminal multiplexer | `50` |
 
 Example `.vimrc` line for gnome-terminal users:
 
@@ -113,12 +107,6 @@ Example `.vimrc` line for gnome-terminal users:
 To enable highlighting of evaluated code:
 
     let g:scFlash = 1
-
-If for some reason vim can't find the path to the two launch scripts
-**start_pipe** and **sc_dispatcher** you can set them manually in your .vimrc:
-
-    let g:sclangPipeApp    = "~/.vim/bundle/scvim/bin/start_pipe"
-    let g:sclangDispatcher = "~/.vim/bundle/scvim/bin/sc_dispatcher"
 
 Usage
 -----
