@@ -40,12 +40,13 @@ Document {
 
 
 SCVim {
-	classvar nodes, <>vimPath, <>vimServerName="scvim";
+	classvar nodes, <>vimPath, <>vimServerEnabled=false, <>vimServerName="SCVIM";
 
 	*initClass {
 		nodes = List[];
 
 		// TODO this has to be not so mac-centric
+		vimPath = "vim";
 		Platform.case(\osx) {
 
 			var whichVim = "which mvim".unixCmdGetStdOut;
@@ -55,6 +56,10 @@ SCVim {
 				vimPath = whichVim;
 			};
 			vimPath = vimPath.replace("\n", "");
+		};
+
+		vimServerEnabled = "% --version".format(vimPath).unixCmdGetStdOut.contains("+clientserver") and: {
+			"% --serverlist".format(vimPath).unixCmdGetStdOut.contains(vimServerName.toUpper)
 		};
 
 		StartUp.add {
@@ -240,14 +245,17 @@ SCVim {
 
     *currentPath {
         var cmd = "expand(\"%:p\")";
-        var path = "vim --servername % --remote-expr '%'".format(vimServerName, cmd).unixCmdGetStdOut;
-		if( path == "" ) {
-			//"can't get Vim current path".error; // also happen on unsaved files, but there is already an error message with .loadRelative
-			^nil
-		};
-        if (PathName(path).isAbsolutePath) {
-            ^path;
-        };
+        var path;
+		if(vimServerEnabled) {
+			path = "% --servername % --remote-expr '%'".format(vimPath, vimServerName, cmd).unixCmdGetStdOut;
+			if( path == "" ) {
+				//"can't get Vim current path".error; // also happen on unsaved files, but there is already an error message with .loadRelative
+				^nil
+			};
+			if (PathName(path).isAbsolutePath) {
+				^path;
+			};
+		}
         ^nil;
     }
 } // end class
