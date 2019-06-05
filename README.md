@@ -82,6 +82,22 @@ If for some reason vim can't find the path to the two launch scripts
     let g:sclangPipeApp     = "~/.vim/bundle/scvim/bin/start_pipe"
     let g:sclangDispatcher  = "~/.vim/bundle/scvim/bin/sc_dispatcher"
 
+### Document support
+
+If vim is compiled with +clientserver option, SuperCollider can retrieve the path of the current vim buffer and enable String:loadRelative.
+In debian based distributions, this option often comes with gui-enabled vim packages (vim-gtk for example).
+
+    "fileInSameFolder.scd".loadRelative;
+
+To use this feature, you also need to start vim in server mode:
+
+    vim --servername SCVIM 
+
+You can change the default server name used by SuperCollider to contact vim:
+
+    SCVim.vimServerName = "MYNAME";
+
+
 Usage
 -----
 To start open a file with the right extension :e foo.sc(d)
@@ -119,3 +135,4 @@ in normal/insert mode:
 * `F5` to execute a block of code scvim will attempt to find the outermost bracket
 * `F6` to execute the current line of code
 * `F12` is a hard stop
+

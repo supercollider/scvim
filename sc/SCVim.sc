@@ -24,15 +24,15 @@ SCVim.generateTagsFile();
 */
 
 Document {
-    // needed for thisProcess.nowExecutingPath to work.. see Kernel::interpretCmdLine
-    var <path, <dataptr;
-    *new {|path, dataptr|
-        ^super.newCopyArgs(path, dataptr);
-    }
-    *current {
-        var path = SCVim.currentPath;
-        ^Document(path, true);
-    }
+	// needed for thisProcess.nowExecutingPath to work.. see Kernel::interpretCmdLine
+	var <path, <dataptr;
+	*new {|path, dataptr|
+		^super.newCopyArgs(path, dataptr);
+	}
+	*current {
+		var path = SCVim.currentPath;
+		^Document(path, true);
+	}
 	*dir {
 		^SCVim.currentPath
 	}
@@ -40,7 +40,7 @@ Document {
 
 
 SCVim {
-	classvar nodes, <>vimPath, <>vimServerEnabled=false, <>vimServerName="SCVIM";
+	classvar nodes, <>vimPath, <>vimServerEnabled=false, <vimServerName;
 
 	*initClass {
 		nodes = List[];
@@ -58,9 +58,7 @@ SCVim {
 			vimPath = vimPath.replace("\n", "");
 		};
 
-		vimServerEnabled = "% --version".format(vimPath).unixCmdGetStdOut.contains("+clientserver") and: {
-			"% --serverlist".format(vimPath).unixCmdGetStdOut.contains(vimServerName.toUpper)
-		};
+		this.vimServerName = "SCVIM";
 
 		StartUp.add {
 			var classList, file, hugeString = "syn keyword scObject", basePath;
@@ -91,6 +89,24 @@ SCVim {
 				file.write(hugeString);
 				file.close;
 			}
+		};
+	}
+
+	*vimServerName_ { arg name;
+		var clientServerEnabled, serverNameAvailable;
+		vimServerName = name;
+		clientServerEnabled = "% --version".format(vimPath).unixCmdGetStdOut.contains("+clientserver");
+		serverNameAvailable = "% --serverlist".format(vimPath).unixCmdGetStdOut.contains(vimServerName.toUpper);
+		if(clientServerEnabled) {
+			if(serverNameAvailable) {
+				vimServerEnabled = true;
+			} {
+				"No vim sesssion with server name % found: SCVim.currentPath will not work.".format(vimServerName.toUpper).warn;
+				vimServerEnabled = false;
+			}
+		} {
+			"vim is not compiled with +clientserver option: SCVim.currentPath will not work.".warn;
+			vimServerEnabled = false;
 		};
 	}
 
@@ -137,7 +153,7 @@ SCVim {
 
 					found = found + 1;
 					namestring = class.name ++ ":" ++ name;
-					out << "   " << namestring << " :     ";
+					out << "   " << namestring << " :	  ";
 					if (method.argNames.isNil or: { method.argNames.size == 1 }, {
 						out << "this." << name;
 						if (name.isSetter, { out << "(val)"; });
@@ -185,7 +201,7 @@ SCVim {
 
 		if (references.notNil, {
 			out << "References to '" << name << "' :\n";
-			references.do({ arg ref; out << "   " << ref.asString << "\n"; });
+			references.do({ arg ref; out << "	" << ref.asString << "\n"; });
 
 			if(openInVIM) {
 				fname = "/tmp/" ++ Date.seed ++ ".sc";
@@ -221,15 +237,15 @@ SCVim {
 			arg klass;
 			var klassName, klassFilename, klassSearchString;
 
-			klassName         = klass.asString;
-			klassFilename     = klass.filenameSymbol;
+			klassName		  = klass.asString;
+			klassFilename	  = klass.filenameSymbol;
 			klassSearchString = format("/^%/;\"", klassName);
 
 			tagfile.write(klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl);
 
 			klass.methods.do{|meth|
 				var methName, methFilename, methSearchString;
-				methName     = meth.name;
+				methName	 = meth.name;
 				methFilename = meth.filenameSymbol;
 				// this strange fandango dance is necessary for sc to not complain
 				// when compiling 123 is the curly bracket
@@ -243,9 +259,9 @@ SCVim {
 		"finished generating tagsfile".postln;
 	}
 
-    *currentPath {
-        var cmd = "expand(\"%:p\")";
-        var path;
+	*currentPath {
+		var cmd = "expand(\"%:p\")";
+		var path;
 		if(vimServerEnabled) {
 			path = "% --servername % --remote-expr '%'".format(vimPath, vimServerName, cmd).unixCmdGetStdOut;
 			if( path == "" ) {
@@ -256,6 +272,6 @@ SCVim {
 				^path;
 			};
 		}
-        ^nil;
-    }
+		^nil;
+	}
 } // end class
