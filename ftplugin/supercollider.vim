@@ -248,6 +248,7 @@ function SClangStart(...)
     wincmd w
     exec "vertical resize " .(l:splitSize  * 2) ."%"
     exec "term " .s:sclangPipeApp
+    exec "normal G"
     wincmd w
   else
     call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
