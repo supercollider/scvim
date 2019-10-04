@@ -246,7 +246,7 @@ function SClangStart(...)
     vsplit
     vertical resize 150%
     wincmd w
-    term s:sclangPipeApp
+    exec 'term ' .s:sclangPipeApp
     wincmd w
   "else
     "call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
