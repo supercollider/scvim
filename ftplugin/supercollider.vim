@@ -222,10 +222,9 @@ let s:sclangStarted = 0
 function SClangStart(...)
   let l:tmux = exists('$TMUX')
   let l:screen = exists('$STY')
+  let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
+  let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
   if l:tmux || l:screen
-    let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
-    let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
-
     if l:tmux
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
       let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
@@ -242,9 +241,12 @@ function SClangStart(...)
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
   elseif exists(":term")
+    let l:isVertical = l:splitDir == "v"
+    let l:splitCmd = (l:isVertical) ? "vsplit" : "split"
+    let l:resizeCmd = (l:isVertical) ? "vertical resize " : "resize "
     vsplit
-    vertical resize 150%
     wincmd w
+    exec "vertical resize " .(l:splitSize  * 2) ."%"
     exec "term " .s:sclangPipeApp
     wincmd w
   else
