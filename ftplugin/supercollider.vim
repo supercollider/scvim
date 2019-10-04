@@ -226,7 +226,7 @@ function SClangStart(...)
     let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
     let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
 
-    if l:tmuxclose
+    if l:tmux
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
       let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
       call system(l:cmd)
