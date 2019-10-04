@@ -241,17 +241,15 @@ function SClangStart(...)
       call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
-
-  else "if has :term
+  elseif exists(":term")
     vsplit
     vertical resize 150%
     wincmd w
-    exec 'term ' .s:sclangPipeApp
+    exec "term " .s:sclangPipeApp
     wincmd w
-  "else
-    "call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+  else
+    call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
   endif
-
   let s:sclangStarted = 1
 endfunction
 
