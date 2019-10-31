@@ -247,6 +247,8 @@ function SClangStart(...)
     vsplit
     wincmd w
     exec "vertical resize " .(l:splitSize  * 2) ."%"
+    exec "set wfw"
+    exec "set wfh"
     exec "term " .s:sclangPipeApp
     exec "normal G"
     wincmd w
