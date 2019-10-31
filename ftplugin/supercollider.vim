@@ -219,6 +219,12 @@ endfunction
 
 let s:sclangStarted = 0
 
+function s:KillSClangBuffer()
+  if bufexists(bufname('start_pipe'))
+    exec 'bd! start_pipe'
+  endif
+endfunction
+
 function SClangStart(...)
   let l:tmux = exists('$TMUX')
   let l:screen = exists('$STY')
@@ -246,7 +252,7 @@ function SClangStart(...)
     let l:resizeCmd = (l:isVertical) ? "vertical resize " : "resize "
     vsplit
     wincmd w
-    exec "bd! start_pipe"
+    call s:KillSClangBuffer()
     exec "vertical resize " .(l:splitSize  * 2) ."%"
     exec "set wfw"
     exec "set wfh"
@@ -261,7 +267,7 @@ endfunction
 
 function SClangKill()
   call system(s:sclangDispatcher . " -q")
-  exec "bd! start_pipe"
+  call s:KillSClangBuffer()
 endfunction
 
 function SClangKillIfStarted()
