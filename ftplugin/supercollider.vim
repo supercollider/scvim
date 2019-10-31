@@ -246,6 +246,7 @@ function SClangStart(...)
     let l:resizeCmd = (l:isVertical) ? "vertical resize " : "resize "
     vsplit
     wincmd w
+    exec "bd! start_pipe"
     exec "vertical resize " .(l:splitSize  * 2) ."%"
     exec "set wfw"
     exec "set wfh"
@@ -260,6 +261,7 @@ endfunction
 
 function SClangKill()
   call system(s:sclangDispatcher . " -q")
+  exec "bd! start_pipe"
 endfunction
 
 function SClangKillIfStarted()
