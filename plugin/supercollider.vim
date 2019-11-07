@@ -15,7 +15,7 @@ au BufEnter,BufWinEnter,BufNewFile,BufRead *.schelp set filetype=scdoc
 au BufEnter,BufWinEnter,BufNewFile,BufRead *.schelp runtime syntax/scdoc.vim
 
 " set this via EXPORT ... if you want to change it
-if exists($SCVIM_TAGFILE)
+if exists("$SCVIM_TAGFILE")
   let s:sclangTagsFile = $SCVIM_TAGFILE
 else
   let s:sclangTagsFile = "~/.sctags"
