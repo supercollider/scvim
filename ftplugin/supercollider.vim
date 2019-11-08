@@ -78,6 +78,12 @@ if exists("g:scSplitSize")
   let s:scSplitSize = g:scSplitSize
 endif
 
+
+let s:scTerminalBuffer = "off"
+if exists("g:scTerminalBuffer")
+  let s:scTerminalBuffer = g:scTerminalBuffer
+endif
+
 " ========================================================================================
 
 function! FindOuterMostBlock()
@@ -219,6 +225,10 @@ endfunction
 
 let s:sclangStarted = 0
 
+function s:TerminalEnabled()
+  return exists(":term") && (s:scTerminalBuffer == "on")
+endfunction
+
 function s:KillSClangBuffer()
   if bufexists(bufname('start_pipe'))
     exec 'bd! start_pipe'
@@ -246,7 +256,7 @@ function SClangStart(...)
       call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
-  elseif exists(":term")
+  elseif s:TerminalEnabled()
     let l:term = ":term "
     if !has("nvim")
       let l:term .= "++curwin ++close "
