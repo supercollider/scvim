@@ -249,7 +249,7 @@ function SClangStart(...)
   elseif exists(":term")
     let l:term = ":term "
     if !has("nvim")
-      let l:term .= "++curwin "
+      let l:term .= "++curwin ++close "
     endif
     let l:isVertical = l:splitDir == "v"
     let l:splitCmd = (l:isVertical) ? "vsplit" : "split"
@@ -271,7 +271,9 @@ endfunction
 
 function SClangKill()
   call system(s:sclangDispatcher . " -q")
-  call s:KillSClangBuffer()
+    if has("nvim")
+      call s:KillSClangBuffer()
+  endif
 endfunction
 
 function SClangKillIfStarted()
