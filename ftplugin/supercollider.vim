@@ -247,6 +247,10 @@ function SClangStart(...)
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
   elseif exists(":term")
+    let l:term = ":term "
+    if !has("nvim")
+      let l:term .= "++curwin "
+    endif
     let l:isVertical = l:splitDir == "v"
     let l:splitCmd = (l:isVertical) ? "vsplit" : "split"
     let l:resizeCmd = (l:isVertical) ? "vertical resize " : "resize "
@@ -256,7 +260,7 @@ function SClangStart(...)
     exec "vertical resize " .(l:splitSize  * 2) ."%"
     exec "set wfw"
     exec "set wfh"
-    exec "term " .s:sclangPipeApp
+    exec l:term .s:sclangPipeApp
     exec "normal G"
     wincmd w
   else
