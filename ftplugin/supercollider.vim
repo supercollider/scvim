@@ -240,23 +240,7 @@ function SClangStart(...)
   let l:screen = exists('$STY')
   let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
   let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
-  if l:tmux || l:screen
-    if l:tmux
-      let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
-      let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
-      call system(l:cmd)
-    elseif l:screen
-      " Main window will have focus when splitting, so recalculate splitSize percentage
-      let l:splitSize = 100 - l:splitSize
-      let l:splitDir = (l:splitDir == "v") ? "" : " -v"
-      let l:screenName = system("echo -n $STY")
-      call system("screen -S " . l:screenName . " -X split" . l:splitDir)
-      call system("screen -S " . l:screenName . " -X eval focus screen focus")
-      call system("screen -S " . l:screenName . " -X at 1# exec " . s:sclangPipeApp)
-      call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
-      call system("screen -S " . l:screenName . " -X bindkey -k k5")
-    endif
-  elseif s:TerminalEnabled()
+  if s:TerminalEnabled()
     let l:term = ":term "
     if !has("nvim")
       let l:term .= "++curwin ++close "
@@ -273,6 +257,22 @@ function SClangStart(...)
     exec l:term .s:sclangPipeApp
     exec "normal G"
     wincmd w
+  elseif l:tmux || l:screen
+    if l:tmux
+      let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
+      let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
+      call system(l:cmd)
+    elseif l:screen
+      " Main window will have focus when splitting, so recalculate splitSize percentage
+      let l:splitSize = 100 - l:splitSize
+      let l:splitDir = (l:splitDir == "v") ? "" : " -v"
+      let l:screenName = system("echo -n $STY")
+      call system("screen -S " . l:screenName . " -X split" . l:splitDir)
+      call system("screen -S " . l:screenName . " -X eval focus screen focus")
+      call system("screen -S " . l:screenName . " -X at 1# exec " . s:sclangPipeApp)
+      call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
+      call system("screen -S " . l:screenName . " -X bindkey -k k5")
+    endif
   else
     call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
   endif
