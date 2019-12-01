@@ -99,6 +99,7 @@ The following variables are available for configuration in your `.vimrc` file:
 | `g:scFlash`          | Highlighting of evaluated code                                   | `0` |
 | `g:scSplitDirection` | Default window orientation when using a terminal multiplexer     | `"h"` |
 | `g:scSplitSize`      | Post window size (% of screen) when using a terminal multiplexer | `50` |
+| `g:scTerminalBuffer` | If set to `"on"` use vim's `:term` to launch `g:sclangTerm`      | `"off"` |
 
 Example `.vimrc` line for gnome-terminal users:
 
