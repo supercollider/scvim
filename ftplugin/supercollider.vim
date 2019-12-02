@@ -78,6 +78,12 @@ if exists("g:scSplitSize")
   let s:scSplitSize = g:scSplitSize
 endif
 
+
+let s:scTerminalBuffer = "off"
+if exists("g:scTerminalBuffer")
+  let s:scTerminalBuffer = g:scTerminalBuffer
+endif
+
 " ========================================================================================
 
 function! FindOuterMostBlock()
@@ -219,13 +225,39 @@ endfunction
 
 let s:sclangStarted = 0
 
+function s:TerminalEnabled()
+  return exists(":term") && (s:scTerminalBuffer == "on")
+endfunction
+
+function s:KillSClangBuffer()
+  if bufexists(bufname('start_pipe'))
+    exec 'bd! start_pipe'
+  endif
+endfunction
+
 function SClangStart(...)
   let l:tmux = exists('$TMUX')
   let l:screen = exists('$STY')
-  if l:tmux || l:screen
-    let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
-    let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
-
+  let l:splitDir = (a:0 == 2) ? a:1 : s:scSplitDirection
+  let l:splitSize = (a:0 == 2) ? a:2 : s:scSplitSize
+  if s:TerminalEnabled()
+    let l:term = ":term "
+    if !has("nvim")
+      let l:term .= "++curwin ++close "
+    endif
+    let l:isVertical = l:splitDir == "v"
+    let l:splitCmd = (l:isVertical) ? "vsplit" : "split"
+    let l:resizeCmd = (l:isVertical) ? "vertical resize " : "resize "
+    vsplit
+    wincmd w
+    call s:KillSClangBuffer()
+    exec "vertical resize " .(l:splitSize  * 2) ."%"
+    exec "set wfw"
+    exec "set wfh"
+    exec l:term .s:sclangPipeApp
+    exec "normal G"
+    wincmd w
+  elseif l:tmux || l:screen
     if l:tmux
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
       let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
@@ -241,16 +273,17 @@ function SClangStart(...)
       call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
-
   else
     call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
   endif
-
   let s:sclangStarted = 1
 endfunction
 
 function SClangKill()
   call system(s:sclangDispatcher . " -q")
+    if has("nvim")
+      call s:KillSClangBuffer()
+  endif
 endfunction
 
 function SClangKillIfStarted()
