@@ -24,6 +24,12 @@ Requirements
 Installation
 ------------
 
+### `go-sclang` installation
+
+Follow [go-sclang installation instructions](https://github.com/WnP/go-sclang#install).
+
+Remember that `go-sclang` **and** `go-sclang-client` are required.
+
 ### `scvim` plugin installation
 
 It is highly recommended to use either Vim 8+'s native `packages` or a plugin
@@ -91,15 +97,17 @@ Path to the tags file
 
 The following variables are available for configuration in your `.vimrc` file:
 
-| Variable | Description | Default |
-| -------- | ----------- | ------- |
-| `g:sclangTerm`       | Command to open a terminal window                                | `"open -a Terminal.app"` on macOS,<br />`"x-terminal-emulator -e $SHELL -ic"` on Linux |
-| `g:sclangPipeApp`    | Absolute path to **start_pipe** script                           | `"~/.vim/bundle/scvim/bin/start_pipe"` |
-| `g:sclangDispatcher` | Absolute path to **sc_dispatcher** script                        | `"~/.vim/bundle/scvim/bin/sc_dispatcher"` |
-| `g:scFlash`          | Highlighting of evaluated code                                   | `0` |
-| `g:scSplitDirection` | Default window orientation when using a terminal multiplexer     | `"h"` |
-| `g:scSplitSize`      | Post window size (% of screen) when using a terminal multiplexer | `50` |
-| `g:scTerminalBuffer` | If set to `"on"` use vim's `:term` to launch `g:sclangTerm`      | `"off"` |
+| Variable                  | Description                                                      | Default                                                                                |
+| --------                  | -----------                                                      | -------                                                                                |
+| `g:sclangTerm`            | Command to open a terminal window                                | `"open -a Terminal.app"` on macOS,<br />`"x-terminal-emulator -e $SHELL -ic"` on Linux |
+| `g:sclangServer`          | Absolute path to **go-sclang** binary                            | `"go-sclang"` - should be in your $PATH                                                |
+| `g:goSclangServerOptions` | Options for to **go-sclang** binary                              | `""`                                                                                   |
+| `g:sclangClient`          | Absolute path to **go-sclang-client** binary                     | `"go-sclang-client"` - should bin in your $PATH                                        |
+| `g:scFlash`               | Highlighting of evaluated code                                   | `0`                                                                                    |
+| `g:scSplitDirection`      | Default window orientation when using a terminal multiplexer     | `"h"`                                                                                  |
+| `g:scSplitSize`           | Post window size (% of screen) when using a terminal multiplexer | `50`                                                                                   |
+| `g:scTerminalBuffer`      | If set to `"on"` use vim's `:term` to launch `g:sclangTerm`      | `"off"`                                                                                |
+| `g:scPrintToMiniBuffer`   | Print sclang returned value to vim mini buffer                   | `1`                                                                                    |
 
 Example `.vimrc` line for gnome-terminal users:
 
