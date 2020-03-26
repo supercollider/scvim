@@ -45,7 +45,7 @@ SCVim {
 			var classList, file, hugeString = "syn keyword scObject", basePath, binPath, ftpluginPath;
 
 			// see if this file in the 'scvim' directory, prefer that
-			basePath = PathName(this.class.filenameSymbol.asString.dirname) +/+ PathName("..");
+			basePath = PathName(this.class.filenameSymbol.asString.dirname) +/+ "..";
 
 			binPath = basePath +/+ PathName("bin/");
 			ftpluginPath = basePath +/+ PathName("ftplugin/");
