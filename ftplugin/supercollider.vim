@@ -246,12 +246,14 @@ function SClangStart(...)
       let l:term .= "++curwin ++close "
     endif
     let l:isVertical = l:splitDir == "v"
-    let l:splitCmd = (l:isVertical) ? "vsplit" : "split"
-    let l:resizeCmd = (l:isVertical) ? "vertical resize " : "resize "
-    vsplit
+    exec (l:isVertical) ? "vsplit" : "split"
     wincmd w
     call s:KillSClangBuffer()
-    exec "vertical resize " .(l:splitSize  * 2) ."%"
+    if l:isVertical
+      exec "vertical resize " .(l:splitSize * 2)
+    else
+      exec "resize " .(l:splitSize)
+    end
     exec "set wfw"
     exec "set wfh"
     exec l:term .s:sclangPipeApp
