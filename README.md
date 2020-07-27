@@ -3,7 +3,7 @@ SCVim (> 3.5)
 
 A vim plugin for supercollider (tested on Linux and Mac OSX).
 
-This is based of the original [scvim by Alex Norman](http://www.x37v.info/scvim/).
+This is based of the original [scvim by Alex Norman](https://www.x37v.info/projects/scvim/).
 
 Features
 --------
