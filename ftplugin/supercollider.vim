@@ -259,8 +259,9 @@ function SClangStart(...)
     wincmd w
   elseif l:tmux || l:screen
     if l:tmux
-      let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
-      let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
+      " To disable focusing on the newly created pane, -d flag is used
+      let l:cmdfmt = "tmux split-window -d -%s -p %d %s"
+      let l:cmd = printf(l:cmdfmt, l:splitDir, l:splitSize, s:sclangPipeApp)
       call system(l:cmd)
     elseif l:screen
       " Main window will have focus when splitting, so recalculate splitSize percentage
