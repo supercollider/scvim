@@ -19,7 +19,7 @@ Requirements
 ------------
 
 * ruby
-* supercollider >= 3.9 (for current **master** - [Linux only](https://github.com/supercollider/scvim/issues/27))
+* supercollider
 
 Installation
 ------------
