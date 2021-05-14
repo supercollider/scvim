@@ -49,16 +49,34 @@ else
   let s:sclangTerm = "open -a Terminal.app"
 endif
 
-if exists("g:sclangPipeApp")
-  let s:sclangPipeApp = g:sclangPipeApp
+if exists("g:goSclangServerOptions")
+  let s:goSclangServerOptions = g:goSclangServerOptions
 else
-  let s:sclangPipeApp =  s:bundlePath . "/bin/start_pipe"
+  let s:goSclangServerOptions = ""
 endif
 
-if exists("g:sclangDispatcher")
-  let s:sclangDispatcher = g:sclangDispatcher
+if exists("g:sclangServerOptions")
+  let s:sclangServerOptions = g:sclangServerOptions . " -i scvim -d " . getcwd()
 else
-  let s:sclangDispatcher = s:bundlePath . "/bin/sc_dispatcher"
+  let s:sclangServerOptions = " -i scvim -d " . getcwd()
+endif
+
+if exists("g:scPrintToMiniBuffer")
+  let s:scPrintToMiniBuffer = g:scPrintToMiniBuffer
+else
+  let s:scPrintToMiniBuffer = 1
+endif
+
+if exists("g:sclangServer")
+  let s:sclangServer = g:sclangServer . " " . s:goSclangServerOptions . " -- " . s:sclangServerOptions
+else
+  let s:sclangServer =  "go-sclang ". s:goSclangServerOptions . " -- " . s:sclangServerOptions
+endif
+
+if exists("g:sclangClient")
+  let s:sclangClient = g:sclangClient
+else
+  let s:sclangClient = "go-sclang-client"
 endif
 
 if !exists("loaded_kill_sclang")
@@ -161,28 +179,17 @@ endfunction
 
 " ========================================================================================
 
-
-function SCFormatText(text)
-  let l:text = substitute(a:text, '\', '\\\\', 'g')
-  let l:text = substitute(l:text, '"', '\\"', 'g')
-  let l:text = substitute(l:text, '`', '\\`', 'g')
-  let l:text = substitute(l:text, '\$', '\\$', 'g')
-  let l:text = '"' . l:text . '"'
-
-  return l:text
-endfunction
-
 function SendToSC(text)
-  let l:text = SCFormatText(a:text)
-
-  call system(s:sclangDispatcher . " -i " . l:text)
+  let l:val = system(s:sclangClient . " -o", a:text)
   redraw!
+  if (s:scPrintToMiniBuffer)
+    echo l:val
+  endif
+  return l:val
 endfunction
 
 function SendToSCSilent(text)
-  let l:text = SCFormatText(a:text)
-
-  call system(s:sclangDispatcher . " -s " . l:text)
+  call system(s:sclangClient, a:text)
   redraw!
 endfunction
 
@@ -254,13 +261,13 @@ function SClangStart(...)
     exec "vertical resize " .(l:splitSize  * 2) ."%"
     exec "set wfw"
     exec "set wfh"
-    exec l:term .s:sclangPipeApp
+    exec l:term . s:sclangServer
     exec "normal G"
     wincmd w
   elseif l:tmux || l:screen
     if l:tmux
       let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
-      let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
+      let l:cmd .= "tmux send-keys \"" . s:sclangServer . "\" Enter ; tmux select-pane -l"
       call system(l:cmd)
     elseif l:screen
       " Main window will have focus when splitting, so recalculate splitSize percentage
@@ -269,18 +276,18 @@ function SClangStart(...)
       let l:screenName = system("echo -n $STY")
       call system("screen -S " . l:screenName . " -X split" . l:splitDir)
       call system("screen -S " . l:screenName . " -X eval focus screen focus")
-      call system("screen -S " . l:screenName . " -X at 1# exec " . s:sclangPipeApp)
+      call system("screen -S " . l:screenName . " -X at 1# exec " . s:sclangServer)
       call system("screen -S " . l:screenName . " -X resize " . l:splitSize . '%')
       call system("screen -S " . l:screenName . " -X bindkey -k k5")
     endif
   else
-    call system(s:sclangTerm . " " . s:sclangPipeApp . "&")
+    call system(s:sclangTerm . " " . s:sclangServer . "&")
   endif
   let s:sclangStarted = 1
 endfunction
 
 function SClangKill()
-  call system(s:sclangDispatcher . " -q")
+  call system(s:sclangClient . " -k")
     if has("nvim")
       call s:KillSClangBuffer()
   endif
@@ -293,9 +300,8 @@ function SClangKillIfStarted()
 endfunction
 
 function SClangRecompile()
-  echo s:sclangDispatcher
-  call system(s:sclangDispatcher . " -k")
-  call system(s:sclangDispatcher . " -s ''")
+  echo s:sclangClient
+  call system(s:sclangClient . " -r")
   redraw!
 endfunction
 
