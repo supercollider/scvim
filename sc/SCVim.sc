@@ -42,33 +42,44 @@ SCVim {
 		};
 
 		StartUp.add {
-			var classList, file, hugeString = "syn keyword scObject", basePath;
+			var classList, file, hugeString = "syn keyword scObject", basePath, binPath, ftpluginPath;
 
-			// search in vim's standard 'pack' directories
-			PathName("~/.vim/pack/*/*/".standardizePath).folders.do{ |folder|
-				if(folder.fullPath.contains("scvim")) {
-					basePath = folder.fullPath;
-				};
-			};
+			// see if this file in the 'scvim' directory, prefer that
+			basePath = PathName(this.class.filenameSymbol.asString.dirname) +/+ "..";
 
-			// search two folders deep below ~/.vim for a folder named "*scvim*"
-			if(basePath.isNil) {
-				PathName("~/.vim".standardizePath).folders.do{ |folder|
+			binPath = basePath +/+ PathName("bin/");
+			ftpluginPath = basePath +/+ PathName("ftplugin/");
+
+			if(File.exists(binPath.fullPath) && File.exists(ftpluginPath.fullPath)) {
+				basePath = basePath.fullPath;
+			} {
+				basePath = nil;
+				// search in vim's standard 'pack' directories
+				PathName("~/.vim/pack/*/*/".standardizePath).folders.do{ |folder|
 					if(folder.fullPath.contains("scvim")) {
 						basePath = folder.fullPath;
-					} {
-						folder.folders.do{ |subfolder|
-							if(subfolder.fullPath.contains("scvim")) {
-								basePath = subfolder.fullPath;
+					};
+				};
+
+				// search two folders deep below ~/.vim for a folder named "*scvim*"
+				if(basePath.isNil) {
+					PathName("~/.vim".standardizePath).folders.do{ |folder|
+						if(folder.fullPath.contains("scvim")) {
+							basePath = folder.fullPath;
+						} {
+							folder.folders.do{ |subfolder|
+								if(subfolder.fullPath.contains("scvim")) {
+									basePath = subfolder.fullPath;
+								}
 							}
-						}
+						};
 					};
 				};
 			};
 
 			if(basePath.isNil) {
 				("\nSCVim could not be initialized.\n"
-				++ "Consult the README to see how to install scvim.\n").error
+					++ "Consult the README to see how to install scvim.\n").error
 			} {
 				//collect all class names as strings in a Array
 				classList = Object.allSubclasses.collect{ arg i; var name;
@@ -79,7 +90,7 @@ SCVim {
 				file = File((basePath ++ "/syntax/supercollider_objects.vim").standardizePath,"w");
 				file.write(hugeString);
 				file.close;
-			}
+			};
 		};
 	}
 
