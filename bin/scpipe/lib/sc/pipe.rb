@@ -24,7 +24,7 @@ module SC
       "/Applications/SuperCollider.app/Contents/Resources/sclang"
     ]
     @paths.each do |path|
-      return path if File.exists?(path)
+      return path if File.exist?(path)
     end
     warn "Could not find sclang executable.\nPlease make sure that SC is either installed at the default location e.g. '/Applications/SuperCollider.app' on a mac or add sclang to your shells search path."
     exit
@@ -39,7 +39,7 @@ module SC
     class << self
 
       def exists?
-        return File.exists?(@@pipe_loc && @@pid_loc)
+        return File.exist?(@@pipe_loc && @@pid_loc)
       end
 
       def serve
@@ -59,7 +59,7 @@ module SC
       private
 
       def prepare_pipe
-        if File.exists?(@@pipe_loc)
+        if File.exist?(@@pipe_loc)
           warn "there is already a sclang session running, remove it first, than retry"
           exit
         end
