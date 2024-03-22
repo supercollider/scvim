@@ -259,7 +259,7 @@ function SClangStart(...)
     wincmd w
   elseif l:tmux || l:screen
     if l:tmux
-      let l:cmd = "tmux split-window -" . l:splitDir . " -p " . l:splitSize . " ;"
+      let l:cmd = "tmux split-window -" . l:splitDir . " -l " . l:splitSize . "% ; "
       let l:cmd .= "tmux send-keys " . s:sclangPipeApp . " Enter ; tmux select-pane -l"
       call system(l:cmd)
     elseif l:screen
